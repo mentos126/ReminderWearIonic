@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { AddTaskPage } from '../add-task/add-task';
+
 import { Tasker } from '../../Tasker/Tasker';
 import { Task } from '../../Tasker/Task';
 import { Category } from '../../Tasker/Category';
@@ -54,15 +56,15 @@ export class HomePage {
   }
 
   onItemClicked(){
-    console.log("CARD")
+    console.log("CARD");
   }
 
   onChangeActivated(id: number){
-      console.log("get id", id)
+      console.log("get id", id);
   }
 
   addTask(){
-    this.navCtrl.push(LevelPage)
+    this.navCtrl.push(AddTaskPage);
   }
 
 }
