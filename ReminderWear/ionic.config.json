@@ -1,0 +1,7 @@
+{
+  "name": "ReminderWear",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}

@@ -1,0 +1,94 @@
+<ion-header>
+</ion-header>
+
+<ion-content padding>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div>
+          <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+        </div>
+        <div text-right>
+          <ion-icon name="ios-arrow-up"></ion-icon>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-list>
+    <ion-item *ngFor="let item of items">
+
+
+
+      <ion-card center (click)="onItemClicked()" >
+
+        <ion-item>
+          <ion-avatar  item-start>
+            <img src="https://via.placeholder.com/30x30">
+          </ion-avatar>
+          <ion-toggle (ionChange)="onChangeActivated(item.getID())" checked="{{item.getIsActivatedNotification()}}"></ion-toggle>
+        </ion-item>
+
+        <ion-card-content>
+            <ion-grid>
+
+              <ion-row>
+                <ion-col text-center>
+                  <h2 center>{{item.name}}</h2>
+                </ion-col>
+              </ion-row>
+
+                <ion-row>
+              <ion-col>
+                <p center text-center>
+                  {{item.description}}
+                </p>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col>
+                <p text-left>
+                  {{item.getNextDate().format("DD MMM YYYY")}}
+                </p>
+              </ion-col>
+              <ion-col>
+                <p text-right>
+                  {{item.getTimeHour()}}:{{item.getTimeMinutes()}}
+                </p>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col>
+                <p>
+                  {{item.category.name}}
+                </p>
+              </ion-col>
+              <ion-col>
+
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col>
+                <p>
+                  {{item.getRepeteToString()}}
+                </p>
+              </ion-col>
+            </ion-row>
+
+          </ion-grid>
+        </ion-card-content>
+
+      </ion-card>
+    </ion-item>
+  </ion-list>
+
+  <ion-fab (click)="addTask($event)" center bottom>
+    <button ion-fab color="positive">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+
+</ion-content>
