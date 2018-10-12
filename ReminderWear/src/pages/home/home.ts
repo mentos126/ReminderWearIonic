@@ -61,4 +61,8 @@ export class HomePage {
       console.log("get id", id)
   }
 
+  addTask(){
+    this.navCtrl.push(LevelPage)
+  }
+
 }

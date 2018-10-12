@@ -9,7 +9,7 @@ import {
   SportTask
 } from './SportTask';
 
-
+import * as moment from 'moment' ;
 
 export class Tasker {
 
@@ -86,6 +86,57 @@ export class Tasker {
     return null;
   }
 
+  public static changeWithSaveIsActivatedNotification(t: Task): void {
+    t.setIsActivatedNotification(!t.getIsActivatedNotification());
+    this.serializeLists();
+  }
+
+
+  public static garbageCollectOld(): void {
+    this.unserializeLists();
+    let deletes: number[]= []
+    let now = moment();
+    for (let i = 0; i < this.listTasks.length; i++) {
+      // TODO voir comment faire avec moment
+      if (this.listTasks[i].getDateDeb() != null /*&& this.listTasks[i].getNextDate().compareTo(now) < 0*/) {
+        deletes.push(this.listTasks[i].getID());
+      }
+    }
+    for (let i of deletes) {
+      this.removeTaskByID(i);
+    }
+    this.serializeLists();
+  }
+
+
+  public static getTaskByID(id: number): Task {
+		for(let t of this.listTasks){
+			if( t.getID() ==  id) {
+				return t;
+			}
+		}
+    	return null;
+	}
+
+    public static getSportTaskByID(id: number): SportTask {
+        for(let t of this.listSportTasks) {
+            if( t.getID() ==  id) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+	public static getCategoryByName(catName: string): Category{
+    	for (let c of this.listCategories) {
+    		if (c.getName() === catName){
+    			return c;
+			}
+		}
+		return null;
+	}
+
+
   /*private static Tasker INSTANCE = null;
   public static synchronized Tasker getInstance(Context context)
   {
@@ -149,5 +200,6 @@ export class Tasker {
     Tasker.listSportTasks.push(t);
     return true;
   }
+
 
 }
