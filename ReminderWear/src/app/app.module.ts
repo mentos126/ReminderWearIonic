@@ -9,6 +9,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 
 // ADDED
 import { AddTaskPage } from '../pages/add-task/add-task';
+import { EditTaskPage } from '../pages/edit-task/edit-task';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -20,7 +21,8 @@ import { TaskerServiceProvider } from '../providers/tasker-service/tasker-servic
     AboutPage,
     HomePage,
     TabsPage,
-    AddTaskPage
+    AddTaskPage,
+    EditTaskPage
   ],
   imports: [
     BrowserModule,
@@ -32,7 +34,8 @@ import { TaskerServiceProvider } from '../providers/tasker-service/tasker-servic
     AboutPage,
     HomePage,
     TabsPage,
-    AddTaskPage
+    AddTaskPage,
+    EditTaskPage
   ],
   providers: [
     StatusBar,

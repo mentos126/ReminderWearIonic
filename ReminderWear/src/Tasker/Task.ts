@@ -174,10 +174,9 @@ export class Task {
                     break;
                 }
             }
-
             const today = moment().isoWeekday();
             if (today <= day) {
-                return moment().isoWeekday(day);
+                return moment().isoWeekday(day + 1);
             } else {
                 return moment().add(1, 'weeks').isoWeekday(day);
             }

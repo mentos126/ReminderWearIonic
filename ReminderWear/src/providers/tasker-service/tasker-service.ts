@@ -1,6 +1,12 @@
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Injectable } from '@angular/core';
-import {Task} from '../../Tasker/Task';
+import {
+  BehaviorSubject
+} from 'rxjs/BehaviorSubject';
+import {
+  Injectable
+} from '@angular/core';
+import {
+  Task
+} from '../../Tasker/Task';
 
 /*
   Generated class for the TaskerServiceProvider provider.
@@ -11,9 +17,9 @@ import {Task} from '../../Tasker/Task';
 @Injectable()
 export class TaskerServiceProvider {
 
-  private tasks = new BehaviorSubject<Task>(null);
-	currentTasks = this.tasks.asObservable();
+  private tasks = new BehaviorSubject < Task > (null);
+  currentTasks = this.tasks.asObservable();
 
-  constructor() { }
+  constructor() {}
 
 }

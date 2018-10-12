@@ -9,14 +9,21 @@ import {
   SportTask
 } from './SportTask';
 
-import * as moment from 'moment' ;
+import * as moment from 'moment';
 
 export class Tasker {
 
+  private static INSTANCE: Tasker = null;
   private static listCategories: Category[] = [];
   private static listTasks: Task[] = [];
   private static listSportTasks: SportTask[] = [];
-  // private static Context context;
+
+  public static getInstance(): Tasker {
+    if (Tasker.INSTANCE == null) {
+      Tasker.INSTANCE = new Tasker();
+    }
+    return Tasker.INSTANCE;
+  }
 
   public static get CATEGORY_NONE_TAG(): string {
     return 'Aucune';
@@ -94,67 +101,54 @@ export class Tasker {
 
   public static garbageCollectOld(): void {
     this.unserializeLists();
-    let deletes: number[]= []
-    let now = moment();
+    const deletes: number[] = [];
+    const now = moment();
     for (let i = 0; i < this.listTasks.length; i++) {
-      // TODO voir comment faire avec moment
-      if (this.listTasks[i].getDateDeb() != null /*&& this.listTasks[i].getNextDate().compareTo(now) < 0*/) {
+      if (this.listTasks[i].getDateDeb() != null && this.listTasks[i].getNextDate().isBefore(now)) {
         deletes.push(this.listTasks[i].getID());
       }
     }
-    for (let i of deletes) {
+    for (const i of deletes) {
       this.removeTaskByID(i);
     }
     this.serializeLists();
   }
 
-
   public static getTaskByID(id: number): Task {
-		for(let t of this.listTasks){
-			if( t.getID() ==  id) {
-				return t;
-			}
-		}
-    	return null;
-	}
-
-    public static getSportTaskByID(id: number): SportTask {
-        for(let t of this.listSportTasks) {
-            if( t.getID() ==  id) {
-                return t;
-            }
-        }
-        return null;
-    }
-
-	public static getCategoryByName(catName: string): Category{
-    	for (let c of this.listCategories) {
-    		if (c.getName() === catName){
-    			return c;
-			}
-		}
-		return null;
-	}
-
-
-  /*private static Tasker INSTANCE = null;
-  public static synchronized Tasker getInstance(Context context)
-  {
-      if (INSTANCE == null)
-      {
-          INSTANCE = new Tasker(context);
+    for (const t of this.listTasks) {
+      if (t.getID() === id) {
+        return t;
       }
-      return INSTANCE;
-  }*/
+    }
+    return null;
+  }
 
-  public Tasker( /* context: Context */ ) {
-    // this.context = context;
-    // if(INSTANCE == null){
-    Tasker.unserializeLists();
-    this.addCategory(new Category(Tasker.CATEGORY_NONE_TAG, 0, 0));
-    this.addCategory(new Category(Tasker.CATEGORY_SPORT_TAG, 0, 0));
-    Tasker.serializeLists();
-    // }
+
+  public static getSportTaskByID(id: number): SportTask {
+    for (const t of this.listSportTasks) {
+      if (t.getID() === id) {
+        return t;
+      }
+    }
+    return null;
+  }
+
+  public static getCategoryByName(catName: string): Category {
+    for (const c of this.listCategories) {
+      if (c.getName() === catName) {
+        return c;
+      }
+    }
+    return null;
+  }
+
+  public Tasker() {
+    if (Tasker.INSTANCE == null) {
+      Tasker.unserializeLists();
+      this.addCategory(new Category(Tasker.CATEGORY_NONE_TAG, 0, 0));
+      this.addCategory(new Category(Tasker.CATEGORY_SPORT_TAG, 0, 0));
+      Tasker.serializeLists();
+    }
   }
 
   public getListCategories(): Category[] {
@@ -174,7 +168,7 @@ export class Tasker {
     return true;
   }
   public editCategoryById(id: number, c: Category): void {
-    const cat = new Category('', 0, 0); // = getCategoryByID(id);
+    const cat = Tasker.getCategoryByID(id);
     cat.setColor(c.getColor());
     cat.setIcon(c.getIcon());
     cat.setName(c.getName());
