@@ -18,6 +18,7 @@ import {
   Category
 } from '../../Tasker/Category';
 import * as moment from 'moment';
+import { EditTaskPage } from '../edit-task/edit-task';
 
 
 @Component({
@@ -77,6 +78,9 @@ export class HomePage {
         if (item.getCategory().getName().toLowerCase().indexOf(val.toLowerCase()) > -1) {
           return true;
         }
+        if (item.getNextDate().format('DD MMM. YYYY').toLowerCase().indexOf(val.toLowerCase()) > -1) {
+          return true;
+        }
         return false;
       });
     }
@@ -84,7 +88,7 @@ export class HomePage {
   }
 
   onItemClicked() {
-    console.log('CARD');
+    this.navCtrl.push(EditTaskPage);
   }
 
   onChangeActivated(id: number) {
