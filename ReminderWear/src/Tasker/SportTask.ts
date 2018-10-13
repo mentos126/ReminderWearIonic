@@ -63,7 +63,6 @@ export class SportTask extends Task {
         this.duration = duration;
     }
 
-    // TODO a tester
     public caculateDistance(): void {
         let res = 0;
         for (let i = 0; i < this.listCoord.length; i++) {

@@ -1,42 +1,38 @@
 <ion-header>
 </ion-header>
 
-<ion-content padding>
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <div>
-          <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
-        </div>
-        <div text-right>
-          <ion-icon name="ios-arrow-up" (click)="sort()"></ion-icon>
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+<ion-content>
+  <ion-toolbar color="primary">
+      <div>
+        <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+      </div>
+      <div text-right>
+        <ion-icon name="ios-arrow-up" (click)="sort()"></ion-icon>
+      </div>
+  </ion-toolbar>
 
-  <ion-list>
+  <ion-list no-line>
     <ion-item *ngFor="let item of items">
 
-      <ion-card center (click)="onItemClicked()" >
+      <ion-card center (click)="onItemClicked()">
 
         <ion-item>
-          <ion-avatar  item-start>
+          <ion-avatar item-start>
             <img src="https://via.placeholder.com/30x30">
           </ion-avatar>
           <ion-toggle (ionChange)="onChangeActivated(item.getID())" checked="{{item.getIsActivatedNotification()}}"></ion-toggle>
         </ion-item>
 
         <ion-card-content>
-            <ion-grid>
+          <ion-grid>
 
-              <ion-row>
-                <ion-col text-center>
-                  <h2 center>{{item.name}}</h2>
-                </ion-col>
-              </ion-row>
+            <ion-row>
+              <ion-col text-center>
+                <h2 center>{{item.name}}</h2>
+              </ion-col>
+            </ion-row>
 
-                <ion-row>
+            <ion-row>
               <ion-col>
                 <p center text-center>
                   {{item.description}}
@@ -52,7 +48,8 @@
               </ion-col>
               <ion-col>
                 <p text-right>
-                  {{item.getTimeHour()}}:{{item.getTimeMinutes()}}
+                  <!-- TODO if minutes < 10 add '0' -->
+                  {{item.getTimeHour()}}:{{ item.getTimeMinutes()}}
                 </p>
               </ion-col>
             </ion-row>

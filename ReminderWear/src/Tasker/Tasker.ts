@@ -84,6 +84,10 @@ export class Tasker {
     return Tasker.listTasks;
   }
 
+  public static getListCategories(): Category[] {
+    return Tasker.listCategories;
+  }
+
   public static getCategoryByID(id: number): Category {
     for (const c of Tasker.listCategories) {
       if (c.getID() === id) {
@@ -142,6 +146,18 @@ export class Tasker {
     return null;
   }
 
+  public static sort(): void {
+    Tasker.listTasks.sort((n1, n2) => {
+      if (n1.getNextDate().isAfter(n2.getNextDate())) {
+        return 1;
+      }
+      if (n1.getNextDate().isBefore(n2.getNextDate())) {
+        return -1;
+      }
+      return 0;
+    });
+  }
+
   public Tasker() {
     if (Tasker.INSTANCE == null) {
       Tasker.unserializeLists();
@@ -151,9 +167,6 @@ export class Tasker {
     }
   }
 
-  public getListCategories(): Category[] {
-    return Tasker.listCategories;
-  }
   public setListCategories(listCategories: Category[]): void {
     Tasker.listCategories = listCategories;
   }
@@ -194,6 +207,5 @@ export class Tasker {
     Tasker.listSportTasks.push(t);
     return true;
   }
-
 
 }

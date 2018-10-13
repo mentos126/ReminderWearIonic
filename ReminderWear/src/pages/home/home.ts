@@ -42,7 +42,9 @@ export class HomePage {
     Tasker.getListTasks();
 
     const c = new Category('category XXX', 1, 2);
+    const c2 = new Category('category 2', 1, 2);
     t.addCategory(c);
+    t.addCategory(c2);
     t.addTask(new Task('tache 1', 'description', c, moment(), 30, 12, 30));
     let i = 0;
     while (i < 10000000) {

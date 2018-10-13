@@ -1,0 +1,18 @@
+{
+    "editor.multiCursorModifier": "ctrlCmd",
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.colorTheme": "Dracula",
+    "terminal.integrated.shell.windows": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "git.autofetch": true,
+    "files.autoSave": "off",
+    "team.showWelcomeMessage": false,
+    "sync.gist": "ddd0984888875fe5af69bd945a11f5ad",
+    "sync.quietSync": false,
+    "sync.askGistName": false,
+    "sync.removeExtensions": true,
+    "sync.syncExtensions": true,
+    "sync.autoDownload": false,
+    "sync.autoUpload": false,
+    "sync.forceDownload": false,
+    "window.zoomLevel": 0
+}
