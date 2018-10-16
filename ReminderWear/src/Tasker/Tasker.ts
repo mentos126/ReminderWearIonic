@@ -161,8 +161,8 @@ export class Tasker {
   public Tasker() {
     if (Tasker.INSTANCE == null) {
       Tasker.unserializeLists();
-      this.addCategory(new Category(Tasker.CATEGORY_NONE_TAG, 0, 0));
-      this.addCategory(new Category(Tasker.CATEGORY_SPORT_TAG, 0, 0));
+      this.addCategory(new Category(Tasker.CATEGORY_NONE_TAG, 'close', '#f53d3d'));
+      this.addCategory(new Category(Tasker.CATEGORY_SPORT_TAG, 'add', '#f5f5f5'));
       Tasker.serializeLists();
     }
   }

@@ -3,22 +3,28 @@
 
 <ion-content>
   <ion-toolbar color="primary">
-      <div>
-        <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
-      </div>
-      <div text-right>
-        <ion-icon name="ios-arrow-up" (click)="sort()"></ion-icon>
-      </div>
+     <ion-grid class="no-padding">
+       <ion-row>
+          <ion-col col-10>
+            <ion-searchbar color="light" (ionInput)="getItems($event)"></ion-searchbar>
+          </ion-col>
+          <ion-col col-2 class="sort-btn">
+            <div>
+              <ion-icon name="ios-swap" (click)="sort()"></ion-icon>
+            </div>
+          </ion-col>
+       </ion-row>
+     </ion-grid>
   </ion-toolbar>
 
   <ion-list no-line>
     <ion-item *ngFor="let item of items">
 
-      <ion-card center (click)="onItemClicked()">
+      <ion-card style.background-color="{{item.getCategory().getColor()}}" center (click)="onItemClicked()">
 
         <ion-item>
           <ion-avatar item-start>
-            <img src="https://via.placeholder.com/30x30">
+            <ion-icon name="{{item.getCategory().getIcon()}}"></ion-icon>
           </ion-avatar>
           <ion-toggle (ionChange)="onChangeActivated(item.getID())" checked="{{item.getIsActivatedNotification()}}"></ion-toggle>
         </ion-item>
@@ -48,8 +54,7 @@
               </ion-col>
               <ion-col>
                 <p text-right>
-                  <!-- TODO if minutes < 10 add '0' -->
-                  {{item.getTimeHour()}}:{{ item.getTimeMinutes()}}
+                  {{item.getTimeHour()}}:{{ item.getTimeMinutes() | number:'2.0-5'}}
                 </p>
               </ion-col>
             </ion-row>

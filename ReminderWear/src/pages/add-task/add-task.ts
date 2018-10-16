@@ -25,6 +25,7 @@ import {
 } from 'moment';
 
 import * as moment from 'moment';
+import { AddCategoryPage } from '../add-category/add-category';
 
 /**
  * Generated class for the AddTaskPage page.
@@ -53,10 +54,12 @@ export class AddTaskPage {
   private myHours = moment().add(5, 'minutes').format('HH:mm');
   private myPreventBefore = '10:30';
   private myDate = moment().add(5, 'minutes').format('YYYY-MM-DD');
-  private myCat: any = '';
+  private myCat = '';
+  private sport = Tasker.CATEGORY_SPORT_TAG;
+  private nothing = Tasker.CATEGORY_NONE_TAG;
   private myCats: any = Tasker.getListCategories();
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private toastCtrl: ToastController) {}
+  constructor(public navCtrl: NavController, public navParams: NavParams, private toastCtrl: ToastController) { }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad AddTaskPage');
@@ -64,6 +67,27 @@ export class AddTaskPage {
 
   cancel() {
     this.navCtrl.pop();
+  }
+
+  addCategory(): void {
+    this.navCtrl.push(AddCategoryPage);
+  }
+
+  editCategory(): void {
+    console.log('editCategory');
+  }
+
+  lunchToast(message: string): void {
+    const toast = this.toastCtrl.create({
+      message: message,
+      duration: 3000
+    });
+    toast.onDidDismiss(this.dismissHandler);
+    toast.present();
+  }
+
+  private dismissHandler() {
+    console.log('Toast onDidDismiss()');
   }
 
   save() {
@@ -75,67 +99,47 @@ export class AddTaskPage {
     const myDateMoment: Moment = moment(this.myDate, 'YYYY-MM-DD');
     const myRepetes = [this.monday, this.tuesday, this.wednesday, this.thursday, this.friday, this.saturday, this.sunday];
 
-    console.log('mycat', this.myCat);
+    console.log(this.myCats);
+    // TODO get la bonne catégory
+
+    if (this.myCat === '' || this.myCat === this.sport || this.myCat === this.nothing) {
+      this.myCat = '';
+    }
 
     if (this.myTitle !== '') {
       if (this.myDescription !== '') {
-        if (this.myCats !== '') {
+        if (this.myCat !== '') {
           if (this.isChecked) {
             let isRealyChecked = false;
             for (const i of myRepetes) {
               isRealyChecked = isRealyChecked || i;
             }
             if (isRealyChecked) {
-              newTask = new Task(this.myTitle, this.myDescription, new Category('', 0, 2),
+              newTask = new Task(this.myTitle, this.myDescription, new Category('', 'close', '#f53d3d'),
                 null, myPreventBeforeInt, myHoursInt, myMinutesInt, myRepetes
               );
               success = true;
             } else {
-              const toast = this.toastCtrl.create({
-                message: 'Selectionné une répétition.',
-                duration: 3000
-              });
-              toast.onDidDismiss(this.dismissHandler);
-              toast.present();
+              this.lunchToast('Selectionné une répétition.');
             }
           } else {
             if (myDateMoment.isAfter(moment())) {
-              newTask = new Task(this.myTitle, this.myDescription, new Category('', 0, 2),
+              newTask = new Task(this.myTitle, this.myDescription, new Category('', 'add', '#f53d3d'),
                 myDateMoment, myPreventBeforeInt, myHoursInt, myMinutesInt
               );
               success = true;
             } else {
-              const toast = this.toastCtrl.create({
-                message: 'Selectionné une date ultérieur à aujourd\'hui.',
-                duration: 3000
-              });
-              toast.onDidDismiss(this.dismissHandler);
-              toast.present();
+              this.lunchToast('Selectionné une date ultérieur à aujourd\'hui.');
             }
           }
         } else {
-          const toast = this.toastCtrl.create({
-            message: 'Selectionné une catégory.',
-            duration: 3000
-          });
-          toast.onDidDismiss(this.dismissHandler);
-          toast.present();
+          this.lunchToast('Selectionné une catégory.');
         }
       } else {
-        const toast = this.toastCtrl.create({
-          message: 'Saisir une description.',
-          duration: 3000
-        });
-        toast.onDidDismiss(this.dismissHandler);
-        toast.present();
+        this.lunchToast('Saisir une description.');
       }
     } else {
-      const toast = this.toastCtrl.create({
-        message: 'Saisir un titre.',
-        duration: 3000
-      });
-      toast.onDidDismiss(this.dismissHandler);
-      toast.present();
+      this.lunchToast('Saisir un titre.');
     }
 
     if (success) {
@@ -145,10 +149,6 @@ export class AddTaskPage {
       this.navCtrl.pop();
     }
 
-  }
-
-  private dismissHandler() {
-    console.log('Toast onDidDismiss()');
   }
 
 }

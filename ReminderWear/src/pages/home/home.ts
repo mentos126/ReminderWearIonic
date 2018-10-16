@@ -41,8 +41,8 @@ export class HomePage {
     Tasker.unserializeLists();
     Tasker.getListTasks();
 
-    const c = new Category('category XXX', 1, 2);
-    const c2 = new Category('category 2', 1, 2);
+    const c = new Category('category XXX', 'close', '#abcdef');
+    const c2 = new Category('category 2', 'add', '#f5f5f5');
     t.addCategory(c);
     t.addCategory(c2);
     t.addTask(new Task('tache 1', 'description', c, moment(), 30, 12, 30));
@@ -55,7 +55,7 @@ export class HomePage {
     while (i < 10000000) {
       i++;
     }
-    t.addTask(new Task('tache 3', 'description', c, moment(), 30, 12, 30));
+    t.addTask(new Task('tache 3', 'description', c2, moment(), 30, 12, 30));
     i = 0;
     while (i < 10000000) {
       i++;

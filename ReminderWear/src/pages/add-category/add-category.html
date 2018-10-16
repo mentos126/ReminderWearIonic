@@ -1,0 +1,78 @@
+<!--
+  Generated template for the AddCategoryPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+</ion-header>
+
+<ion-content>
+
+  <ion-toolbar color="primary">
+    <ion-grid class="no-padding">
+      <ion-row>
+        <ion-col class="cancel-btn">
+          <div>
+            <ion-icon color="danger" name="ios-close" (click)="cancel()"></ion-icon>
+          </div>
+        </ion-col>
+        <!-- ion-col text-right>
+                <ion-icon name="ios-checkmark" (click)="validate()"></ion-icon>
+            </ion-col -->
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+
+  <ion-list no-line>
+
+    <ion-item>
+      <ion-label>Titre:</ion-label>
+      <ion-input type="text" [(ngModel)]="myTitle" placeholder="titre"></ion-input>
+    </ion-item>
+
+    <!--
+  TODO select icone
+ -->
+
+    <ion-item>
+      <ion-label>Icône:</ion-label>
+      <ion-select [(ngModel)]="myCat" multiple="false" interface="popover">
+        <ion-option *ngFor="let cat of myCats" [value]="cat.getName()" color="cat.getColor()">
+          <ion-icon name="ios-close"></ion-icon>
+          {{cat.getName()}}
+        </ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <p-colorPicker [(ngModel)]="color"></p-colorPicker>
+    </ion-item>
+
+  </ion-list>
+
+  <div class="submit-btn">
+    <button (click)="save()" ion-button color="secondary" round>Validez</button>
+  </div>
+
+  <hr>
+  <hr>
+  <hr>
+
+  <h3 class="first">Inline</h3>
+  <p-colorPicker [(ngModel)]="color1" [inline]="true"></p-colorPicker>
+
+  <p style="margin-top:.5em">Selected Color:
+    <span style="display:inline-block;width:32px;height:32px;vertical-align:middle" [style.backgroundColor]="color1">
+    </span> {{color1}}
+  </p>
+
+  <h3>Overlay</h3>
+  <p-colorPicker [(ngModel)]="color2"></p-colorPicker>
+
+  <p style="margin-top:.5em">Selected Color:
+    <span [ngStyle]="{'color':color2}">{{color2}}</span>
+  </p>
+
+
+</ion-content>

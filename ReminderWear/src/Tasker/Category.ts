@@ -2,10 +2,10 @@ export class Category {
 
     private ID: number;
     private name: string;
-    private icon: number;
-    private color: number;
+    private icon: string;
+    private color: string;
 
-    constructor(name: string, icon: number, color: number) {
+    constructor(name: string, icon: string, color: string) {
         this.ID = new Date().getTime() / 1000;
         this.name = name;
         this.icon = icon;
@@ -23,17 +23,17 @@ export class Category {
         this.name = name;
     }
 
-    public getIcon(): number {
+    public getIcon(): string {
         return this.icon;
     }
-    public setIcon(icon: number): void {
+    public setIcon(icon: string): void {
         this.icon = icon;
     }
 
-    public getColor(): number {
+    public getColor(): string {
         return this.color;
     }
-    public setColor(color: number): void {
+    public setColor(color: string): void {
         this.color = color;
     }
 

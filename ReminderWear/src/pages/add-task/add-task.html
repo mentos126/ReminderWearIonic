@@ -10,12 +10,18 @@
 <ion-content>
 
   <ion-toolbar color="primary">
-          <ion-col>
+    <ion-grid class="no-padding">
+      <ion-row>
+        <ion-col class="cancel-btn">
+          <div>
             <ion-icon color="danger" name="ios-close" (click)="cancel()"></ion-icon>
-          </ion-col>
-          <!-- ion-col text-right>
+          </div>
+        </ion-col>
+        <!-- ion-col text-right>
               <ion-icon name="ios-checkmark" (click)="validate()"></ion-icon>
           </ion-col -->
+      </ion-row>
+    </ion-grid>
   </ion-toolbar>
 
   <ion-list no-line>
@@ -32,7 +38,7 @@
 
     <ion-item>
       <ion-label>Heure:</ion-label>
-      <ion-datetime displayFormat="HH:mm" [(ngModel)]="myHours" ></ion-datetime>
+      <ion-datetime displayFormat="HH:mm" [(ngModel)]="myHours"></ion-datetime>
     </ion-item>
 
     <ion-item>
@@ -43,8 +49,15 @@
           {{cat.getName()}}
         </ion-option>
       </ion-select>
-      <!--ion-icon name="ios-add" (click)="addCategory()"></ion-icon>
-      <ion-icon-- name="ios-brush" (click)="editCategory()"></ion-icon-->
+    </ion-item>
+
+    <ion-item>
+      <div>
+        <ion-icon name="ios-add" (click)="addCategory()"></ion-icon>
+      </div>
+      <div *ngIf="(myCat !== '') && (myCat !== sport) && (myCat !== nothing)">
+        <ion-icon name="ios-brush" (click)="editCategory()"></ion-icon>
+      </div>
     </ion-item>
 
     <ion-item>
@@ -58,43 +71,34 @@
     </ion-item>
 
     <ion-item *ngIf="isChecked">
-      <ion-row>
-        <div>
-          <ion-label>Lun.</ion-label>
-          <ion-checkbox [(ngModel)]="monday"></ion-checkbox>
-        </div>
+      <ion-label>Lun.
+        <ion-checkbox [(ngModel)]="monday"></ion-checkbox>
+      </ion-label>
 
-        <div>
-          <ion-label>Mar.</ion-label>
-          <ion-checkbox [(ngModel)]="tuesday"></ion-checkbox>
-        </div>
+      <ion-label>Mar.
+        <ion-checkbox [(ngModel)]="tuesday"></ion-checkbox>
+      </ion-label>
 
-        <div>
-          <ion-label>Mer.</ion-label>
-          <ion-checkbox [(ngModel)]="wednesday"></ion-checkbox>
-        </div>
+      <ion-label>Mer.
+        <ion-checkbox [(ngModel)]="wednesday"></ion-checkbox>
+      </ion-label>
 
-        <div>
-          <ion-label>Jeu.</ion-label>
-          <ion-checkbox [(ngModel)]="thursday"></ion-checkbox>
-        </div>
+      <ion-label>Jeu.
+        <ion-checkbox [(ngModel)]="thursday"></ion-checkbox>
+      </ion-label>
 
-        <div>
-          <ion-label>Ven.</ion-label>
-          <ion-checkbox [(ngModel)]="friday"></ion-checkbox>
-        </div>
+      <ion-label>Ven.
+        <ion-checkbox [(ngModel)]="friday"></ion-checkbox>
+      </ion-label>
 
-        <div>
-          <ion-label>Sam.</ion-label>
-          <ion-checkbox [(ngModel)]="saturday"></ion-checkbox>
-        </div>
+      <ion-label>Sam.
+        <ion-checkbox [(ngModel)]="saturday"></ion-checkbox>
+      </ion-label>
 
-        <div>
-          <ion-label>Dim.</ion-label>
-          <ion-checkbox [(ngModel)]="sunday"></ion-checkbox>
-        </div>
+      <ion-label>Dim.
+        <ion-checkbox [(ngModel)]="sunday"></ion-checkbox>
+      </ion-label>
 
-      </ion-row>
     </ion-item>
 
     <ion-item *ngIf="!isChecked">
@@ -105,6 +109,9 @@
 
   </ion-list>
 
-  <button (click)="save()" ion-button color="secondary" round>Validez</button>
+  <div class="submit-btn">
+    <button (click)="save()" ion-button color="secondary" round >Validez</button>
+  </div>
 
 </ion-content>
+
