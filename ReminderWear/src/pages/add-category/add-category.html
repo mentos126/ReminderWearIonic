@@ -37,42 +37,36 @@
 
     <ion-item>
       <ion-label>Icône:</ion-label>
-      <ion-select [(ngModel)]="myCat" multiple="false" interface="popover">
-        <ion-option *ngFor="let cat of myCats" [value]="cat.getName()" color="cat.getColor()">
-          <ion-icon name="ios-close"></ion-icon>
-          {{cat.getName()}}
+      <ion-select [(ngModel)]="myIcon" multiple="false" interface="popover">
+        <ion-option *ngFor="let icon of listIcons" [value]="icon">
+          <ion-icon name="{{icon}}"></ion-icon>
+          {{icon}}
         </ion-option>
       </ion-select>
     </ion-item>
 
     <ion-item>
-      <p-colorPicker [(ngModel)]="color"></p-colorPicker>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            Couleur:
+            <!-- <ion-label>Couleur:</ion-label> -->
+          </ion-col>
+          <ion-col>
+            <p-colorPicker [(ngModel)]="color1"></p-colorPicker>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </ion-item>
-
   </ion-list>
+
+  <div>
+    <p-colorPicker class="color-picker" [(ngModel)]="color1" [inline]="true"></p-colorPicker>
+  </div>
+
 
   <div class="submit-btn">
     <button (click)="save()" ion-button color="secondary" round>Validez</button>
   </div>
-
-  <hr>
-  <hr>
-  <hr>
-
-  <h3 class="first">Inline</h3>
-  <p-colorPicker [(ngModel)]="color1" [inline]="true"></p-colorPicker>
-
-  <p style="margin-top:.5em">Selected Color:
-    <span style="display:inline-block;width:32px;height:32px;vertical-align:middle" [style.backgroundColor]="color1">
-    </span> {{color1}}
-  </p>
-
-  <h3>Overlay</h3>
-  <p-colorPicker [(ngModel)]="color2"></p-colorPicker>
-
-  <p style="margin-top:.5em">Selected Color:
-    <span [ngStyle]="{'color':color2}">{{color2}}</span>
-  </p>
-
 
 </ion-content>

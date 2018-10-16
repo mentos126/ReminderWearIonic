@@ -12,7 +12,6 @@ import { AddTaskPage } from '../pages/add-task/add-task';
 import { EditTaskPage } from '../pages/edit-task/edit-task';
 import { AddCategoryPage } from '../pages/add-category/add-category';
 import { EditCategoryPage } from '../pages/edit-category/edit-category';
-
 import {ColorPickerModule} from 'primeng/colorpicker';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
