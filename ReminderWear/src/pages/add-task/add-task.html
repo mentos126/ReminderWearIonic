@@ -14,7 +14,7 @@
       <ion-row>
         <ion-col class="cancel-btn">
           <div>
-            <ion-icon color="danger" name="ios-close" (click)="cancel()"></ion-icon>
+            <ion-icon color="light" name="ios-close" (click)="cancel()"></ion-icon>
           </div>
         </ion-col>
         <!-- ion-col text-right>
@@ -41,10 +41,12 @@
       <ion-datetime displayFormat="HH:mm" [(ngModel)]="myHours"></ion-datetime>
     </ion-item>
 
+
+    <!-- TODO faire en sorte que les icones et les couleur soit affiché -->
     <ion-item>
       <ion-label>Catégorie:</ion-label>
       <ion-select [(ngModel)]="myCat" multiple="false" interface="popover">
-        <ion-option *ngFor="let cat of myCats" [value]="cat.getName()" color="cat.getColor()">
+        <ion-option *ngFor="let cat of myCats"   [selected]="cat === myCat"  [value]="cat.getName()" color="cat.getColor()">
           <ion-icon name="ios-close"></ion-icon>
           {{cat.getName()}}
         </ion-option>
@@ -71,6 +73,9 @@
     </ion-item>
 
     <ion-item *ngIf="isChecked">
+
+      <!-- TODO mauvaise manipulation des checbox toujours la meme qui est coché -->
+
       <ion-label>Lun.
         <ion-checkbox [(ngModel)]="monday"></ion-checkbox>
       </ion-label>

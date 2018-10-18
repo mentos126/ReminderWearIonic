@@ -19,6 +19,7 @@ import {
 } from '../../Tasker/Category';
 import * as moment from 'moment';
 import { EditTaskPage } from '../edit-task/edit-task';
+import { TaskerServiceProvider } from '../../providers/tasker-service/tasker-service';
 
 
 @Component({
@@ -30,10 +31,18 @@ export class HomePage {
   searchQuery = '';
   items: Task[];
   orderBy = false;
+  data: Task;
 
-  constructor(public navCtrl: NavController) {
+  constructor(public navCtrl: NavController, private taskService: TaskerServiceProvider) {
     this.initializeItems();
     this.sort();
+  }
+
+
+  ionViewDidLoad() {
+    this.taskService
+      .currentTask
+      .subscribe(res => this.data = res);
   }
 
   initializeItems() {
@@ -41,8 +50,9 @@ export class HomePage {
     Tasker.unserializeLists();
     Tasker.getListTasks();
 
-    const c = new Category('category XXX', 'close', '#abcdef');
-    const c2 = new Category('category 2', 'add', '#f5f5f5');
+    // TODO REMOVE FROM
+    const c = new Category('Aucune', 'ion-ios-add-circle', '#abcdef');
+    const c2 = new Category('category 2', 'ion-ios-alarm', '#f5f5f5');
     t.addCategory(c);
     t.addCategory(c2);
     t.addTask(new Task('tache 1', 'description', c, moment(), 30, 12, 30));
@@ -62,6 +72,8 @@ export class HomePage {
     }
     t.addTask(new Task('tache 4', 'description', c, moment(), 30, 12, 30));
     this.items = Tasker.getListTasks();
+    // TODO END
+
   }
 
   getItems(ev: any) {
@@ -89,7 +101,8 @@ export class HomePage {
 
   }
 
-  onItemClicked() {
+  onItemClicked(id: number) {
+    this.taskService.changeTask(Tasker.getTaskByID(id));
     this.navCtrl.push(EditTaskPage);
   }
 

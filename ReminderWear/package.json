@@ -11,7 +11,7 @@
     "lint": "ionic-app-scripts lint"
   },
   "dependencies": {
-    "@angular/animations": "5.2.11",
+    "@angular/animations": "^5.2.11",
     "@angular/common": "5.2.11",
     "@angular/compiler": "5.2.11",
     "@angular/compiler-cli": "5.2.11",
@@ -25,6 +25,7 @@
     "@ionic-native/status-bar": "~4.15.0",
     "@ionic/pro": "2.0.3",
     "@ionic/storage": "2.2.0",
+    "font-awesome": "^4.7.0",
     "ionic-angular": "3.9.2",
     "ionicons": "3.0.0",
     "moment": "^2.22.2",

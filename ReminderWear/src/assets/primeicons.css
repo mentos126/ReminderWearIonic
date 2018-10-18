@@ -8,7 +8,6 @@
 
 .pi {
     font-family: 'primeicons';
-    speak: none;
     font-style: normal;
     font-weight: normal;
     font-variant: normal;
@@ -346,7 +345,7 @@
 .pi-refresh:before {
     content: "\e938";
 }
-  
+
 .pi-user:before {
     content: "\e939";
 }

@@ -7,6 +7,7 @@ import {
 import {
   Task
 } from '../../Tasker/Task';
+import { Category } from '../../Tasker/Category';
 
 /*
   Generated class for the TaskerServiceProvider provider.
@@ -17,9 +18,20 @@ import {
 @Injectable()
 export class TaskerServiceProvider {
 
-  private tasks = new BehaviorSubject < Task > (null);
-  currentTasks = this.tasks.asObservable();
+  private task = new BehaviorSubject < Task > (null);
+  currentTask = this.task.asObservable();
+
+  private category = new BehaviorSubject < Category > (null);
+  currentCategory = this.category.asObservable();
 
   constructor() {}
+
+  changeTask(t: Task) {
+    this.task.next(t);
+  }
+
+  changeCategory(c: Category) {
+    this.category.next(c);
+  }
 
 }

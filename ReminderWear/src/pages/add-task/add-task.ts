@@ -17,15 +17,12 @@ import {
 } from '../../Tasker/Tasker';
 
 import {
-  Category
-} from '../../Tasker/Category';
-
-import {
   Moment
 } from 'moment';
 
 import * as moment from 'moment';
 import { AddCategoryPage } from '../add-category/add-category';
+import { EditCategoryPage } from '../edit-category/edit-category';
 
 /**
  * Generated class for the AddTaskPage page.
@@ -54,7 +51,7 @@ export class AddTaskPage {
   private myHours = moment().add(5, 'minutes').format('HH:mm');
   private myPreventBefore = '10:30';
   private myDate = moment().add(5, 'minutes').format('YYYY-MM-DD');
-  private myCat = '';
+  private myCat = Tasker.CATEGORY_NONE_TAG;
   private sport = Tasker.CATEGORY_SPORT_TAG;
   private nothing = Tasker.CATEGORY_NONE_TAG;
   private myCats: any = Tasker.getListCategories();
@@ -62,7 +59,7 @@ export class AddTaskPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, private toastCtrl: ToastController) { }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad AddTaskPage');
+    console.log(this.myCats);
   }
 
   cancel() {
@@ -74,7 +71,7 @@ export class AddTaskPage {
   }
 
   editCategory(): void {
-    console.log('editCategory');
+    this.navCtrl.push(EditCategoryPage);
   }
 
   lunchToast(message: string): void {
@@ -97,10 +94,9 @@ export class AddTaskPage {
     const myHoursInt: number = parseInt(this.myHours.substring(0, this.myHours.indexOf(':')), 10);
     const myMinutesInt: number = parseInt(this.myHours.substring(this.myHours.indexOf(':') + 1), 10);
     const myDateMoment: Moment = moment(this.myDate, 'YYYY-MM-DD');
+    myDateMoment.minutes(myMinutesInt);
+    myDateMoment.hours(myHoursInt);
     const myRepetes = [this.monday, this.tuesday, this.wednesday, this.thursday, this.friday, this.saturday, this.sunday];
-
-    console.log(this.myCats);
-    // TODO get la bonne catégory
 
     if (this.myCat === '' || this.myCat === this.sport || this.myCat === this.nothing) {
       this.myCat = '';
@@ -109,13 +105,14 @@ export class AddTaskPage {
     if (this.myTitle !== '') {
       if (this.myDescription !== '') {
         if (this.myCat !== '') {
+          const finalyCat = Tasker.getCategoryByName(this.myCat);
           if (this.isChecked) {
             let isRealyChecked = false;
             for (const i of myRepetes) {
               isRealyChecked = isRealyChecked || i;
             }
             if (isRealyChecked) {
-              newTask = new Task(this.myTitle, this.myDescription, new Category('', 'close', '#f53d3d'),
+              newTask = new Task(this.myTitle, this.myDescription, finalyCat,
                 null, myPreventBeforeInt, myHoursInt, myMinutesInt, myRepetes
               );
               success = true;
@@ -124,7 +121,7 @@ export class AddTaskPage {
             }
           } else {
             if (myDateMoment.isAfter(moment())) {
-              newTask = new Task(this.myTitle, this.myDescription, new Category('', 'add', '#f53d3d'),
+              newTask = new Task(this.myTitle, this.myDescription, finalyCat,
                 myDateMoment, myPreventBeforeInt, myHoursInt, myMinutesInt
               );
               success = true;

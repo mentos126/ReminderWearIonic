@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
-import { AboutPage } from '../pages/about/about';
+import { SportPage } from '../pages/sport/sport';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
 
@@ -22,7 +22,7 @@ import { TaskerServiceProvider } from '../providers/tasker-service/tasker-servic
 @NgModule({
   declarations: [
     MyApp,
-    AboutPage,
+    SportPage,
     HomePage,
     TabsPage,
     AddTaskPage,
@@ -39,7 +39,7 @@ import { TaskerServiceProvider } from '../providers/tasker-service/tasker-servic
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    AboutPage,
+    SportPage,
     HomePage,
     TabsPage,
     AddTaskPage,
