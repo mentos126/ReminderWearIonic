@@ -39,10 +39,15 @@
   </ion-card>
 
   <ion-card>
-    <ion-card-content></ion-card-content>
+    <ion-card-content>AIzaSyBvhT0KdxmiUCnGPVVkhV3PYA1up8tbCg4</ion-card-content>
   </ion-card>
+
+  ionic cordova plugin add cordova-plugin-googlemaps \  --variable API_KEY_FOR_ANDROID="(AIzaSyBvhT0KdxmiUCnGPVVkhV3PYA1up8tbCg4)" \ --variable API_KEY_FOR_IOS="(AIzaSyBvhT0KdxmiUCnGPVVkhV3PYA1up8tbCg4)"
+
   <ion-card>
-    <ion-card-content></ion-card-content>
+    <ion-card-content>
+      <div id="map_canvas"></div>
+    </ion-card-content>
   </ion-card>
 
 </ion-content>

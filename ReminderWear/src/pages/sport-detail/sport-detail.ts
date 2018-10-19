@@ -17,8 +17,16 @@ import {
 import {
   SportTask
 } from '../../Tasker/SportTask';
-import { Moment } from 'moment';
-import * as moment from 'moment';
+import {
+  GoogleMaps,
+  GoogleMap,
+  GoogleMapsEvent,
+  GoogleMapOptions,
+  // CameraPosition,
+  // MarkerOptions,
+  Marker,
+  Environment
+} from '@ionic-native/google-maps';
 
 /**
  * Generated class for the SportDetailPage page.
@@ -42,6 +50,8 @@ export class SportDetailPage implements OnInit, OnDestroy {
   private distance: number;
   private duration: number;
   private durationMoment: string;
+
+  private map: GoogleMap;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private taskService: TaskerServiceProvider) {}
 
@@ -69,6 +79,46 @@ export class SportDetailPage implements OnInit, OnDestroy {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad SportDetailPage');
+    this.loadMap();
+    console.log(this.steps, this.heart, this.distance, this.durationMoment);
+  }
+
+  loadMap() {
+
+    // This code is necessary for browser
+    Environment.setEnv({
+      'API_KEY_FOR_BROWSER_RELEASE': 'AIzaSyAy4_amm__DjUVzEpIo2lnlnM4cIlUeajU',
+      'API_KEY_FOR_BROWSER_DEBUG': 'AIzaSyAy4_amm__DjUVzEpIo2lnlnM4cIlUeajU'
+    });
+
+    const mapOptions: GoogleMapOptions = {
+      camera: {
+         target: {
+           lat: 43.0741904,
+           lng: -89.3809802
+         },
+         zoom: 18,
+         tilt: 30
+       }
+    };
+
+    // ionic cordova plugin add cordova-plugin-googlemaps --variable API_KEY_FOR_ANDROID="(AIzaSyAy4_amm__DjUVzEpIo2lnlnM4cIlUeajU)"
+    // --variable API_KEY_FOR_IOS="(AIzaSyAy4_amm__DjUVzEpIo2lnlnM4cIlUeajU)"
+
+    this.map = GoogleMaps.create('map_canvas', mapOptions);
+
+    const marker: Marker = this.map.addMarkerSync({
+      title: 'Ionic',
+      icon: 'blue',
+      animation: 'DROP',
+      position: {
+        lat: 43.0741904,
+        lng: -89.3809802
+      }
+    });
+    marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
+      alert('clicked');
+    });
   }
 
 }

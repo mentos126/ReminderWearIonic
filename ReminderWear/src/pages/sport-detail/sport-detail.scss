@@ -1,3 +1,9 @@
-page-sport-detail {
+ion-app._gmaps_cdv_ .nav-decor {
+  background-color: transparent !important;
+}
 
+page-sport-detail {
+    #map {
+      height: 100%;
+    }
 }
