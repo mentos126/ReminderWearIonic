@@ -1,7 +1,8 @@
 import {
   Component,
   OnInit,
-  OnDestroy
+  OnDestroy,
+  ViewChild
 } from '@angular/core';
 import {
   IonicPage,
@@ -17,16 +18,7 @@ import {
 import {
   SportTask
 } from '../../Tasker/SportTask';
-import {
-  GoogleMaps,
-  GoogleMap,
-  GoogleMapsEvent,
-  GoogleMapOptions,
-  // CameraPosition,
-  // MarkerOptions,
-  Marker,
-  Environment
-} from '@ionic-native/google-maps';
+import {} from '@types/googlemaps';
 
 /**
  * Generated class for the SportDetailPage page.
@@ -42,6 +34,9 @@ import {
 })
 export class SportDetailPage implements OnInit, OnDestroy {
 
+  @ViewChild('map') mapElement;
+  map: any;
+
   private subscription: ISubscription;
   private mySportTask: SportTask;
 
@@ -51,11 +46,11 @@ export class SportDetailPage implements OnInit, OnDestroy {
   private duration: number;
   private durationMoment: string;
 
-  private map: GoogleMap;
-
   constructor(public navCtrl: NavController, public navParams: NavParams, private taskService: TaskerServiceProvider) {}
 
   ngOnInit(): void {
+
+    this.initMap();
 
     this.subscription = this.taskService
       .currentSportTask
@@ -66,10 +61,10 @@ export class SportDetailPage implements OnInit, OnDestroy {
         this.heart = this.mySportTask.getHeart();
         this.distance = this.mySportTask.getDistance();
         this.duration = this.mySportTask.getDuration();
-        const s = Math.floor( this.duration  % 60 );
-        const m = Math.floor( (this.duration  / 60) % 60 );
-        const h = Math.floor( (this.duration / ( 60 * 60)) % 24 );
-        this.durationMoment =  + h + ' heures ' + m + ' minutes ' + s  + ' secondes';
+        const s = Math.floor(this.duration % 60);
+        const m = Math.floor((this.duration / 60) % 60);
+        const h = Math.floor((this.duration / (60 * 60)) % 24);
+        this.durationMoment = +h + ' heures ' + m + ' minutes ' + s + ' secondes';
       });
   }
 
@@ -78,47 +73,25 @@ export class SportDetailPage implements OnInit, OnDestroy {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad SportDetailPage');
-    this.loadMap();
     console.log(this.steps, this.heart, this.distance, this.durationMoment);
   }
-
-  loadMap() {
-
-    // This code is necessary for browser
-    Environment.setEnv({
-      'API_KEY_FOR_BROWSER_RELEASE': 'AIzaSyAy4_amm__DjUVzEpIo2lnlnM4cIlUeajU',
-      'API_KEY_FOR_BROWSER_DEBUG': 'AIzaSyAy4_amm__DjUVzEpIo2lnlnM4cIlUeajU'
-    });
-
-    const mapOptions: GoogleMapOptions = {
-      camera: {
-         target: {
-           lat: 43.0741904,
-           lng: -89.3809802
-         },
-         zoom: 18,
-         tilt: 30
-       }
+  initMap(): void {
+    const coords = new google.maps.LatLng(45, 100);
+    const mapOptions: google.maps.MapOptions = {
+      center: coords,
+      zoom: 8,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
-    // ionic cordova plugin add cordova-plugin-googlemaps --variable API_KEY_FOR_ANDROID="(AIzaSyAy4_amm__DjUVzEpIo2lnlnM4cIlUeajU)"
-    // --variable API_KEY_FOR_IOS="(AIzaSyAy4_amm__DjUVzEpIo2lnlnM4cIlUeajU)"
+    this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
 
-    this.map = GoogleMaps.create('map_canvas', mapOptions);
+    const marker: google.maps.Marker = new google.maps.Marker({
+      map: this.map,
+      position: coords
+    });
 
-    const marker: Marker = this.map.addMarkerSync({
-      title: 'Ionic',
-      icon: 'blue',
-      animation: 'DROP',
-      position: {
-        lat: 43.0741904,
-        lng: -89.3809802
-      }
-    });
-    marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
-      alert('clicked');
-    });
+    console.log(marker);
   }
+
 
 }

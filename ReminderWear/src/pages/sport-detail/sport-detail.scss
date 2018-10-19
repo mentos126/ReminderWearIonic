@@ -1,9 +1,12 @@
-ion-app._gmaps_cdv_ .nav-decor {
-  background-color: transparent !important;
-}
-
 page-sport-detail {
-    #map {
-      height: 100%;
+
+    div{
+
+      #map {
+        background-color: transparent !important;
+        height: 50% !important;
+      }
     }
+
+
 }

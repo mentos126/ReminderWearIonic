@@ -16,8 +16,6 @@ import { SportDetailPage } from '../pages/sport-detail/sport-detail';
 import { ModalCategoryPage } from '../pages/modal-category/modal-category';
 import { ModalIconPage } from '../pages/modal-icon/modal-icon';
 
-import { GoogleMaps } from '@ionic-native/google-maps';
-
 import {ColorPickerModule} from 'primeng/colorpicker';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -63,8 +61,8 @@ import { TaskerServiceProvider } from '../providers/tasker-service/tasker-servic
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    TaskerServiceProvider,
-    GoogleMaps
+    TaskerServiceProvider
+    // ,GoogleMaps
   ]
 })
 export class AppModule {}
