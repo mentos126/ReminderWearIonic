@@ -1,33 +1,27 @@
 import {
-  Component
+  Component,
+  OnInit,
+  OnDestroy
 } from '@angular/core';
 
 import {
   IonicPage,
   NavController,
   NavParams,
-  ToastController
+  ToastController,
+  ModalController
 } from 'ionic-angular';
 
-import {
-  TaskerServiceProvider
-} from '../../providers/tasker-service/tasker-service';
-
-import {
-  Task
-} from '../../Tasker/Task';
-
-import {
-  Tasker
-} from '../../Tasker/Tasker';
-
-import {
-  Moment
-} from 'moment';
-
+import {TaskerServiceProvider} from '../../providers/tasker-service/tasker-service';
+import {Task} from '../../Tasker/Task';
+import {Tasker} from '../../Tasker/Tasker';
+import {Moment} from 'moment';
 import * as moment from 'moment';
-import { AddCategoryPage } from '../add-category/add-category';
+import {AddCategoryPage} from '../add-category/add-category';
 import { EditCategoryPage } from '../edit-category/edit-category';
+import { ISubscription } from 'rxjs/Subscription';
+import { ModalCategoryPage } from '../modal-category/modal-category';
+import { Category } from '../../Tasker/Category';
 
 /**
  * Generated class for the EditTaskPage page.
@@ -41,13 +35,15 @@ import { EditCategoryPage } from '../edit-category/edit-category';
   selector: 'page-edit-task',
   templateUrl: 'edit-task.html',
 })
-export class EditTaskPage {
+export class EditTaskPage implements OnInit, OnDestroy {
 
   private recevTask: Task;
+  private subscribe: ISubscription;
 
   private myTitle: string;
   private myDescription: string;
   private myCat: string;
+  private myCategory: Category;
   private myPreventBefore = '10:00';
   private isChecked: boolean;
   private monday: boolean;
@@ -64,13 +60,11 @@ export class EditTaskPage {
   private sport = Tasker.CATEGORY_SPORT_TAG;
   private nothing = Tasker.CATEGORY_NONE_TAG;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,
+  constructor(public navCtrl: NavController, public navParams: NavParams, public modalCtrl: ModalController,
     private toastCtrl: ToastController, private taskService: TaskerServiceProvider) {}
 
-  ionViewDidLoad() {
-    console.log(this.myCats);
-
-    this.taskService
+  ngOnInit(): void {
+   this.subscribe = this.taskService
       .currentTask
       .subscribe(res => {
         this.recevTask = res;
@@ -81,6 +75,7 @@ export class EditTaskPage {
         h.minutes(this.recevTask.getTimeMinutes());
         this.myHours = h.format('HH:mm');
         this.myCat = this.recevTask.getCategory().getName();
+        this.myCategory = this.recevTask.getCategory();
         this.myPreventBefore = '10:' + String(this.recevTask.getWarningBefore());
         this.isChecked = this.recevTask.getDateDeb() === null;
         this.monday = this.recevTask.getRepete()[0];
@@ -97,9 +92,13 @@ export class EditTaskPage {
           this.myDate = null;
         }
       });
+  }
+  ngOnDestroy(): void {
+    this.subscribe.unsubscribe();
+  }
 
-    console.log('efsvqfdvsbsesfq', this.recevTask);
-
+  ionViewDidLoad() {
+    console.log(this.myCats, this.myCategory);
   }
 
   cancel() {
@@ -132,6 +131,18 @@ export class EditTaskPage {
   private dismissHandler() {
     console.log('Toast onDidDismiss()');
   }
+
+  openCategories() {
+    const myModal = this.modalCtrl.create(ModalCategoryPage, { 'myParam': this.myCats }, {cssClass: 'select-modal' });
+    myModal.onDidDismiss(data => {
+      if (data) {
+        this.myCategory = data;
+        this.myCat = data.getName();
+      }
+    });
+    myModal.present();
+  }
+
 
   save() {
     let newTask: Task;

@@ -12,6 +12,11 @@ import { AddTaskPage } from '../pages/add-task/add-task';
 import { EditTaskPage } from '../pages/edit-task/edit-task';
 import { AddCategoryPage } from '../pages/add-category/add-category';
 import { EditCategoryPage } from '../pages/edit-category/edit-category';
+import { SportDetailPage } from '../pages/sport-detail/sport-detail';
+import { ModalCategoryPage } from '../pages/modal-category/modal-category';
+import { ModalIconPage } from '../pages/modal-icon/modal-icon';
+
+
 import {ColorPickerModule} from 'primeng/colorpicker';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -28,7 +33,10 @@ import { TaskerServiceProvider } from '../providers/tasker-service/tasker-servic
     AddTaskPage,
     EditTaskPage,
     AddCategoryPage,
-    EditCategoryPage
+    EditCategoryPage,
+    SportDetailPage,
+    ModalCategoryPage,
+    ModalIconPage
   ],
   imports: [
     BrowserModule,
@@ -45,7 +53,10 @@ import { TaskerServiceProvider } from '../providers/tasker-service/tasker-servic
     AddTaskPage,
     EditTaskPage,
     AddCategoryPage,
-    EditCategoryPage
+    EditCategoryPage,
+    SportDetailPage,
+    ModalCategoryPage,
+    ModalIconPage
   ],
   providers: [
     StatusBar,

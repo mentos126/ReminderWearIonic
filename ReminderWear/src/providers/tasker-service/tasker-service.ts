@@ -8,6 +8,7 @@ import {
   Task
 } from '../../Tasker/Task';
 import { Category } from '../../Tasker/Category';
+import { SportTask } from '../../Tasker/SportTask';
 
 /*
   Generated class for the TaskerServiceProvider provider.
@@ -21,6 +22,9 @@ export class TaskerServiceProvider {
   private task = new BehaviorSubject < Task > (null);
   currentTask = this.task.asObservable();
 
+  private sportTask = new BehaviorSubject < SportTask > (null);
+  currentSportTask = this.sportTask.asObservable();
+
   private category = new BehaviorSubject < Category > (null);
   currentCategory = this.category.asObservable();
 
@@ -28,6 +32,10 @@ export class TaskerServiceProvider {
 
   changeTask(t: Task) {
     this.task.next(t);
+  }
+
+  changeSportTask(s: SportTask) {
+    this.sportTask.next(s);
   }
 
   changeCategory(c: Category) {

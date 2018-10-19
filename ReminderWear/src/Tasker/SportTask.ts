@@ -73,7 +73,7 @@ export class SportTask extends Task {
         this.setDistance(res);
     }
 
-    public distanceBetweenTwoPoint(c1: Coordinate, c2: Coordinate): number {
+    public  distanceBetweenTwoPoint(c1: Coordinate, c2: Coordinate): number {
 
         const R = 6371;
 

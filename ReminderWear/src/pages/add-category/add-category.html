@@ -17,9 +17,6 @@
               <ion-icon color="light" name="ios-close" (click)="cancel()"></ion-icon>
             </div>
           </ion-col>
-          <!-- ion-col text-right>
-                <ion-icon name="ios-checkmark" (click)="validate()"></ion-icon>
-            </ion-col -->
         </ion-row>
       </ion-grid>
     </ion-toolbar>
@@ -32,14 +29,11 @@
     </ion-item>
 
     <ion-item>
-      <ion-label>Icône:</ion-label>
-      <ion-select [(ngModel)]="myIcon" multiple="false" interface="popover">
-        <ion-option *ngFor="let icon of listIcons" [selected]="icon === myIcon" [value]="icon">
-          <ion-icon name="{{icon}}"></ion-icon>
-          {{icon}}
-        </ion-option>
-      </ion-select>
-    </ion-item>
+        <ion-label>Icône:</ion-label>
+        <ion-note (click)="openIcons()" item-end>
+          <ion-icon color="dark" name="{{myIcon}}"></ion-icon>
+        </ion-note>
+      </ion-item>
 
     <ion-item>
       <ion-grid>

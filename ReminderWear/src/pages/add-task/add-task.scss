@@ -21,26 +21,43 @@ page-add-task {
           font-size: 3em;
         }
       }
-    }
-  }
 
-ion-item {
-  ion-icon {
-    margin-left: 10%;
+      ion-col.validate-btn {
+        div {
+          margin-left: -10%;
           width: 100%;
           height: 100%;
           display: flex;
-          justify-content: left;
+          justify-content: flex-end;
           align-content: center;
           align-items: center;
           font-size: 3em;
+        }
+      }
+    }
   }
-}
+
+  ion-item {
+    ion-col {
+      ion-icon {
+        margin-left: 10%;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: left;
+        align-content: center;
+        align-items: center;
+        font-size: 3em;
+      }
+    }
+    ion-icon {
+      font-size: 2em;
+    }
+  }
 
   .submit-btn {
     text-align: center;
-    button {
-      color: black;
-    }
+
   }
+
 }

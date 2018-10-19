@@ -4,7 +4,7 @@ export class Coordinate {
     private lng: number;
     private h: number;
 
-    public Coordonate(lat: number, lng: number, height: number) {
+    constructor(lat: number, lng: number, height: number) {
         this.lat = lat;
         this.lng = lng;
         this.h = height;

@@ -1,5 +1,7 @@
 import {
-  Component
+  Component,
+  OnInit,
+  OnDestroy
 } from '@angular/core';
 import {
   NavController
@@ -20,39 +22,45 @@ import {
 import * as moment from 'moment';
 import { EditTaskPage } from '../edit-task/edit-task';
 import { TaskerServiceProvider } from '../../providers/tasker-service/tasker-service';
-
+import {
+  ISubscription
+} from 'rxjs/Subscription';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
-export class HomePage {
+export class HomePage implements OnInit, OnDestroy {
 
+  private subscription: ISubscription;
   searchQuery = '';
   items: Task[];
   orderBy = false;
-  data: Task;
 
   constructor(public navCtrl: NavController, private taskService: TaskerServiceProvider) {
     this.initializeItems();
     this.sort();
   }
 
-
-  ionViewDidLoad() {
-    this.taskService
+  ngOnInit(): void {
+    this.subscription = this.taskService
       .currentTask
-      .subscribe(res => this.data = res);
+      .subscribe();
   }
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  ionViewDidLoad() { }
 
   initializeItems() {
     const t = new Tasker();
     Tasker.unserializeLists();
-    Tasker.getListTasks();
 
     // TODO REMOVE FROM
-    const c = new Category('Aucune', 'ion-ios-add-circle', '#abcdef');
-    const c2 = new Category('category 2', 'ion-ios-alarm', '#f5f5f5');
+    Tasker.getListTasks();
+    const c = new Category('Aucune', 'ios-add-circle', '#abcdef');
+    const c2 = new Category('category 2', 'ios-alarm', '#f5f5f5');
     t.addCategory(c);
     t.addCategory(c2);
     t.addTask(new Task('tache 1', 'description', c, moment(), 30, 12, 30));
@@ -71,16 +79,15 @@ export class HomePage {
       i++;
     }
     t.addTask(new Task('tache 4', 'description', c, moment(), 30, 12, 30));
-    this.items = Tasker.getListTasks();
     // TODO END
+
+    this.items = Tasker.getListTasks();
 
   }
 
   getItems(ev: any) {
     this.items = Tasker.getListTasks();
     const val = ev.target.value;
-    console.log(val);
-
     if (val && val.trim() !== '') {
       this.items = this.items.filter((item) => {
         if (item.getName().toLowerCase().indexOf(val.toLowerCase()) > -1) {
@@ -116,25 +123,27 @@ export class HomePage {
   }
 
   sort(): void {
-    this.orderBy = !this.orderBy;
-    this.items.sort((n1, n2) => {
-      if (this.orderBy) {
-        if (n1.getNextDate().isAfter(n2.getNextDate())) {
-          return 1;
+    if (this.items !== undefined && this.items.length > 0) {
+      this.orderBy = !this.orderBy;
+      this.items.sort((n1, n2) => {
+        if (this.orderBy) {
+          if (n1.getNextDate().isAfter(n2.getNextDate())) {
+            return 1;
+          }
+          if (n1.getNextDate().isBefore(n2.getNextDate())) {
+            return -1;
+          }
+        } else {
+          if (n1.getNextDate().isBefore(n2.getNextDate())) {
+            return 1;
+          }
+          if (n1.getNextDate().isAfter(n2.getNextDate())) {
+            return -1;
+          }
         }
-        if (n1.getNextDate().isBefore(n2.getNextDate())) {
-          return -1;
-        }
-      } else {
-        if (n1.getNextDate().isBefore(n2.getNextDate())) {
-          return 1;
-        }
-        if (n1.getNextDate().isAfter(n2.getNextDate())) {
-          return -1;
-        }
-      }
-      return 0;
-    });
+        return 0;
+      });
+    }
   }
 
 }

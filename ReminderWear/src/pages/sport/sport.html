@@ -1,8 +1,80 @@
-<ion-header>
-</ion-header>
-
 <ion-content>
+  <ion-toolbar color="primary">
+     <ion-grid class="no-padding">
+       <ion-row>
+          <ion-col>
+            <ion-searchbar color="light" (ionInput)="getItems($event)"></ion-searchbar>
+          </ion-col>
+       </ion-row>
+     </ion-grid>
+  </ion-toolbar>
 
-<h1>SPORT</h1>
+  <ion-list no-line>
+    <ion-item *ngFor="let item of items">
+
+      <ion-card style.background-color="{{item.getCategory().getColor()}}" center (click)="onItemClicked(item.getID())">
+
+        <ion-item>
+          <ion-avatar item-start>
+            <ion-icon name="{{item.getCategory().getIcon()}}"></ion-icon>
+          </ion-avatar>
+          <ion-toggle (ionChange)="onChangeActivated(item.getID())" checked="{{item.getIsActivatedNotification()}}"></ion-toggle>
+        </ion-item>
+
+        <ion-card-content>
+          <ion-grid>
+
+            <ion-row>
+              <ion-col text-center>
+                <h2 center>{{item.name}}</h2>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col>
+                <p center text-center>
+                  {{item.description}}
+                </p>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col>
+                <p text-left>
+                  {{item.getNextDate().format('DD MMM. YYYY')}}
+                </p>
+              </ion-col>
+              <ion-col>
+                <p text-right>
+                  {{item.getTimeHour()}}:{{ item.getTimeMinutes() | number:'2.0-5'}}
+                </p>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col>
+                <p>
+                  {{item.category.name}}
+                </p>
+              </ion-col>
+              <ion-col>
+
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col>
+                <p>
+                  {{item.getRepeteToString()}}
+                </p>
+              </ion-col>
+            </ion-row>
+
+          </ion-grid>
+        </ion-card-content>
+
+      </ion-card>
+    </ion-item>
+  </ion-list>
 
 </ion-content>

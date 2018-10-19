@@ -1,0 +1,48 @@
+<!--
+  Generated template for the SportDetailPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+</ion-header>
+
+
+<ion-content>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-icon item-start name="ios-swap" (click)="sort()"></ion-icon>
+      {{ steps }} pas
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-icon name="ios-pulse" (click)="sort()"></ion-icon>
+      {{ heart }} pulsations par minute
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-icon name="ios-pin" (click)="sort()"></ion-icon>
+      {{ distance }} distance
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-icon name="ios-swap" (click)="sort()"></ion-icon>
+      {{ durationMoment }} durée
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content></ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-content></ion-card-content>
+  </ion-card>
+
+</ion-content>

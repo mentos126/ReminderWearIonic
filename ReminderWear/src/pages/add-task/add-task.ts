@@ -1,12 +1,16 @@
 import {
-  Component
+  Component,
+  OnInit,
+  OnDestroy
 } from '@angular/core';
 import {
   IonicPage,
   NavController,
   NavParams,
-  ToastController
+  ToastController,
+  ModalController
 } from 'ionic-angular';
+import { ModalCategoryPage } from '../modal-category/modal-category';
 
 import {
   Task
@@ -19,10 +23,21 @@ import {
 import {
   Moment
 } from 'moment';
+import {
+  ISubscription
+} from 'rxjs/Subscription';
 
 import * as moment from 'moment';
-import { AddCategoryPage } from '../add-category/add-category';
-import { EditCategoryPage } from '../edit-category/edit-category';
+import {
+  AddCategoryPage
+} from '../add-category/add-category';
+import {
+  EditCategoryPage
+} from '../edit-category/edit-category';
+import {
+  TaskerServiceProvider
+} from '../../providers/tasker-service/tasker-service';
+import { Category } from '../../Tasker/Category';
 
 /**
  * Generated class for the AddTaskPage page.
@@ -36,7 +51,9 @@ import { EditCategoryPage } from '../edit-category/edit-category';
   selector: 'page-add-task',
   templateUrl: 'add-task.html',
 })
-export class AddTaskPage {
+export class AddTaskPage implements OnInit, OnDestroy {
+
+  private subscription: ISubscription;
 
   private isChecked = false;
   private monday = false;
@@ -52,14 +69,27 @@ export class AddTaskPage {
   private myPreventBefore = '10:30';
   private myDate = moment().add(5, 'minutes').format('YYYY-MM-DD');
   private myCat = Tasker.CATEGORY_NONE_TAG;
+  private myCategory: Category = Tasker.getCategoryByName(Tasker.CATEGORY_NONE_TAG);
   private sport = Tasker.CATEGORY_SPORT_TAG;
   private nothing = Tasker.CATEGORY_NONE_TAG;
   private myCats: any = Tasker.getListCategories();
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private toastCtrl: ToastController) { }
+  constructor(public navCtrl: NavController, public navParams: NavParams, public modalCtrl: ModalController,
+    private toastCtrl: ToastController, private taskService: TaskerServiceProvider) {}
+
+  ngOnInit(): void {
+
+    this.subscription = this.taskService
+      .currentCategory
+      .subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 
   ionViewDidLoad() {
-    console.log(this.myCats);
+    console.log(this.myCats, this.myCategory);
   }
 
   cancel() {
@@ -71,6 +101,7 @@ export class AddTaskPage {
   }
 
   editCategory(): void {
+    this.taskService.changeCategory(Tasker.getCategoryByName(this.myCat));
     this.navCtrl.push(EditCategoryPage);
   }
 
@@ -85,6 +116,17 @@ export class AddTaskPage {
 
   private dismissHandler() {
     console.log('Toast onDidDismiss()');
+  }
+
+  openCategories() {
+    const myModal = this.modalCtrl.create(ModalCategoryPage, { 'myParam': this.myCats }, {cssClass: 'select-modal' });
+    myModal.onDidDismiss(data => {
+      if (data) {
+        this.myCategory = data;
+        this.myCat = data.getName();
+      }
+    });
+    myModal.present();
   }
 
   save() {

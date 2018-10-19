@@ -80,6 +80,10 @@ export class Tasker {
     }
   }
 
+  public static getListSportTasks(): SportTask[] {
+    return Tasker.listSportTasks;
+  }
+
   public static getListTasks(): Task[] {
     return Tasker.listTasks;
   }
@@ -196,9 +200,6 @@ export class Tasker {
     return true;
   }
 
-  public getListSportTasks(): SportTask[] {
-    return Tasker.listSportTasks;
-  }
   public setListSportTasks(listSportTasks: SportTask[]): void {
     Tasker.listSportTasks = listSportTasks;
   }
