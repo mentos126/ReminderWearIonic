@@ -3,24 +3,24 @@
 
 <ion-content>
   <ion-toolbar color="primary">
-     <ion-grid class="no-padding">
-       <ion-row>
-          <ion-col col-10>
-            <ion-searchbar color="light" (ionInput)="getItems($event)"></ion-searchbar>
-          </ion-col>
-          <ion-col col-2 class="sort-btn">
-            <div>
-              <ion-icon name="ios-swap" (click)="sort()"></ion-icon>
-            </div>
-          </ion-col>
-       </ion-row>
-     </ion-grid>
+    <ion-grid class="no-padding">
+      <ion-row>
+        <ion-col col-10>
+          <ion-searchbar color="light" (ionInput)="getItems($event)"></ion-searchbar>
+        </ion-col>
+        <ion-col col-2 class="sort-btn">
+          <div>
+            <ion-icon name="ios-swap" (click)="sort()"></ion-icon>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-toolbar>
 
   <ion-list no-line>
     <ion-item *ngFor="let item of items">
-
-      <ion-card style.background-color="{{item.getCategory().getColor()}}" center (click)="onItemClicked(item.getID())">
+      <!-- (click)="onItemClicked(item.getID())" -->
+      <ion-card style.background-color="{{item.getCategory().getColor()}}" center>
 
         <ion-item>
           <ion-avatar item-start>
@@ -75,6 +75,17 @@
                 <p>
                   {{item.getRepeteToString()}}
                 </p>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col text-center>
+                <button *ngIf="!item.getLocalisation()" (click)="selectLocalisation($event, item.getID())" ion-button >Selectionner un lieux</button>
+              </ion-col>
+              <ion-col text-center>
+                <button *ngIf="!item.getPhoto()" ion-button (click)="takePhoto($event, item.getID())">Prendre une photo</button>
+                <img class="photo" *ngIf="item.getPhoto()" [src]="sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + item.getPhoto())"
+                  alt="{{item.getName()}}" />
               </ion-col>
             </ion-row>
 

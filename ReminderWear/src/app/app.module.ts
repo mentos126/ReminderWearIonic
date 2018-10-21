@@ -15,7 +15,12 @@ import { EditCategoryPage } from '../pages/edit-category/edit-category';
 import { SportDetailPage } from '../pages/sport-detail/sport-detail';
 import { ModalCategoryPage } from '../pages/modal-category/modal-category';
 import { ModalIconPage } from '../pages/modal-icon/modal-icon';
+import { ModalMapPage } from '../pages/modal-map/modal-map';
 
+import { Camera } from '@ionic-native/camera';
+import { Geolocation } from '@ionic-native/geolocation';
+
+import { ChartsModule } from 'ng2-charts';
 import {ColorPickerModule} from 'primeng/colorpicker';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -35,13 +40,15 @@ import { TaskerServiceProvider } from '../providers/tasker-service/tasker-servic
     EditCategoryPage,
     SportDetailPage,
     ModalCategoryPage,
-    ModalIconPage
+    ModalIconPage,
+    ModalMapPage
   ],
   imports: [
     BrowserModule,
     ColorPickerModule,
     BrowserAnimationsModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    ChartsModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -55,14 +62,16 @@ import { TaskerServiceProvider } from '../providers/tasker-service/tasker-servic
     EditCategoryPage,
     SportDetailPage,
     ModalCategoryPage,
-    ModalIconPage
+    ModalIconPage,
+    ModalMapPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    TaskerServiceProvider
-    // ,GoogleMaps
+    TaskerServiceProvider,
+    Camera,
+    Geolocation
   ]
 })
 export class AppModule {}

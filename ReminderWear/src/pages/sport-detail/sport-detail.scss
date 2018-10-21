@@ -4,7 +4,45 @@ page-sport-detail {
 
       #map {
         background-color: transparent !important;
-        height: 50% !important;
+        height: 33% !important;
+        margin: 1em;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        border-radius: 5px;
+      }
+    }
+
+    ion-grid.no-padding {
+      padding: 0;
+
+      ion-row {
+        padding: 0;
+
+        ion-col {
+          padding: 0;
+        }
+
+        ion-col.cancel-btn {
+          div {
+            margin-left: 10%;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: left;
+            align-content: center;
+            align-items: center;
+            font-size: 3em;
+          }
+        }
+      }
+    }
+
+    ion-card {
+      ion-card-content {
+        height: 33% !important;
+        width: 100% !important;
+        canvas {
+          width: 100% !important;
+        }
       }
     }
 

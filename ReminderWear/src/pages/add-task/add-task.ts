@@ -89,7 +89,7 @@ export class AddTaskPage implements OnInit, OnDestroy {
   }
 
   ionViewDidLoad() {
-    console.log(this.myCats, this.myCategory);
+    console.log(this.myCats, this.myCategory, this.sport, this.nothing);
   }
 
   cancel() {
@@ -139,10 +139,6 @@ export class AddTaskPage implements OnInit, OnDestroy {
     myDateMoment.minutes(myMinutesInt);
     myDateMoment.hours(myHoursInt);
     const myRepetes = [this.monday, this.tuesday, this.wednesday, this.thursday, this.friday, this.saturday, this.sunday];
-
-    if (this.myCat === '' || this.myCat === this.sport || this.myCat === this.nothing) {
-      this.myCat = '';
-    }
 
     if (this.myTitle !== '') {
       if (this.myDescription !== '') {

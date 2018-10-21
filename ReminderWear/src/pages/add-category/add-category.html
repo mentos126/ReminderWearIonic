@@ -10,16 +10,16 @@
 <ion-content>
 
   <ion-toolbar color="primary">
-      <ion-grid class="no-padding">
-        <ion-row>
-          <ion-col class="cancel-btn">
-            <div>
-              <ion-icon color="light" name="ios-close" (click)="cancel()"></ion-icon>
-            </div>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-toolbar>
+    <ion-grid class="no-padding">
+      <ion-row>
+        <ion-col class="cancel-btn">
+          <div>
+            <ion-icon color="light" name="ios-close" (click)="cancel()"></ion-icon>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
 
   <ion-list no-line>
 
@@ -29,11 +29,11 @@
     </ion-item>
 
     <ion-item>
-        <ion-label>Icône:</ion-label>
-        <ion-note (click)="openIcons()" item-end>
-          <ion-icon color="dark" name="{{myIcon}}"></ion-icon>
-        </ion-note>
-      </ion-item>
+      <ion-label>Icône:</ion-label>
+      <ion-note (click)="openIcons()" item-end>
+        <ion-icon color="dark" name="{{myIcon}}"></ion-icon>
+      </ion-note>
+    </ion-item>
 
     <ion-item>
       <ion-grid>

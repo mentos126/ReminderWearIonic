@@ -5,6 +5,7 @@ import {
     Moment
 } from 'moment';
 import * as moment from 'moment' ;
+import { Coordinate } from './Coordinate';
 
 export class Task {
 
@@ -18,6 +19,8 @@ export class Task {
     private timeHour: number;
     private timeMinutes: number;
     private repete: boolean[];
+    private photo: string = null;
+    private localisation: Coordinate = null;
 
     constructor(name: string, description: string, category: Category, dateDeb: Moment,
         warningBefore: number, timeHour: number, timeMinutes: number,
@@ -188,7 +191,21 @@ export class Task {
         }
     }
 
+    public getPhoto(): string {
+      return this.photo;
+    }
 
+    public setPhoto(photo: string): void {
+      this.photo = photo;
+    }
+
+    public getLocalisation(): Coordinate {
+      return this.localisation;
+    }
+
+    public setLocalisation(localisation: Coordinate): void {
+      this.localisation = localisation;
+    }
 
 
 

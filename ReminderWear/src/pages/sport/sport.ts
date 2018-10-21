@@ -48,6 +48,7 @@ export class SportPage implements OnInit, OnDestroy {
     this.subscription = this.taskService
       .currentSportTask
       .subscribe();
+
   }
 
   ngOnDestroy(): void {
@@ -66,6 +67,7 @@ export class SportPage implements OnInit, OnDestroy {
     temp.addCoord(new Coordinate(3, 4, 5));
     temp.addCoord(new Coordinate(4, 5, 6));
     temp.addCoord(new Coordinate(5, 6, 7));
+    temp.addCoord(new Coordinate(-12, 16, 7));
     temp.caculateDistance();
     Tasker.getListSportTasks()
       .push(temp);

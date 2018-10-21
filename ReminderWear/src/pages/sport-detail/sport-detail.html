@@ -10,6 +10,18 @@
 
 <ion-content>
 
+  <ion-toolbar color="primary">
+    <ion-grid class="no-padding">
+      <ion-row>
+        <ion-col class="cancel-btn">
+          <div>
+            <ion-icon color="light" name="ios-close" (click)="cancel()"></ion-icon>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+
   <ion-card>
     <ion-card-content>
       <ion-icon item-start name="ios-swap" (click)="sort()"></ion-icon>
@@ -27,7 +39,7 @@
   <ion-card>
     <ion-card-content>
       <ion-icon name="ios-pin" (click)="sort()"></ion-icon>
-      {{ distance }} distance
+      {{ distance | number: '1.3-3' }} km parcouru
     </ion-card-content>
   </ion-card>
 
@@ -38,11 +50,19 @@
     </ion-card-content>
   </ion-card>
 
-  <div  #map id="map">  </div>
+  <div #map id="map"> </div>
 
   <ion-card>
     <ion-card-content>
-      graph altitude
+      <div class="row">
+        <div class="col-md-6">
+          <div style="display: block;">
+            <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+              [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType" (chartHover)="chartHovered($event)"
+              (chartClick)="chartClicked($event)"></canvas>
+          </div>
+        </div>
+      </div>
     </ion-card-content>
   </ion-card>
 
