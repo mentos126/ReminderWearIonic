@@ -2,6 +2,7 @@
 </ion-header>
 
 <ion-content>
+
   <ion-toolbar color="primary">
     <ion-grid class="no-padding">
       <ion-row>
@@ -22,7 +23,7 @@
       <!-- (click)="onItemClicked(item.getID())" -->
       <ion-card style.background-color="{{item.getCategory().getColor()}}" center>
 
-        <ion-item>
+        <ion-item (click)="onItemClicked(item.getID())">
           <ion-avatar item-start>
             <ion-icon name="{{item.getCategory().getIcon()}}"></ion-icon>
           </ion-avatar>
@@ -78,16 +79,20 @@
               </ion-col>
             </ion-row>
 
-            <ion-row>
-              <ion-col text-center>
-                <button *ngIf="!item.getLocalisation()" (click)="selectLocalisation($event, item.getID())" ion-button >Selectionner un lieux</button>
-              </ion-col>
-              <ion-col text-center>
-                <button *ngIf="!item.getPhoto()" ion-button (click)="takePhoto($event, item.getID())">Prendre une photo</button>
-                <img class="photo" *ngIf="item.getPhoto()" [src]="sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + item.getPhoto())"
-                  alt="{{item.getName()}}" />
-              </ion-col>
-            </ion-row>
+              <ion-row text-center>
+                <ion-col>
+                  <button  *ngIf="!item.getLocalisation()" (click)="selectLocalisation($event, item.getID())" ion-button >Selectionner un lieux</button>
+                  <google-map  *ngIf="item.getLocalisation()"></google-map>
+                </ion-col>
+              </ion-row>
+
+              <ion-row text-center>
+                <ion-col>
+                  <button  *ngIf="!item.getPhoto()" ion-button (click)="takePhoto($event, item.getID())">Prendre une photo</button>
+                  <img  *ngIf="item.getPhoto()" [src]="sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + item.getPhoto())"
+                    alt="{{item.getName()}}" />
+                </ion-col>
+              </ion-row>
 
           </ion-grid>
         </ion-card-content>

@@ -19,8 +19,6 @@ import {
   SportTask
 } from '../../Tasker/SportTask';
 
-// import {} from '@types/googlemaps';
-
 import {
   Coordinate
 } from '../../Tasker/Coordinate';
@@ -84,6 +82,7 @@ export class SportDetailPage implements OnInit, OnDestroy {
 
   cancel(): void {
     this.navCtrl.pop();
+    this.subscription.unsubscribe();
   }
 
   ngOnInit(): void {

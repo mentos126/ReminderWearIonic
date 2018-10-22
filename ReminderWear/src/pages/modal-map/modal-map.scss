@@ -25,10 +25,11 @@ page-modal-map {
   }
 }
 
-#map {
-  margin: 10px;
-  height: 85%;
-  opacity: 1;
+google-map {
+  #map {
+    margin: 10px;
+    height: 85%;
+  }
 }
 
 .select-modal {

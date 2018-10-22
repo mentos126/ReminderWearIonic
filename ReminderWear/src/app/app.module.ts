@@ -28,6 +28,12 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { TaskerServiceProvider } from '../providers/tasker-service/tasker-service';
 
+import { GoogleMapComponent } from '../components/google-map/google-map';
+import { MapServiceProvider } from '../providers/map-service/map-service';
+
+import {} from '@types/googlemaps';
+
+
 @NgModule({
   declarations: [
     MyApp,
@@ -41,7 +47,8 @@ import { TaskerServiceProvider } from '../providers/tasker-service/tasker-servic
     SportDetailPage,
     ModalCategoryPage,
     ModalIconPage,
-    ModalMapPage
+    ModalMapPage,
+    GoogleMapComponent
   ],
   imports: [
     BrowserModule,
@@ -71,7 +78,8 @@ import { TaskerServiceProvider } from '../providers/tasker-service/tasker-servic
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     TaskerServiceProvider,
     Camera,
-    Geolocation
+    Geolocation,
+    MapServiceProvider
   ]
 })
 export class AppModule {}

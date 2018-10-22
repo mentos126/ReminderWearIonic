@@ -1,8 +1,7 @@
 import {
   Component,
   OnInit,
-  OnDestroy,
-  ViewChild
+  OnDestroy
 } from '@angular/core';
 import {
   IonicPage,
@@ -13,9 +12,15 @@ import {
 import {
   Coordinate
 } from '../../Tasker/Coordinate';
-
-// import {} from '@types/googlemaps';
-import { Geolocation } from '@ionic-native/geolocation';
+import {
+  ISubscription
+} from 'rxjs/Subscription';
+import {
+  Geolocation
+} from '@ionic-native/geolocation';
+import {
+  MapServiceProvider
+} from '../../providers/map-service/map-service';
 
 /**
  * Generated class for the ModalMapPage page.
@@ -31,63 +36,53 @@ import { Geolocation } from '@ionic-native/geolocation';
 })
 export class ModalMapPage implements OnInit, OnDestroy {
 
+  private subscription: ISubscription;
   private myCoordinate: Coordinate = null;
-  @ViewChild('map') mapElement;
-  map: any;
-  private myLatLng: google.maps.LatLng = new google.maps.LatLng(10, 10);
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
-    public viewCtrl: ViewController, private geolocation: Geolocation) {}
+    public viewCtrl: ViewController, private geolocation: Geolocation,
+    private mapService: MapServiceProvider) {}
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ModalMapPage');
   }
+
   ngOnInit(): void {
-    this.initMap();
     this.initGeo();
-    console.log(this.myLatLng);
+    this.subscription = this.mapService
+      .currentCoordinate
+      .subscribe(res => this.myCoordinate = res);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   initGeo(): any {
     this.geolocation.getCurrentPosition().then((resp) => {
-      this.myLatLng = new  google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
-      console.log(this.myLatLng);
-     }).catch((error) => {
-       console.log('Error getting location', error);
-     });
-
-     const watch = this.geolocation.watchPosition();
-     watch.subscribe((data) => {
-       console.log(data);
-      // data can be a set of coordinates, or an error (if an error occurred).
-      // data.coords.latitude
-      // data.coords.longitude
-     });
-  }
-
-  ngOnDestroy(): void {}
-
-  initMap(): void {
-    const marker = new google.maps.Marker({
-      position: this.myLatLng,
-      title: 'selection de la position'
+      this.myCoordinate = new Coordinate(resp.coords.latitude, resp.coords.longitude, 0);
+      console.log('COORDINATE', this.myCoordinate);
+      this.mapService.changeCoordinate(this.myCoordinate);
+    }).catch((error) => {
+      console.log('Error getting location', error);
     });
-    console.log(marker);
-    this.map = new google.maps.Map(this.mapElement.nativeElement);
-    console.log(this.map);
-    marker.setMap(this.map);
+
+    //  const watch = this.geolocation.watchPosition();
+    //  watch.subscribe((data) => {
+    //    console.log(data);
+    //   // data can be a set of coordinates, or an error (if an error occurred).
+    //   // data.coords.latitude
+    //   // data.coords.longitude
+    //  });
   }
 
   onSelectPosition() {
-    // this.myCoordinate = new Coordinate(this.myLatLng.lat, this.myLatLng.lng, 0);
-    this.myCoordinate = new Coordinate(5, 5, 0);
+    console.log('COORDINATE', this.myCoordinate);
     this.dismiss();
   }
 
   dismiss() {
     this.viewCtrl.dismiss(this.myCoordinate);
   }
-
-
 
 }
