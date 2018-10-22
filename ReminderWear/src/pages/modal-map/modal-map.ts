@@ -38,7 +38,6 @@ export class ModalMapPage implements OnInit, OnDestroy {
 
   private subscription: ISubscription;
   private myCoordinate: Coordinate = null;
-  private isDrag = true;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public viewCtrl: ViewController, private geolocation: Geolocation,
@@ -53,7 +52,8 @@ export class ModalMapPage implements OnInit, OnDestroy {
     this.subscription = this.mapService
       .currentCoordinate
       .subscribe(res => {
-        this.myCoordinate = res[0];
+        this.myCoordinate = res;
+        console.log('MODAL NGINIT myCoordinate', this.myCoordinate);
       });
   }
 
@@ -64,7 +64,7 @@ export class ModalMapPage implements OnInit, OnDestroy {
   initGeo(): any {
     this.geolocation.getCurrentPosition().then((resp) => {
       this.myCoordinate = new Coordinate(resp.coords.latitude, resp.coords.longitude, 0);
-      this.mapService.changeCoordinate(this.myCoordinate, this.isDrag);
+      this.mapService.changeCoordinate(this.myCoordinate);
     }).catch((error) => {
       console.log('Error getting location', error);
     });
@@ -79,11 +79,12 @@ export class ModalMapPage implements OnInit, OnDestroy {
   }
 
   onSelectPosition() {
-    this.dismiss();
+    console.log('MODAL DISMISS myCoordinate', this.myCoordinate);
+    this.viewCtrl.dismiss(this.myCoordinate);
   }
 
   dismiss() {
-    this.viewCtrl.dismiss(this.myCoordinate);
+    this.viewCtrl.dismiss();
   }
 
 }

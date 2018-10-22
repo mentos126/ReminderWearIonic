@@ -2,7 +2,8 @@ import {
   Component,
   OnInit,
   OnDestroy,
-  ViewChild
+  ViewChild,
+  Input
 } from '@angular/core';
 import {
   ISubscription
@@ -29,30 +30,64 @@ export class GoogleMapComponent implements OnInit, OnDestroy {
   private subscription: ISubscription;
   @ViewChild('map') mapElement;
   map: any;
+  isCreated = false;
   myCoordinate: Coordinate = new Coordinate(0, 0, 0);
-  isDrag = true;
+  @Input()
+  localisation: Coordinate;
+  @Input()
+  isDrag: boolean;
 
   constructor(public mapService: MapServiceProvider) {}
 
   ngOnInit(): void {
-    this.subscription = this.mapService
-      .currentCoordinate
-      .subscribe(res => {
-        if (res != null) {
-          this.myCoordinate = res[0];
-          this.isDrag = res[1];
-          this.initMap();
-        }
-      });
-
-    this.initMap();
+    if (this.isDrag) {
+      this.subscription = this.mapService
+        .currentCoordinate
+        .subscribe(res => {
+          if (res != null) {
+            this.myCoordinate = res;
+            if (!this.isCreated) {
+              this.initMapForModal();
+            }
+            this.isCreated = true;
+          }
+        });
+      this.initMapForModal();
+    } else {
+      this.initMapForHome();
+    }
   }
+
   ngOnDestroy(): void {
-    this.mapService.changeCoordinate(this.myCoordinate, this.isDrag);
-    this.subscription.unsubscribe();
+    if (this.isDrag) {
+      console.log('MAPS NGDESTROY myCoordinate', this.myCoordinate);
+      this.mapService.changeCoordinate(this.myCoordinate);
+      this.subscription.unsubscribe();
+    }
   }
 
-  initMap(): void {
+  initMapForHome(): void {
+    const coords = new google.maps.LatLng(this.localisation.getLat(), this.localisation.getLng());
+    const mapOptions: google.maps.MapOptions = {
+      center: coords,
+      zoom: 14,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+
+    const marker = new google.maps.Marker({
+      position: coords,
+      draggable: this.isDrag
+    });
+
+    marker.setMap(this.map);
+  }
+
+  changeMyCoordinateMarker() {
+    this.mapService.changeCoordinate(this.myCoordinate);
+  }
+
+  initMapForModal(): void {
     const coords = new google.maps.LatLng(this.myCoordinate.getLat(), this.myCoordinate.getLng());
     const mapOptions: google.maps.MapOptions = {
       center: coords,
@@ -71,6 +106,8 @@ export class GoogleMapComponent implements OnInit, OnDestroy {
     const self = this;
     marker.addListener('drag', function () {
       self.myCoordinate = new Coordinate(marker.getPosition().lat(), marker.getPosition().lng(), 0);
+      console.log('MAPS LISTENER myCoordinate', self.myCoordinate);
+      self.changeMyCoordinateMarker();
     });
   }
 

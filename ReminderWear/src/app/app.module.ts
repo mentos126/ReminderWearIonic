@@ -19,6 +19,8 @@ import { ModalMapPage } from '../pages/modal-map/modal-map';
 
 import { Camera } from '@ionic-native/camera';
 import { Geolocation } from '@ionic-native/geolocation';
+import { Push } from '@ionic-native/push';
+import { LocalNotifications  } from '@ionic-native/local-notifications';
 
 import { ChartsModule } from 'ng2-charts';
 import {ColorPickerModule} from 'primeng/colorpicker';
@@ -79,7 +81,9 @@ import {} from '@types/googlemaps';
     TaskerServiceProvider,
     Camera,
     Geolocation,
-    MapServiceProvider
+    MapServiceProvider,
+    Push,
+    LocalNotifications
   ]
 })
 export class AppModule {}

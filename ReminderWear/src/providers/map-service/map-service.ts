@@ -12,13 +12,13 @@ import { Coordinate } from '../../Tasker/Coordinate';
 @Injectable()
 export class MapServiceProvider {
 
-  private coord = new BehaviorSubject < [Coordinate, boolean ]> (null);
+  private coord = new BehaviorSubject < Coordinate > (null);
   currentCoordinate = this.coord.asObservable();
 
   constructor() {  }
 
-  changeCoordinate(c: Coordinate, b: boolean) {
-    this.coord.next([c, b]);
+  changeCoordinate(c: Coordinate) {
+    this.coord.next(c);
   }
 
 }

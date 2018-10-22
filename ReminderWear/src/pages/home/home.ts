@@ -4,7 +4,8 @@ import {
   OnDestroy
 } from '@angular/core';
 import {
-  NavController, ModalController
+  NavController,
+  ModalController
 } from 'ionic-angular';
 import {
   AddTaskPage
@@ -39,8 +40,18 @@ import {
 import {
   Coordinate
 } from '../../Tasker/Coordinate';
-import { ModalMapPage } from '../modal-map/modal-map';
-import { MapServiceProvider } from '../../providers/map-service/map-service';
+import {
+  ModalMapPage
+} from '../modal-map/modal-map';
+import {
+  Push,
+  PushObject,
+  PushOptions
+} from '@ionic-native/push';
+
+import {
+  LocalNotifications
+} from '@ionic-native/local-notifications';
 
 @Component({
   selector: 'page-home',
@@ -49,7 +60,6 @@ import { MapServiceProvider } from '../../providers/map-service/map-service';
 export class HomePage implements OnInit, OnDestroy {
 
   private subscriptionTask: ISubscription;
-  private subscriptionMap: ISubscription;
   searchQuery = '';
   items: Task[];
   orderBy = false;
@@ -59,8 +69,9 @@ export class HomePage implements OnInit, OnDestroy {
     private taskService: TaskerServiceProvider,
     public modalCtrl: ModalController,
     public sanitizer: DomSanitizer,
-    private mapService: MapServiceProvider,
-    private camera: Camera) {
+    private camera: Camera,
+    private push: Push,
+    private localNotifications: LocalNotifications) {
     this.initializeItems();
     this.sort();
   }
@@ -69,15 +80,10 @@ export class HomePage implements OnInit, OnDestroy {
     this.subscriptionTask = this.taskService
       .currentTask
       .subscribe();
-
-    this.subscriptionMap = this.mapService
-      .currentCoordinate
-      .subscribe();
   }
 
   ngOnDestroy(): void {
     this.subscriptionTask.unsubscribe();
-    this.subscriptionMap.unsubscribe();
   }
 
   ionViewDidLoad() {
@@ -201,15 +207,110 @@ export class HomePage implements OnInit, OnDestroy {
     event.preventDefault();
 
     this.myCoordinate = null;
-    const myModal = this.modalCtrl.create(ModalMapPage, {cssClass: 'select-modal' });
+    const myModal = this.modalCtrl.create(ModalMapPage, {
+      cssClass: 'select-modal'
+    });
     myModal.onDidDismiss(data => {
       if (data) {
+        console.log('HOME RECEVE DATA', data);
         this.myCoordinate = data;
         const t: Task = Tasker.getTaskByID(id);
-        t.setLocalisation(this.myCoordinate );
+        t.setLocalisation(this.myCoordinate);
       }
     });
     myModal.present();
+  }
+
+  lunchPushNotification() {
+    // // to check if we have permission
+    // this.push.hasPermission()
+    //   .then((res: any) => {
+
+    //     if (res.isEnabled) {
+    //       console.log('We have permission to send push notifications');
+    //     } else {
+    //       console.log('We do not have permission to send push notifications');
+    //     }
+
+    //   });
+
+    // // Create a channel (Android O and above). You'll need to provide the id, description and importance properties.
+    // this.push.createChannel({
+    //   id: 'testchannel1',
+    //   description: 'My first test channel',
+    //   // The importance property goes from 1 = Lowest, 2 = Low, 3 = Normal, 4 = High and 5 = Highest.
+    //   importance: 3
+    // }).then(() => console.log('Channel created'));
+
+    // // Delete a channel (Android O and above)
+    // this.push.deleteChannel('testchannel1').then(() => console.log('Channel deleted'));
+
+    // // Return a list of currently configured channels
+    // this.push.listChannels().then((channels) => console.log('List of channels', channels));
+
+    // // to initialize push notifications
+
+    // const options: PushOptions = {
+    //   android: {},
+    //   ios: {
+    //     alert: 'true',
+    //     badge: true,
+    //     sound: 'false'
+    //   },
+    //   windows: {},
+    //   browser: {
+    //     pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+    //   }
+    // };
+
+    // const pushObject: PushObject = this.push.init(options);
+
+
+    // pushObject.on('notification').subscribe((notification: any) => console.log('Received a notification', notification));
+
+    // pushObject.on('registration').subscribe((registration: any) => console.log('Device registered', registration));
+
+    // pushObject.on('error').subscribe(error => console.error('Error with Push plugin', error));
+
+  }
+
+  lunchLocalNotification() {
+    // Schedule a single notification
+    this.localNotifications.schedule({
+      id: 1,
+      text: 'Single ILocalNotification',
+      // sound: isAndroid ? 'file://sound.mp3' : 'file://beep.caf',
+      data: {
+        // secret: key
+      }
+    });
+
+
+    // Schedule multiple notifications
+    this.localNotifications.schedule([{
+      id: 1,
+      text: 'Multi ILocalNotification 1',
+      // sound: isAndroid ? 'file://sound.mp3' : 'file://beep.caf',
+      data: {
+        // secret: key
+      }
+    }, {
+      id: 2,
+      title: 'Local ILocalNotification Example',
+      text: 'Multi ILocalNotification 2',
+      icon: 'http://example.com/icon.png'
+    }]);
+
+
+    // Schedule delayed notification
+    this.localNotifications.schedule({
+      text: 'Delayed ILocalNotification',
+      trigger: {
+        at: new Date(new Date().getTime() + 10)
+      },
+      led: 'FF0000',
+      sound: null
+    });
   }
 
 }

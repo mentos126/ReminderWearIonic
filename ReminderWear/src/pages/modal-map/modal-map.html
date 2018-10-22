@@ -13,7 +13,7 @@
     <ion-icon color="light" name="ios-close" (click)="dismiss()"></ion-icon>
   </ion-toolbar>
 
-  <google-map></google-map>
+  <google-map [isDrag]="true" ></google-map>
   <div text-center>
     <button ion-button (click)="onSelectPosition()"> Selectionner </button>
   </div>

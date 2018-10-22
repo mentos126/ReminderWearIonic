@@ -18,6 +18,9 @@
     </ion-grid>
   </ion-toolbar>
 
+  <button ion-button (click)="lunchPushNotification()">TEST PUSH NOTIF</button>
+  <button ion-button (click)="lunchLocalNotification()">TEST LOCAL NOTIF</button>
+
   <ion-list no-line>
     <ion-item *ngFor="let item of items">
       <ion-card style.background-color="{{item.getCategory().getColor()}}" center>
@@ -81,7 +84,7 @@
               <ion-row text-center>
                 <ion-col>
                   <button  *ngIf="!item.getLocalisation()" (click)="selectLocalisation($event, item.getID())" ion-button >Selectionner un lieux</button>
-                  <google-map  *ngIf="item.getLocalisation()"></google-map>
+                  <google-map  *ngIf="item.getLocalisation()" [localisation]="item.getLocalisation()" [isDrag]="false" ></google-map>
                 </ion-col>
               </ion-row>
 
