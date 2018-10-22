@@ -20,7 +20,6 @@
 
   <ion-list no-line>
     <ion-item *ngFor="let item of items">
-      <!-- (click)="onItemClicked(item.getID())" -->
       <ion-card style.background-color="{{item.getCategory().getColor()}}" center>
 
         <ion-item (click)="onItemClicked(item.getID())">

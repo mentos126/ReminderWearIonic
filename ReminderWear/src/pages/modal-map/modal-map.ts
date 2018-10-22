@@ -38,6 +38,7 @@ export class ModalMapPage implements OnInit, OnDestroy {
 
   private subscription: ISubscription;
   private myCoordinate: Coordinate = null;
+  private isDrag = true;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public viewCtrl: ViewController, private geolocation: Geolocation,
@@ -51,7 +52,9 @@ export class ModalMapPage implements OnInit, OnDestroy {
     this.initGeo();
     this.subscription = this.mapService
       .currentCoordinate
-      .subscribe(res => this.myCoordinate = res);
+      .subscribe(res => {
+        this.myCoordinate = res[0];
+      });
   }
 
   ngOnDestroy(): void {
@@ -61,8 +64,7 @@ export class ModalMapPage implements OnInit, OnDestroy {
   initGeo(): any {
     this.geolocation.getCurrentPosition().then((resp) => {
       this.myCoordinate = new Coordinate(resp.coords.latitude, resp.coords.longitude, 0);
-      console.log('COORDINATE', this.myCoordinate);
-      this.mapService.changeCoordinate(this.myCoordinate);
+      this.mapService.changeCoordinate(this.myCoordinate, this.isDrag);
     }).catch((error) => {
       console.log('Error getting location', error);
     });
@@ -77,7 +79,6 @@ export class ModalMapPage implements OnInit, OnDestroy {
   }
 
   onSelectPosition() {
-    console.log('COORDINATE', this.myCoordinate);
     this.dismiss();
   }
 

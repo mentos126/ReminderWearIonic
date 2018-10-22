@@ -40,6 +40,7 @@ import {
   Coordinate
 } from '../../Tasker/Coordinate';
 import { ModalMapPage } from '../modal-map/modal-map';
+import { MapServiceProvider } from '../../providers/map-service/map-service';
 
 @Component({
   selector: 'page-home',
@@ -47,7 +48,8 @@ import { ModalMapPage } from '../modal-map/modal-map';
 })
 export class HomePage implements OnInit, OnDestroy {
 
-  private subscription: ISubscription;
+  private subscriptionTask: ISubscription;
+  private subscriptionMap: ISubscription;
   searchQuery = '';
   items: Task[];
   orderBy = false;
@@ -57,19 +59,25 @@ export class HomePage implements OnInit, OnDestroy {
     private taskService: TaskerServiceProvider,
     public modalCtrl: ModalController,
     public sanitizer: DomSanitizer,
+    private mapService: MapServiceProvider,
     private camera: Camera) {
     this.initializeItems();
     this.sort();
   }
 
   ngOnInit(): void {
-    this.subscription = this.taskService
+    this.subscriptionTask = this.taskService
       .currentTask
+      .subscribe();
+
+    this.subscriptionMap = this.mapService
+      .currentCoordinate
       .subscribe();
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscriptionTask.unsubscribe();
+    this.subscriptionMap.unsubscribe();
   }
 
   ionViewDidLoad() {

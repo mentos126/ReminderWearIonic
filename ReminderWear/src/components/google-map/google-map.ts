@@ -30,6 +30,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy {
   @ViewChild('map') mapElement;
   map: any;
   myCoordinate: Coordinate = new Coordinate(0, 0, 0);
+  isDrag = true;
 
   constructor(public mapService: MapServiceProvider) {}
 
@@ -38,7 +39,8 @@ export class GoogleMapComponent implements OnInit, OnDestroy {
       .currentCoordinate
       .subscribe(res => {
         if (res != null) {
-          this.myCoordinate = res;
+          this.myCoordinate = res[0];
+          this.isDrag = res[1];
           this.initMap();
         }
       });
@@ -46,6 +48,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy {
     this.initMap();
   }
   ngOnDestroy(): void {
+    this.mapService.changeCoordinate(this.myCoordinate, this.isDrag);
     this.subscription.unsubscribe();
   }
 
@@ -60,19 +63,14 @@ export class GoogleMapComponent implements OnInit, OnDestroy {
 
     const marker = new google.maps.Marker({
       position: coords,
-      draggable: true
+      draggable: this.isDrag
     });
 
     marker.setMap(this.map);
 
-
-    const coord: Coordinate = new Coordinate(0, 0, 0);
+    const self = this;
     marker.addListener('drag', function () {
-      console.log('OUIOIOOIOOIO', marker.getPosition().lat);
-      console.log(coord);
-      this.mapService.currentCoordinate.changeCoordiante(coord);
-      // this.myCoordinate.setLat(this.marker.getPosition().getLat());
-      // map.setCenter(marker.getPosition());
+      self.myCoordinate = new Coordinate(marker.getPosition().lat(), marker.getPosition().lng(), 0);
     });
   }
 
