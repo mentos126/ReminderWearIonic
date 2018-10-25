@@ -43,11 +43,11 @@ import {
 import {
   ModalMapPage
 } from '../modal-map/modal-map';
-import {
-  Push,
-  PushObject,
-  PushOptions
-} from '@ionic-native/push';
+// import {
+//   Push,
+  // PushObject,
+  // PushOptions
+// } from '@ionic-native/push';
 
 import {
   LocalNotifications
@@ -70,7 +70,7 @@ export class HomePage implements OnInit, OnDestroy {
     public modalCtrl: ModalController,
     public sanitizer: DomSanitizer,
     private camera: Camera,
-    private push: Push,
+    // private push: Push,
     private localNotifications: LocalNotifications) {
     this.initializeItems();
     this.sort();
