@@ -10,6 +10,7 @@ import {
 } from './SportTask';
 
 import * as moment from 'moment';
+import {SQLitePersistor} from './SQLitePersistor';
 
 export class Tasker {
 
@@ -34,10 +35,12 @@ export class Tasker {
 
   public static unserializeLists(): void {
     console.log('deserialization');
+    SQLitePersistor.loadFromDB();
   }
 
   public static serializeLists(): void {
     console.log('serialization');
+    SQLitePersistor.saveToDB();
   }
 
   public static removeTask(t: Task): void {
@@ -171,10 +174,10 @@ export class Tasker {
     }
   }
 
-  public setListCategories(listCategories: Category[]): void {
+  public static setListCategories(listCategories: Category[]): void {
     Tasker.listCategories = listCategories;
   }
-  public removeCategory(c: Category): void {
+  public static removeCategory(c: Category): void {
     const index = Tasker.listCategories.indexOf(c, 0);
     if (index > -1) {
       Tasker.listCategories.splice(index, 1);
@@ -191,8 +194,12 @@ export class Tasker {
     cat.setName(c.getName());
   }
 
-  public setListTasks(listTasks: Task[]): void {
+  public static setListTasks(listTasks: Task[]): void {
     Tasker.listTasks = listTasks;
+  }
+
+  public static setListSportTasks(listSportTasks: SportTask[]): void {
+    Tasker.listSportTasks = listSportTasks;
   }
 
   public addTask(t: Task): boolean {
