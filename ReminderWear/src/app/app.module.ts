@@ -28,7 +28,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
+import { SQLite} from '@ionic-native/sqlite';
 import { TaskerServiceProvider } from '../providers/tasker-service/tasker-service';
 
 import { GoogleMapComponent } from '../components/google-map/google-map';
@@ -82,7 +82,7 @@ import {} from '@types/googlemaps';
     TaskerServiceProvider,
     Camera,
     Geolocation,
-    SQLite, SQLiteObject,
+    SQLite,
     MapServiceProvider,
     Push,
     LocalNotifications

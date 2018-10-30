@@ -24,6 +24,7 @@ export class SQLitePersistor {
   private sqlite: SQLite;
 
   private constructor(/*private sqlite: SQLite*/){
+    console.log('INIT du SQLitePersistor');
 
     this.sqlite = new SQLite();
     this.sqlite.echoTest().then(value => console.log(value));
@@ -68,45 +69,48 @@ export class SQLitePersistor {
     const sportTasks = Tasker.getListSportTasks();
     const categories = Tasker.getListCategories();
 
-    this.saveCategoriesToDB(categories);
-    this.saveTasksToDB(tasks);
-    this.saveSportTasksToDB(sportTasks);
+    SQLitePersistor.getInstance().saveCategoriesToDB(categories);
+    SQLitePersistor.getInstance().saveTasksToDB(tasks);
+    SQLitePersistor.getInstance().saveSportTasksToDB(sportTasks);
 
   }
 
-  public static loadFromDB(): void {
-    const categories = this.loadCategoriesFromDB();
-    const tasks = this.loadTasksFromDB();
-    const sportTasks = this.loadSportTasksFromDB();
+  public loadFromDB(): void {
+    console.log('loadFromDB');
+
+    const categories = SQLitePersistor.getInstance().loadCategoriesFromDB();
+    const tasks = SQLitePersistor.getInstance().loadTasksFromDB();
+    const sportTasks = SQLitePersistor.getInstance().loadSportTasksFromDB();
 
     Tasker.setListCategories( categories );
     Tasker.setListTasks( tasks );
     Tasker.setListSportTasks( sportTasks);
+    console.log('loadFromDB :: done');
 
   }
 
-  public static saveTasksToDB(tasks : Task[]): void {
+  public saveTasksToDB(tasks : Task[]): void {
     if(tasks.length){ tasks = []; }
 
   }
 
-  public static saveCategoriesToDB(categories : Category[]): void {
+  private saveCategoriesToDB(categories : Category[]): void {
     if(categories.length){ categories = []; }
   }
 
-  public static saveSportTasksToDB(tasks : SportTask[]): void {
+  private saveSportTasksToDB(tasks : SportTask[]): void {
     if(tasks.length){ tasks = []; }
   }
 
-  public static loadCategoriesFromDB() : Category[] {
+  private loadCategoriesFromDB() : Category[] {
     return [];
   }
 
-  public static loadTasksFromDB() : Task[] {
+  private loadTasksFromDB() : Task[] {
     return [];
   }
 
-  public static loadSportTasksFromDB() : SportTask[] {
+  private loadSportTasksFromDB() : SportTask[] {
     return [];
   }
 

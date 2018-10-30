@@ -35,7 +35,7 @@ export class Tasker {
 
   public static unserializeLists(): void {
     console.log('deserialization');
-    SQLitePersistor.loadFromDB();
+    SQLitePersistor.getInstance().loadFromDB();
   }
 
   public static serializeLists(): void {

@@ -92,6 +92,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   initializeItems() {
     const t = new Tasker();
+    console.log('Initializing Tasker');
     Tasker.unserializeLists();
 
     // TODO REMOVE FROM
@@ -118,6 +119,7 @@ export class HomePage implements OnInit, OnDestroy {
     t.addTask(new Task('tache 4', 'description', c, moment(), 30, 12, 30));
     // TODO END REMOVE
 
+    console.log('end autoAdd');
     this.items = Tasker.getListTasks();
 
   }
