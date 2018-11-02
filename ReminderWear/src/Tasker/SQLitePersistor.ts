@@ -14,7 +14,7 @@ import {
 import {
   Tasker
 } from './Tasker';
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable} from 'rxjs';
 
 export class SQLitePersistor {
   private static INSTANCE: SQLitePersistor;
@@ -37,15 +37,12 @@ export class SQLitePersistor {
 
   }
 
-  public getDatabaseState(): Observable<boolean> {
-    return this.databaseReady.asObservable();
-  }
+
 
   public static initInstance(sql: SQLite) {
     if (SQLitePersistor.INSTANCE == null) {
       SQLitePersistor.INSTANCE = new SQLitePersistor(sql);
     }
-    //SQLitePersistor.INSTANCE.createDBs();
   }
 
   public static getInstance(): SQLitePersistor {
@@ -68,20 +65,38 @@ export class SQLitePersistor {
 
   }
 
-  public loadFromDB(): void {
+  public static loadFromDB(): void {
     console.log('loadFromDB');
 
 
     const categories = SQLitePersistor.getInstance().loadCategoriesFromDB();
+    categories.push(new Category(Tasker.CATEGORY_NONE_TAG, 'close', '#f53d3d'));
+    categories.push(new Category(Tasker.CATEGORY_SPORT_TAG, 'add', '#f5f5f5'));
+
+
     const tasks = SQLitePersistor.getInstance().loadTasksFromDB();
     const sportTasks = SQLitePersistor.getInstance().loadSportTasksFromDB();
 
+    // console.log('ajout des categories');
+    // console.log('les categories préchargées sont ', JSON.stringify(Tasker.getListCategories()));
+    // console.log('les catégories extraites sont ', JSON.stringify(categories));
+
+    Tasker.getListCategories().forEach(value => categories.push(value));
     Tasker.setListCategories( categories );
+    // console.log('les categories resultantes sont ', JSON.stringify(Tasker.getListCategories()));
+
+
     Tasker.setListTasks( tasks );
     Tasker.setListSportTasks( sportTasks);
     console.log('loadFromDB :: done');
 
   }
+
+  public getDatabaseState(): Observable<boolean> {
+    return this.databaseReady.asObservable();
+  }
+
+
 
   public saveTasksToDB(tasks: Task[]): void {
     if (tasks.length) { tasks = []; }
@@ -90,19 +105,41 @@ export class SQLitePersistor {
 
   private saveCategoriesToDB(categories: Category[]): void {
     console.log('SAVING CATEGORIES !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    this.db.transaction(function(tx) {
-        categories.forEach(function(cat: Category)  {
-          if (cat.getName() !== Tasker.CATEGORY_NONE_TAG && cat.getName() !== Tasker.CATEGORY_SPORT_TAG) {
-            tx.executeSql('INSERT INTO Categories VALUES (?, ?, ?)', [
-              cat.getID(),
-              cat.getName(),
-              cat.getColor()
-            ]);
-          }
+    const db = this.db;
+    console.log(JSON.stringify(categories));
+    categories.forEach(function(cat: Category)  {
+      if (cat.getName() !== Tasker.CATEGORY_NONE_TAG && cat.getName() !== Tasker.CATEGORY_SPORT_TAG) {
+        console.log('inserting category ', cat.getName());
+        db.executeSql('INSERT INTO Categories VALUES (?, ?, ?)', [
+          cat.getID(),
+          cat.getName(),
+          cat.getColor()
+        ]).then(res => {
+          console.log('retour de l\'insertion de la cat ' + cat.getName() + ' : ', JSON.stringify(res));
+        }).catch(e => {
+          console.log('erreur d\'insertion : ');
+          console.log(JSON.stringify(e));
         });
       }
-    ).catch(error => console.log(error));
-    //
+    });
+
+
+    // this.db.transaction(function(tx) {
+    //     categories.forEach(function(cat: Category)  {
+    //       if (cat.getName() !== Tasker.CATEGORY_NONE_TAG && cat.getName() !== Tasker.CATEGORY_SPORT_TAG) {
+    //         tx.executeSql('INSERT INTO Categories VALUES (?, ?, ?)', [
+    //           cat.getID(),
+    //           cat.getName(),
+    //           cat.getColor()
+    //         ]);
+    //       }
+    //     });
+    //   }
+    // ).catch(error => {
+    //   console.log('une erreur est survenue dans l\'insertion : ');
+    //   console.log(JSON.stringify(error));
+    // });
+
     // this.sqlite.create({
     //   name: 'remindwear.db',
     //   location: 'default'
@@ -126,17 +163,17 @@ export class SQLitePersistor {
     // TODO ???
     // TODO ???
     // TODO ???
-    this.db.transaction(function(tx) {
-      tx.executeSql('SELECT count(*) AS mycount FROM Categories', [], function(rs) {
-        console.log('SELECT returned ', rs.rows);
-        console.log(JSON.stringify(rs));
-        console.log(rs.rows);
-        console.log('done reading SELECT');
-        // console.log('Record count (expected to be 2): ' + rs.rows.item(0).mycount);
-      }, function(error) {
-        console.log('SELECT error: ' + error.message);
-      });
-    });
+    // this.db.transaction(function(tx) {
+    //   tx.executeSql('SELECT count(*) AS mycount FROM Categories', [], function(rs) {
+    //     console.log('SELECT returned ', rs.rows);
+    //     console.log(JSON.stringify(rs));
+    //     console.log(rs.rows);
+    //     console.log('done reading SELECT');
+    //     // console.log('Record count (expected to be 2): ' + rs.rows.item(0).mycount);
+    //   }, function(error) {
+    //     console.log('SELECT error: ' + error.message);
+    //   });
+    // });
 
     // this.sqlite.create({
     //   name: 'remindwear.db',

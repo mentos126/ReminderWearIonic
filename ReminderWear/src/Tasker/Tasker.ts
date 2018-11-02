@@ -36,8 +36,10 @@ export class Tasker {
   }
 
   public static unserializeLists(): void {
-    console.log('deserialization');
-    SQLitePersistor.getInstance().loadFromDB();
+    // console.log('deserialization');
+    SQLitePersistor.loadFromDB();
+    // console.log('fin de désérialisation : ', this.getListTasks().length, 'tâches, ', this.getListCategories().length, 'categories');
+
   }
 
   public static serializeLists(): void {
@@ -187,8 +189,8 @@ export class Tasker {
   public Tasker() {
     if (Tasker.INSTANCE == null) {
       Tasker.unserializeLists();
-      this.addCategory(new Category(Tasker.CATEGORY_NONE_TAG, 'close', '#f53d3d'));
-      this.addCategory(new Category(Tasker.CATEGORY_SPORT_TAG, 'add', '#f5f5f5'));
+      // this.addCategory(new Category(Tasker.CATEGORY_NONE_TAG, 'close', '#f53d3d'));
+      // this.addCategory(new Category(Tasker.CATEGORY_SPORT_TAG, 'add', '#f5f5f5'));
       Tasker.serializeLists();
     }
   }
