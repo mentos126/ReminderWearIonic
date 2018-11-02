@@ -56,7 +56,8 @@ export class Task {
     }
 
     public getCategory(): Category {
-        return this.category;
+      console.log('on chope la categorie de la tâche ' + this.getName());
+      return this.category;
     }
     public setCategory(category: Category): void {
         this.category = category;

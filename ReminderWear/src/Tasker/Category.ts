@@ -24,7 +24,7 @@ export class Category {
     }
 
     public getIcon(): string {
-        return this.icon;
+      return this.icon;
     }
     public setIcon(icon: string): void {
         this.icon = icon;

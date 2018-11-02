@@ -17,10 +17,10 @@ import {
 import {
   Task
 } from '../../Tasker/Task';
-import {
-  Category
-} from '../../Tasker/Category';
-import * as moment from 'moment';
+// import {
+//   Category
+// } from '../../Tasker/Category';
+// import * as moment from 'moment';
 import {
   EditTaskPage
 } from '../edit-task/edit-task';
@@ -52,6 +52,8 @@ import {
 import {
   LocalNotifications
 } from '@ionic-native/local-notifications';
+import {SQLite} from '@ionic-native/sqlite';
+import {SQLitePersistor} from '../../Tasker/SQLitePersistor';
 
 @Component({
   selector: 'page-home',
@@ -71,7 +73,21 @@ export class HomePage implements OnInit, OnDestroy {
     public sanitizer: DomSanitizer,
     private camera: Camera,
     // private push: Push,
-    private localNotifications: LocalNotifications) {
+    private localNotifications: LocalNotifications,
+    private sqlite: SQLite) {
+
+    SQLitePersistor.initInstance(this.sqlite);
+    SQLitePersistor.getInstance().getDatabaseState().subscribe((ready) => {
+      if (ready) {
+        this.onDatabaseReady();
+      }
+
+    });
+
+
+  }
+
+  onDatabaseReady(): void {
     this.initializeItems();
     this.sort();
   }
@@ -91,35 +107,35 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   initializeItems() {
-    const t = new Tasker();
+    // const t = new Tasker();
     console.log('Initializing Tasker');
     Tasker.unserializeLists();
 
     // TODO REMOVE FROM
-    Tasker.getListTasks();
-    const c = new Category('Aucune', 'ios-add-circle', '#abcdef');
-    const c2 = new Category('category 2', 'ios-alarm', '#f5f5f5');
-    t.addCategory(c);
-    t.addCategory(c2);
-    t.addTask(new Task('tache 1', 'description', c, moment(), 30, 12, 30));
-    let i = 0;
-    while (i < 10000000) {
-      i++;
-    }
-    t.addTask(new Task('tache 2', 'description', c, null, 30, 12, 30, [true, false, false, true, false, true, false]));
-    i = 0;
-    while (i < 10000000) {
-      i++;
-    }
-    t.addTask(new Task('tache 3', 'description', c2, moment(), 30, 12, 30));
-    i = 0;
-    while (i < 10000000) {
-      i++;
-    }
-    t.addTask(new Task('tache 4', 'description', c, moment(), 30, 12, 30));
-    // TODO END REMOVE
-
-    console.log('end autoAdd');
+    // Tasker.getListTasks();
+    // const c = new Category('Aucune', 'ios-add-circle', '#abcdef');
+    // const c2 = new Category('category 2', 'ios-alarm', '#f5f5f5');
+    // t.addCategory(c);
+    // t.addCategory(c2);
+    // t.addTask(new Task('tache 1', 'description', c, moment(), 30, 12, 30));
+    // let i = 0;
+    // while (i < 10000000) {
+    //   i++;
+    // }
+    // t.addTask(new Task('tache 2', 'description', c, null, 30, 12, 30, [true, false, false, true, false, true, false]));
+    // i = 0;
+    // while (i < 10000000) {
+    //   i++;
+    // }
+    // t.addTask(new Task('tache 3', 'description', c2, moment(), 30, 12, 30));
+    // i = 0;
+    // while (i < 10000000) {
+    //   i++;
+    // }
+    // t.addTask(new Task('tache 4', 'description', c, moment(), 30, 12, 30));
+    // // TODO END REMOVE
+    //
+    // console.log('end autoAdd');
     this.items = Tasker.getListTasks();
 
   }

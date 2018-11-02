@@ -10,6 +10,7 @@ import {
 } from './SportTask';
 
 import * as moment from 'moment';
+
 import {SQLitePersistor} from './SQLitePersistor';
 
 export class Tasker {
@@ -21,6 +22,7 @@ export class Tasker {
 
   public static getInstance(): Tasker {
     if (Tasker.INSTANCE == null) {
+      SQLitePersistor.getInstance();
       Tasker.INSTANCE = new Tasker();
     }
     return Tasker.INSTANCE;
@@ -153,6 +155,23 @@ export class Tasker {
     return null;
   }
 
+  public static setListCategories(listCategories: Category[]): void {
+    Tasker.listCategories = listCategories;
+  }
+  public static setListTasks(listTasks: Task[]): void {
+    Tasker.listTasks = listTasks;
+  }
+
+  public static setListSportTasks(listSportTasks: SportTask[]): void {
+    Tasker.listSportTasks = listSportTasks;
+  }
+  public static removeCategory(c: Category): void {
+    const index = Tasker.listCategories.indexOf(c, 0);
+    if (index > -1) {
+      Tasker.listCategories.splice(index, 1);
+    }
+  }
+
   public static sort(): void {
     Tasker.listTasks.sort((n1, n2) => {
       if (n1.getNextDate().isAfter(n2.getNextDate())) {
@@ -174,15 +193,7 @@ export class Tasker {
     }
   }
 
-  public static setListCategories(listCategories: Category[]): void {
-    Tasker.listCategories = listCategories;
-  }
-  public static removeCategory(c: Category): void {
-    const index = Tasker.listCategories.indexOf(c, 0);
-    if (index > -1) {
-      Tasker.listCategories.splice(index, 1);
-    }
-  }
+
   public addCategory(c: Category): boolean {
     Tasker.listCategories.push(c);
     return true;
@@ -194,13 +205,7 @@ export class Tasker {
     cat.setName(c.getName());
   }
 
-  public static setListTasks(listTasks: Task[]): void {
-    Tasker.listTasks = listTasks;
-  }
 
-  public static setListSportTasks(listSportTasks: SportTask[]): void {
-    Tasker.listSportTasks = listSportTasks;
-  }
 
   public addTask(t: Task): boolean {
     Tasker.listTasks.push(t);
