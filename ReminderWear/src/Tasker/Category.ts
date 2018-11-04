@@ -45,4 +45,7 @@ export class Category {
             '\n] ';
     }
 
+  setID(insertId: number) {
+    this.ID = insertId;
+  }
 }

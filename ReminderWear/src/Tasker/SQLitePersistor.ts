@@ -105,21 +105,37 @@ export class SQLitePersistor {
 
   private saveCategoriesToDB(categories: Category[]): void {
     console.log('SAVING CATEGORIES !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    this.truncateDBs();
     const db = this.db;
     console.log(JSON.stringify(categories));
     categories.forEach(function(cat: Category)  {
       if (cat.getName() !== Tasker.CATEGORY_NONE_TAG && cat.getName() !== Tasker.CATEGORY_SPORT_TAG) {
-        console.log('inserting category ', cat.getName());
-        db.executeSql('INSERT INTO Categories VALUES (?, ?, ?)', [
-          cat.getID(),
+        db.executeSql('INSERT INTO `Categories` (name, icon, color) VALUES (?, ?, ?)', [
+          // cat.getID(),
           cat.getName(),
+          cat.getIcon(),
           cat.getColor()
+          // 'example en dur', 'ios.alarm', '#FFFFFF'
         ]).then(res => {
-          console.log('retour de l\'insertion de la cat ' + cat.getName() + ' : ', JSON.stringify(res));
+          console.log('retour de l\'insertion de la cat "' + cat.getName() + '" : ', JSON.stringify(res));
+          cat.setID(res.insertId);
+          console.log('Verification de l\'insert');
+          db.executeSql('SELECT * FROM `Categories`', [])
+            .then(res2 => {
+              console.log('returned :', JSON.stringify(res2.rows), 'resultats');
+              console.log('row n° insertId : ', JSON.stringify(res2.rows.item(res.insertId)));
+              console.log('row n° 0 : ', JSON.stringify(res2.rows.item(0)));
+            })
+            .catch(e => console.log('erreur de lecture', JSON.stringify(e)));
         }).catch(e => {
           console.log('erreur d\'insertion : ');
           console.log(JSON.stringify(e));
         });
+
+        /////////////
+        // db.executeSql('SELECT count(*) AS mycount FROM Categories', [])
+        //   .then(rs => console.log('Record count (expected to be 2): ' + rs.rows.item(0).mycount))
+        //   .catch(error => console.log('Error SQL statement', error.message));
       }
     });
 
@@ -157,12 +173,6 @@ export class SQLitePersistor {
   private loadCategoriesFromDB(): Category[] {
     const categories: Category[] = [];
     console.log('loadCategoriesFromDB');
-
-    // TODO : existe pas ?
-    // TODO ???
-    // TODO ???
-    // TODO ???
-    // TODO ???
     // this.db.transaction(function(tx) {
     //   tx.executeSql('SELECT count(*) AS mycount FROM Categories', [], function(rs) {
     //     console.log('SELECT returned ', rs.rows);
@@ -174,14 +184,6 @@ export class SQLitePersistor {
     //     console.log('SELECT error: ' + error.message);
     //   });
     // });
-
-    // this.sqlite.create({
-    //   name: 'remindwear.db',
-    //   location: 'default'
-    // })
-    //   .then((db: SQLiteObject) => {
-    //
-    //   });
 
     console.log('loadCategoriesFromDB : done, extracted categories : ');
     console.log(JSON.stringify(categories));
@@ -198,33 +200,37 @@ export class SQLitePersistor {
   }
 
   private truncateDBs(): void {
-    // this.sqlite.create({
-    //   name: 'remindwear.db',
-    //   location: 'default'
-    // })
-    //   .then((db: SQLiteObject) => {
-    //
-    //
-    //   })
-    //   .catch(e => console.log(e));
+    console.log('truncate DBs : '),
+    this.db.executeSql('DROP TABLE IF EXISTS HeartRate')
+      .then(() => console.log('HeartRate Truncated'))
+      .catch(e => console.log('error truncating HeartRate: ', JSON.stringify(e)));
 
-    this.db.transaction(function(tx) {
-        tx.executeSql('TRUNCATE TABLE SportTasks');
-        tx.executeSql('TRUNCATE TABLE HeartRate');
-        tx.executeSql('TRUNCATE TABLE Coordinates');
-        tx.executeSql('TRUNCATE TABLE Tasks');
-        tx.executeSql('TRUNCATE TABLE Categories');
-      }
-    ).catch(error => console.log(error));
+    this.db.executeSql('DELETE FROM SportTasks')
+      .then(() => console.log('SportTasks Truncated'))
+      .catch(e => console.log('error truncating SportTasks : ', JSON.stringify(e)));
 
+    this.db.executeSql('DROP TABLE Coordinates')
+      .then(() => console.log('Coordinates Truncated'))
+      .catch(e => console.log('error truncating Coordinates: ', JSON.stringify(e)));
+
+    this.db.executeSql('DROP TABLE Tasks')
+      .then(() => console.log('Tasks Truncated'))
+      .catch(e => console.log('error truncating Tasks : ', JSON.stringify(e)));
+
+    this.db.executeSql('DROP TABLE Categories')
+      .then(() => console.log('CategoriesTruncated'))
+      .catch(e => console.log('error truncating Categories: ', JSON.stringify(e)));
+
+    this.createDBs();
   }
 
   private createDBs() {
     this.db.transaction(function(tx) {
         tx.executeSql('CREATE TABLE IF NOT EXISTS Categories (' +
           'ID INTEGER PRIMARY KEY, ' +
-          'name TEXT, icon TEXT, ' +
-          'color TEXT)'
+          'name TEXT NOT NULL, ' +
+          'icon TEXT NOT NULL, ' +
+          'color TEXT NOT NULL)'
         );
         tx.executeSql('CREATE TABLE IF NOT EXISTS Tasks (' +
           'ID INTEGER PRIMARY KEY, ' +
