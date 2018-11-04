@@ -87,7 +87,6 @@ export class EditTaskPage implements OnInit, OnDestroy {
         this.sunday = this.recevTask.getRepete()[6];
         if (this.recevTask.getDateDeb() !== null) {
           this.myDate = this.recevTask.getDateDeb().format('YYYY-MM-DD');
-          console.log('myDate', this.myDate);
         } else {
           this.myDate = null;
         }
@@ -128,9 +127,7 @@ export class EditTaskPage implements OnInit, OnDestroy {
     toast.present();
   }
 
-  private dismissHandler() {
-    console.log('Toast onDidDismiss()');
-  }
+  private dismissHandler() { }
 
   openCategories() {
     const myModal = this.modalCtrl.create(ModalCategoryPage, { 'myParam': this.myCats }, {cssClass: 'select-modal' });

@@ -10,7 +10,6 @@ import {
 import {
   AddTaskPage
 } from '../add-task/add-task';
-
 import {
   Tasker
 } from '../../Tasker/Tasker';
@@ -31,9 +30,6 @@ import {
   ISubscription
 } from 'rxjs/Subscription';
 import {
-  DomSanitizer
-} from '@angular/platform-browser';
-import {
   Camera,
   CameraOptions
 } from '@ionic-native/camera';
@@ -43,12 +39,6 @@ import {
 import {
   ModalMapPage
 } from '../modal-map/modal-map';
-import {
-  Push,
-  PushObject,
-  PushOptions
-} from '@ionic-native/push';
-
 import {
   LocalNotifications
 } from '@ionic-native/local-notifications';
@@ -68,9 +58,7 @@ export class HomePage implements OnInit, OnDestroy {
   constructor(public navCtrl: NavController,
     private taskService: TaskerServiceProvider,
     public modalCtrl: ModalController,
-    public sanitizer: DomSanitizer,
     private camera: Camera,
-    private push: Push,
     private localNotifications: LocalNotifications) {
     this.initializeItems();
     this.sort();
@@ -86,9 +74,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.subscriptionTask.unsubscribe();
   }
 
-  ionViewDidLoad() {
-    console.log(this.sanitizer);
-  }
+  ionViewDidLoad() {}
 
   initializeItems() {
     const t = new Tasker();
@@ -187,16 +173,15 @@ export class HomePage implements OnInit, OnDestroy {
     event.preventDefault();
 
     const options: CameraOptions = {
-      quality: 100,
+      quality: 70,
       destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE
     };
 
     this.camera.getPicture(options).then((imageData) => {
-      const base64Image = imageData;
       const t: Task = Tasker.getTaskByID(id);
-      t.setPhoto(base64Image);
+      t.setPhoto('data:image/jpeg;base64,' + imageData);
     }, (err) => {
       console.log(err);
     });
@@ -212,7 +197,6 @@ export class HomePage implements OnInit, OnDestroy {
     });
     myModal.onDidDismiss(data => {
       if (data) {
-        console.log('HOME RECEVE DATA', data);
         this.myCoordinate = data;
         const t: Task = Tasker.getTaskByID(id);
         t.setLocalisation(this.myCoordinate);
@@ -221,96 +205,58 @@ export class HomePage implements OnInit, OnDestroy {
     myModal.present();
   }
 
-  lunchPushNotification() {
-    // // to check if we have permission
-    // this.push.hasPermission()
-    //   .then((res: any) => {
-
-    //     if (res.isEnabled) {
-    //       console.log('We have permission to send push notifications');
-    //     } else {
-    //       console.log('We do not have permission to send push notifications');
-    //     }
-
-    //   });
-
-    // // Create a channel (Android O and above). You'll need to provide the id, description and importance properties.
-    // this.push.createChannel({
-    //   id: 'testchannel1',
-    //   description: 'My first test channel',
-    //   // The importance property goes from 1 = Lowest, 2 = Low, 3 = Normal, 4 = High and 5 = Highest.
-    //   importance: 3
-    // }).then(() => console.log('Channel created'));
-
-    // // Delete a channel (Android O and above)
-    // this.push.deleteChannel('testchannel1').then(() => console.log('Channel deleted'));
-
-    // // Return a list of currently configured channels
-    // this.push.listChannels().then((channels) => console.log('List of channels', channels));
-
-    // // to initialize push notifications
-
-    // const options: PushOptions = {
-    //   android: {},
-    //   ios: {
-    //     alert: 'true',
-    //     badge: true,
-    //     sound: 'false'
-    //   },
-    //   windows: {},
-    //   browser: {
-    //     pushServiceURL: 'http://push.api.phonegap.com/v1/push'
-    //   }
-    // };
-
-    // const pushObject: PushObject = this.push.init(options);
-
-
-    // pushObject.on('notification').subscribe((notification: any) => console.log('Received a notification', notification));
-
-    // pushObject.on('registration').subscribe((registration: any) => console.log('Device registered', registration));
-
-    // pushObject.on('error').subscribe(error => console.error('Error with Push plugin', error));
-
-  }
-
   lunchLocalNotification() {
-    // Schedule a single notification
-    this.localNotifications.schedule({
-      id: 1,
-      text: 'Single ILocalNotification',
-      // sound: isAndroid ? 'file://sound.mp3' : 'file://beep.caf',
-      data: {
-        // secret: key
-      }
-    });
 
-
-    // Schedule multiple notifications
     this.localNotifications.schedule([{
-      id: 1,
-      text: 'Multi ILocalNotification 1',
-      // sound: isAndroid ? 'file://sound.mp3' : 'file://beep.caf',
-      data: {
-        // secret: key
-      }
-    }, {
-      id: 2,
-      title: 'Local ILocalNotification Example',
-      text: 'Multi ILocalNotification 2',
-      icon: 'http://example.com/icon.png'
-    }]);
-
-
-    // Schedule delayed notification
-    this.localNotifications.schedule({
-      text: 'Delayed ILocalNotification',
+      id: 1, // id de la tache
+      text: 'titre de la tache',
       trigger: {
-        at: new Date(new Date().getTime() + 10)
+        at: new Date(new Date().getTime() + 60) // date de la tache
       },
       led: 'FF0000',
+      icon: 'http://example.com/icon.png', // icone de la tache
       sound: null
-    });
+    },
+    {
+      id: 2, // id de la tache
+      text: 'titre de la tache 2',
+      trigger: {
+        at: new Date(new Date().getTime() + 300) // date de la tache
+      },
+      led: 'FF0000',
+      icon: 'http://example.com/icon.png', // icone de la tache
+      sound: 'file://sound.mp3',
+      data: {}
+    }
+  ]);
+
+    // this.localNotifications.schedule({
+    //   id: 2, // id de la tache
+    //   text: 'titre de la tache 2',
+    //   // trigger: {
+    //     at: new Date(new Date().getTime() + 300), // date de la tache
+    //   // },
+    //   led: 'FF0000',
+    //   icon: 'http://example.com/icon.png', // icone de la tache
+    //   sound: 'file://sound.mp3',
+    //   data: {}
+    // });
+
+    // // Schedule multiple notifications
+    // this.localNotifications.schedule([{
+    //   id: 1,
+    //   text: 'Multi ILocalNotification 1',
+    //   // sound: isAndroid ? 'file://sound.mp3' : 'file://beep.caf',
+    //   data: {
+    //     // secret: key
+    //   }
+    // }, {
+    //   id: 2,
+    //   title: 'Local ILocalNotification Example',
+    //   text: 'Multi ILocalNotification 2',
+    //   icon: 'http://example.com/icon.png'
+    // }]);
+
   }
 
 }

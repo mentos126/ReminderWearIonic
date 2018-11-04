@@ -18,7 +18,6 @@
     </ion-grid>
   </ion-toolbar>
 
-  <button ion-button (click)="lunchPushNotification()">TEST PUSH NOTIF</button>
   <button ion-button (click)="lunchLocalNotification()">TEST LOCAL NOTIF</button>
 
   <ion-list no-line>
@@ -81,20 +80,20 @@
               </ion-col>
             </ion-row>
 
-              <ion-row text-center>
-                <ion-col>
-                  <button  *ngIf="!item.getLocalisation()" (click)="selectLocalisation($event, item.getID())" ion-button >Selectionner un lieux</button>
-                  <google-map  *ngIf="item.getLocalisation()" [localisation]="item.getLocalisation()" [isDrag]="false" ></google-map>
-                </ion-col>
-              </ion-row>
+            <ion-row text-center>
+              <ion-col>
+                <button *ngIf="!item.getLocalisation()" (click)="selectLocalisation($event, item.getID())" ion-button>Selectionner
+                  un lieux</button>
+                <google-map *ngIf="item.getLocalisation()" [localisation]="item.getLocalisation()" [isDrag]="false"></google-map>
+              </ion-col>
+            </ion-row>
 
-              <ion-row text-center>
-                <ion-col>
-                  <button  *ngIf="!item.getPhoto()" ion-button (click)="takePhoto($event, item.getID())">Prendre une photo</button>
-                  <img  *ngIf="item.getPhoto()" [src]="sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + item.getPhoto())"
-                    alt="{{item.getName()}}" />
-                </ion-col>
-              </ion-row>
+            <ion-row text-center>
+              <ion-col>
+                <button *ngIf="!item.getPhoto()" ion-button (click)="takePhoto($event, item.getID())">Prendre une photo</button>
+                <p *ngIf="item.getPhoto()"><img [src]="item.getPhoto()" [alt]="item.getName()"></p>
+              </ion-col>
+            </ion-row>
 
           </ion-grid>
         </ion-card-content>

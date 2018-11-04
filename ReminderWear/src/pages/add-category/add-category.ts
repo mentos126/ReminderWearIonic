@@ -51,7 +51,6 @@ export class AddCategoryPage {
       if (this.myIcon !== '') {
         if (this.myColor !== '') {
           const newCategory = new Category(this.myTitle, this.myIcon, this.myColor);
-          console.log(newCategory);
           Tasker.getListCategories().push(newCategory);
           Tasker.serializeLists();
           this.navCtrl.pop();

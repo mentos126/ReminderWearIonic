@@ -60,7 +60,6 @@ export class GoogleMapComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.isDrag) {
-      console.log('MAPS NGDESTROY myCoordinate', this.myCoordinate);
       this.mapService.changeCoordinate(this.myCoordinate);
       this.subscription.unsubscribe();
     }
@@ -106,7 +105,6 @@ export class GoogleMapComponent implements OnInit, OnDestroy {
     const self = this;
     marker.addListener('drag', function () {
       self.myCoordinate = new Coordinate(marker.getPosition().lat(), marker.getPosition().lng(), 0);
-      console.log('MAPS LISTENER myCoordinate', self.myCoordinate);
       self.changeMyCoordinateMarker();
     });
   }

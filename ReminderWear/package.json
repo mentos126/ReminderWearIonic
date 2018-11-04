@@ -20,18 +20,17 @@
     "@angular/http": "5.2.11",
     "@angular/platform-browser": "5.2.11",
     "@angular/platform-browser-dynamic": "5.2.11",
-    "@ionic-native/camera": "^4.16.0",
+    "@ionic-native/camera": "^4.17.0",
     "@ionic-native/core": "^4.16.0",
     "@ionic-native/geolocation": "^4.16.0",
     "@ionic-native/google-maps": "^4.14.0",
     "@ionic-native/local-notifications": "^4.16.0",
-    "@ionic-native/push": "^4.16.0",
     "@ionic-native/splash-screen": "~4.15.0",
     "@ionic-native/status-bar": "~4.15.0",
     "@ionic/pro": "2.0.3",
     "@ionic/storage": "2.2.0",
     "@types/google-maps": "^3.2.0",
-    "cordova-android": "7.1.1",
+    "cordova-android": "^7.1.1",
     "cordova-plugin-badge": "0.8.7",
     "cordova-plugin-camera": "4.0.3",
     "cordova-plugin-geolocation": "4.0.1",
@@ -43,7 +42,6 @@
     "moment": "^2.22.2",
     "ng2-charts": "^1.6.0",
     "phonegap-plugin-multidex": "1.0.0",
-    "phonegap-plugin-push": "2.2.3",
     "primeicons": "^1.0.0",
     "primeng": "^6.1.5",
     "rxjs": "5.5.11",
@@ -52,7 +50,7 @@
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.2.0",
-    "@types/googlemaps": "^3.30.15",
+    "@types/googlemaps": "^3.30.16",
     "typescript": "~2.6.2"
   },
   "description": "An Ionic project",
@@ -61,10 +59,6 @@
       "cordova-plugin-camera": {},
       "cordova-plugin-geolocation": {
         "GEOLOCATION_USAGE_DESCRIPTION": "To locate you"
-      },
-      "phonegap-plugin-push": {
-        "ANDROID_SUPPORT_V13_VERSION": "27.+",
-        "FCM_VERSION": "11.6.2"
       },
       "cordova-plugin-local-notification": {}
     }

@@ -43,9 +43,7 @@ export class ModalMapPage implements OnInit, OnDestroy {
     public viewCtrl: ViewController, private geolocation: Geolocation,
     private mapService: MapServiceProvider) {}
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ModalMapPage');
-  }
+  ionViewDidLoad() { }
 
   ngOnInit(): void {
     this.initGeo();
@@ -53,7 +51,6 @@ export class ModalMapPage implements OnInit, OnDestroy {
       .currentCoordinate
       .subscribe(res => {
         this.myCoordinate = res;
-        console.log('MODAL NGINIT myCoordinate', this.myCoordinate);
       });
   }
 
@@ -66,12 +63,11 @@ export class ModalMapPage implements OnInit, OnDestroy {
       this.myCoordinate = new Coordinate(resp.coords.latitude, resp.coords.longitude, 0);
       this.mapService.changeCoordinate(this.myCoordinate);
     }).catch((error) => {
-      console.log('Error getting location', error);
+      console.log(error);
     });
 
     //  const watch = this.geolocation.watchPosition();
     //  watch.subscribe((data) => {
-    //    console.log(data);
     //   // data can be a set of coordinates, or an error (if an error occurred).
     //   // data.coords.latitude
     //   // data.coords.longitude
@@ -79,7 +75,6 @@ export class ModalMapPage implements OnInit, OnDestroy {
   }
 
   onSelectPosition() {
-    console.log('MODAL DISMISS myCoordinate', this.myCoordinate);
     this.viewCtrl.dismiss(this.myCoordinate);
   }
 

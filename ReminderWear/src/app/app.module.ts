@@ -3,11 +3,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
+import { TabsPage } from '../pages/tabs/tabs';
 import { SportPage } from '../pages/sport/sport';
 import { HomePage } from '../pages/home/home';
-import { TabsPage } from '../pages/tabs/tabs';
 
-// ADDED
 import { AddTaskPage } from '../pages/add-task/add-task';
 import { EditTaskPage } from '../pages/edit-task/edit-task';
 import { AddCategoryPage } from '../pages/add-category/add-category';
@@ -19,7 +18,6 @@ import { ModalMapPage } from '../pages/modal-map/modal-map';
 
 import { Camera } from '@ionic-native/camera';
 import { Geolocation } from '@ionic-native/geolocation';
-import { Push } from '@ionic-native/push';
 import { LocalNotifications  } from '@ionic-native/local-notifications';
 
 import { ChartsModule } from 'ng2-charts';
@@ -34,7 +32,6 @@ import { GoogleMapComponent } from '../components/google-map/google-map';
 import { MapServiceProvider } from '../providers/map-service/map-service';
 
 import {} from '@types/googlemaps';
-
 
 @NgModule({
   declarations: [
@@ -82,7 +79,6 @@ import {} from '@types/googlemaps';
     Camera,
     Geolocation,
     MapServiceProvider,
-    Push,
     LocalNotifications
   ]
 })

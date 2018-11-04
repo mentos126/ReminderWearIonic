@@ -114,9 +114,7 @@ export class AddTaskPage implements OnInit, OnDestroy {
     toast.present();
   }
 
-  private dismissHandler() {
-    console.log('Toast onDidDismiss()');
-  }
+  private dismissHandler() { }
 
   openCategories() {
     const myModal = this.modalCtrl.create(ModalCategoryPage, { 'myParam': this.myCats }, {cssClass: 'select-modal' });
