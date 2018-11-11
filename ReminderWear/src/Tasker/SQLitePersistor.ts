@@ -15,17 +15,24 @@ import {
   Tasker
 } from './Tasker';
 import {BehaviorSubject, Observable} from 'rxjs';
+import * as moment from 'moment';
+import {Coordinate} from './Coordinate';
+// import moment = require('moment');
+//
+// import * as moment from 'moment';
+
 
 export class SQLitePersistor {
   private static INSTANCE: SQLitePersistor;
-  private sqlite: SQLite;
-  private db: SQLiteObject;
-  private databaseReady: BehaviorSubject<boolean>;
-
   private static DB_CONFIG = {
     name: 'remindwear.db',
     location: 'default'
   };
+  private sqlite: SQLite;
+  private db: SQLiteObject;
+  private databaseReady: BehaviorSubject<boolean>;
+
+
 
   private constructor(sqlite: SQLite) {
     this.sqlite = sqlite;
@@ -59,18 +66,17 @@ export class SQLitePersistor {
     const sportTasks = Tasker.getListSportTasks();
     const categories = Tasker.getListCategories();
 
-    this.getInstance().truncateDBs();
+    this.getInstance().truncateDBs().then( () => {
+      SQLitePersistor.getInstance().saveCategoriesToDB(categories);
+      SQLitePersistor.getInstance().saveTasksToDB(tasks);
+      SQLitePersistor.getInstance().saveSportTasksToDB(sportTasks);
+    } );
 
-    SQLitePersistor.getInstance().saveCategoriesToDB(categories);
-    SQLitePersistor.getInstance().saveTasksToDB(tasks);
-    SQLitePersistor.getInstance().saveSportTasksToDB(sportTasks);
+
 
   }
 
   public static loadFromDB(): void {
-    console.log('loadFromDB');
-
-
     const categories = SQLitePersistor.getInstance().loadCategoriesFromDB();
     categories.push(new Category(Tasker.CATEGORY_NONE_TAG, 'close', '#f53d3d'));
     categories.push(new Category(Tasker.CATEGORY_SPORT_TAG, 'add', '#f5f5f5'));
@@ -81,12 +87,9 @@ export class SQLitePersistor {
 
     Tasker.getListCategories().forEach(value => categories.push(value));
     Tasker.setListCategories( categories );
-    // console.log('les categories resultantes sont ', JSON.stringify(Tasker.getListCategories()));
-
 
     Tasker.setListTasks( tasks );
     Tasker.setListSportTasks( sportTasks);
-    console.log('loadFromDB :: done');
 
   }
 
@@ -97,15 +100,47 @@ export class SQLitePersistor {
 
 
   public saveTasksToDB(tasks: Task[]): void {
-    if (tasks.length) { tasks = []; }
+
+    console.log(tasks.length + ' tasks to save on DB');
+
+    const db = this.db;
+    tasks.forEach(function(task: Task)  {
+      console.log('Task ' + task.getName(), JSON.stringify(task) );
+      const localisation = task.getLocalisation() === null ?
+        null :
+        [ task.getLocalisation().getLat(), task.getLocalisation().getLng(), task.getLocalisation().getHeight() ];
+      const insertParams = [
+        task.getName(),
+        task.getDescription(),
+        task.getCategory().getName(),
+        task.getDateDeb().toISOString(true),
+        task.getWarningBefore(),
+        task.getIsActivatedNotification(),
+        task.getTimeHour(),
+        task.getTimeMinutes(),
+        task.getRepete(),
+        task.getPhoto(),
+        localisation === null ? null : localisation.join(',')
+      ];
+
+      console.log('insert parameters : ', JSON.stringify(insertParams));
+      db.executeSql('INSERT INTO `Tasks` (' +
+        'name, description, categoryName, dateDebString, warningBefore, ' +
+        'isActivatedNotification, timeHour, timeMinutes, repete, photo, localisation' +
+        ') ' +
+        'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', insertParams).then(res => {
+        task.setID(res.insertId);
+      }).catch(e => {
+        console.log('erreur d\'insertion de la tâche ' + task.getName() + ' : ', JSON.stringify(e));
+      });
+
+    });
 
   }
 
   private saveCategoriesToDB(categories: Category[]): void {
-    console.log('SAVING CATEGORIES !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    this.truncateDBs();
+
     const db = this.db;
-    console.log(JSON.stringify(categories));
     categories.forEach(function(cat: Category)  {
       if (cat.getName() !== Tasker.CATEGORY_NONE_TAG && cat.getName() !== Tasker.CATEGORY_SPORT_TAG) {
         db.executeSql('INSERT INTO `Categories` (name, icon, color) VALUES (?, ?, ?)', [
@@ -115,7 +150,7 @@ export class SQLitePersistor {
         ]).then(res => {
           cat.setID(res.insertId);
         }).catch(e => {
-          console.log('erreur d\'insertion : ', JSON.stringify(e));
+          console.log('erreur d\'insertion de la categorie ' + cat.getName() + ' : ', JSON.stringify(e));
         });
       }
     });
@@ -131,7 +166,7 @@ export class SQLitePersistor {
 
     this.db.executeSql('SELECT * FROM `Categories`', [])
       .then(res => {
-        console.log('returned :', res.rows.length , 'resultats');
+        console.log('SELECT * from Categories returned :', res.rows.length , 'results');
         for (let i = 0; i < res.rows.length; i++) {
           const sqlCat = res.rows.item(i);
           categories.push( new Category(sqlCat.name, sqlCat.icon, sqlCat.color));
@@ -142,42 +177,76 @@ export class SQLitePersistor {
   }
 
   private loadTasksFromDB(): Task[] {
-    return [];
+    const tasks: Task[] = [];
+
+    this.db.executeSql('SELECT * FROM `Tasks`', [])
+      .then(res => {
+        console.log('SELECT * from Task returned :', res.rows.length , 'results');
+        for (let i = 0; i < res.rows.length; i++) {
+          const sqlTask = res.rows.item(i);
+          console.log('SQL Task returned : ', JSON.stringify(sqlTask));
+
+          const repete: boolean[] = [];
+          const sqlRepete: string = sqlTask.repete;
+          sqlRepete.split(',').forEach(bool => {
+              repete.push( bool === 'true' );
+            }
+          );
+
+          // console.log('creating temp task');
+
+          const t = new Task(
+            sqlTask.name,
+            sqlTask.description,
+            Tasker.getCategoryByName( sqlTask.categoryName ),
+            moment( sqlTask.dateDebString ),
+            sqlTask.warningBefore,
+            sqlTask.timeHour,
+            sqlTask.timeMinutes,
+            repete
+          );
+          t.setID(i);
+
+          t.setIsActivatedNotification(
+            sqlTask.isActivatedNotification === 'true'
+          );
+          // console.log('setting photo');
+          if (sqlTask.photo !== null) {
+            t.setPhoto(sqlTask.photo);
+          }
+          // console.log('setting localisation');
+          if (sqlTask.localisation !== null) {
+            const strCoords  = sqlTask.localisation.split(',');
+            const coords: Coordinate = new Coordinate(
+              strCoords[0], strCoords[1], strCoords[2]
+            );
+            t.setLocalisation(coords);
+          }
+
+          // console.log('Tache extraite :', JSON.stringify(t));
+
+           tasks.push(t);
+        }
+      })
+      .catch(e => console.log('erreur de lecture', JSON.stringify(e)));
+    return tasks;
   }
 
   private loadSportTasksFromDB(): SportTask[] {
     return [];
   }
 
-  private truncateDBs(): void {
-    console.log('truncate DBs : ');
-    this.sqlite.deleteDatabase(SQLitePersistor.DB_CONFIG);
-    this.sqlite.create(SQLitePersistor.DB_CONFIG);
-    // this.db.executeSql('DELETE FROM HeartRate WHERE SportTaskID IS NOT NULL')
-    //   .then(() => console.log('HeartRate Truncated'))
-    //   .catch(e => console.log('error truncating HeartRate: ', JSON.stringify(e)));
-    //
-    // this.db.executeSql('DELETE FROM SportTasks')
-    //   .then(() => console.log('SportTasks Truncated'))
-    //   .catch(e => console.log('error truncating SportTasks : ', JSON.stringify(e)));
-    //
-    // this.db.executeSql('DROP TABLE Coordinates')
-    //   .then(() => console.log('Coordinates Truncated'))
-    //   .catch(e => console.log('error truncating Coordinates: ', JSON.stringify(e)));
-    //
-    // this.db.executeSql('DROP TABLE Tasks')
-    //   .then(() => console.log('Tasks Truncated'))
-    //   .catch(e => console.log('error truncating Tasks : ', JSON.stringify(e)));
+  private async truncateDBs() {
+    console.log('truncate DBs');
+    const tableNames = [
+      'HeartRate', 'SportTasks', 'Coordinates', 'Tasks', 'Categories'
+    ];
 
-      // this.db.executeSql('DELETE FROM Categories WHERE ID IS NOT NULL')
-      //   .then(() => console.log('Categories Truncated'))
-      //   .catch(e => console.log('error dropping Categories: ', JSON.stringify(e)));
-
-    // this.db.executeSql('DROP TABLE Categories')
-    //   .then(() => console.log('CategoriesTruncated'))
-    //   .catch(e => console.log('error dropping Categories: ', JSON.stringify(e)));
-
-    this.createDBs(false);
+    return this.db.transaction(function (tx) {
+      tableNames.forEach(tableName => {
+        tx.executeSql('DELETE FROM ' + tableName);
+      });
+    });
   }
 
   private createDBs(notify: boolean) {
@@ -192,7 +261,7 @@ export class SQLitePersistor {
           'ID INTEGER PRIMARY KEY, ' +
           'name TEXT, ' +
           'description TEXT, ' +
-          'category INT, ' +
+          'categoryName TEXT, ' +
           'dateDebString TEXT, ' +
           'warningBefore INT, ' +
           'isActivatedNotification INT, ' +
@@ -222,8 +291,7 @@ export class SQLitePersistor {
       }
     )
       .catch(error => console.log(error))
-      .then( value => {
-        console.log('done creating the DBs : ', value);
+      .then( () => {
         if (notify) {
           this.databaseReady.next(true);
         }

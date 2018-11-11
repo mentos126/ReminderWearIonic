@@ -78,7 +78,7 @@ export class SportPage implements OnInit, OnDestroy {
 
   getItems(ev: any) {
     this.items = Tasker.getListSportTasks();
-    console.log(this.items);
+    console.log('Items : ', JSON.stringify(this.items));
     const val = ev.target.value;
     if (val && val.trim() !== '') {
       this.items = this.items.filter((item) => {

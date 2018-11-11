@@ -36,14 +36,11 @@ export class Tasker {
   }
 
   public static unserializeLists(): void {
-    // console.log('deserialization');
     SQLitePersistor.loadFromDB();
-    // console.log('fin de désérialisation : ', this.getListTasks().length, 'tâches, ', this.getListCategories().length, 'categories');
 
   }
 
   public static serializeLists(): void {
-    console.log('serialization');
     SQLitePersistor.saveToDB();
   }
 
@@ -51,20 +48,30 @@ export class Tasker {
     const index = this.listTasks.indexOf(t, 0);
     if (index > -1) {
       this.listTasks.splice(index, 1);
+      this.serializeLists();
     }
   }
 
   public static removeTaskByID(id: number): void {
-    let temp = -1;
-    for (let i = 0; i < this.listTasks.length; i++) {
-      if (this.listTasks[i].getID() === id) {
-        temp = i;
-        break;
-      }
-    }
-    if (temp !== -1) {
-      this.listTasks.slice(temp, 1);
-    }
+    console.log('Removing task with ID ' + id);
+    // let temp = -1;
+    this.listTasks.forEach((task: Task) => {
+       if (task.getID() === id) {
+         this.removeTask(task);
+         return;
+       }
+    });
+    // for (let i = 0; i < this.listTasks.length; i++) {
+    //   if (this.listTasks[i].getID() === id) {
+    //     temp = i;
+    //     break;
+    //   }
+    // }
+    // if (temp !== -1) {
+    //   this.listTasks.slice(temp, 1);
+    //   this.serializeLists();
+    // }
+
   }
 
   public static removeSportTask(t: SportTask): void {

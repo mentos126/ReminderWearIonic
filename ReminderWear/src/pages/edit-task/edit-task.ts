@@ -106,7 +106,8 @@ export class EditTaskPage implements OnInit, OnDestroy {
   }
 
   delete() {
-    Tasker.removeTaskByID(this.recevTask.getID());
+    // Tasker.removeTaskByID(this.recevTask.getID());
+    Tasker.removeTask(this.recevTask);
     this.navCtrl.pop();
   }
 

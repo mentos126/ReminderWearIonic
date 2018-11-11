@@ -66,7 +66,7 @@ export class ModalMapPage implements OnInit, OnDestroy {
       this.myCoordinate = new Coordinate(resp.coords.latitude, resp.coords.longitude, 0);
       this.mapService.changeCoordinate(this.myCoordinate);
     }).catch((error) => {
-      console.log('Error getting location', error);
+      console.log('Error getting location', JSON.stringify(error));
     });
 
     //  const watch = this.geolocation.watchPosition();

@@ -6,6 +6,7 @@ import {
 } from 'moment';
 import * as moment from 'moment' ;
 import { Coordinate } from './Coordinate';
+import {Tasker} from './Tasker';
 
 export class Task {
 
@@ -56,7 +57,6 @@ export class Task {
     }
 
     public getCategory(): Category {
-      console.log('on chope la categorie de la tâche ' + this.getName());
       return this.category;
     }
     public setCategory(category: Category): void {
@@ -197,7 +197,9 @@ export class Task {
     }
 
     public setPhoto(photo: string): void {
+      console.log('setting photo to ', JSON.stringify(photo));
       this.photo = photo;
+      Tasker.serializeLists();
     }
 
     public getLocalisation(): Coordinate {
@@ -206,6 +208,7 @@ export class Task {
 
     public setLocalisation(localisation: Coordinate): void {
       this.localisation = localisation;
+      Tasker.serializeLists();
     }
 
 
@@ -231,4 +234,7 @@ export class Task {
     */
 
 
+  setID(insertId: number) {
+    this.ID = insertId;
+  }
 }

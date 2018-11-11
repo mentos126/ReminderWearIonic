@@ -202,6 +202,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   takePhoto(event: any, id: number) {
+    console.log('takePhoto');
     event.preventDefault();
 
     const options: CameraOptions = {
@@ -211,13 +212,16 @@ export class HomePage implements OnInit, OnDestroy {
       mediaType: this.camera.MediaType.PICTURE
     };
 
-    this.camera.getPicture(options).then((imageData) => {
-      const base64Image = imageData;
-      const t: Task = Tasker.getTaskByID(id);
-      t.setPhoto(base64Image);
-    }, (err) => {
-      console.log(err);
-    });
+    this.camera.getPicture(options)
+      .then((imageData) => {
+        const base64Image = imageData;
+        const t: Task = Tasker.getTaskByID(id);
+        t.setPhoto(base64Image);
+      }, (err) => {
+        console.log('error setting photo', JSON.stringify(err));
+      });
+
+
 
   }
 
