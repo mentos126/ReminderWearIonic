@@ -51,7 +51,6 @@
     "moment": "^2.22.2",
     "ng2-charts": "^1.6.0",
     "phonegap-plugin-multidex": "^1.0.0",
-    "phonegap-plugin-push": "2.2.3",
     "primeicons": "^1.0.0",
     "primeng": "^6.1.5",
     "rxjs": "5.5.11",
@@ -68,10 +67,6 @@
     "plugins": {
       "cordova-plugin-geolocation": {
         "GEOLOCATION_USAGE_DESCRIPTION": "To locate you"
-      },
-      "phonegap-plugin-push": {
-        "ANDROID_SUPPORT_V13_VERSION": "27.+",
-        "FCM_VERSION": "11.6.2"
       },
       "cordova-plugin-local-notification": {},
       "cordova-plugin-whitelist": {},

@@ -3,6 +3,7 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/ReminderWear/node_modules/chart.js/src/platforms" />
       <excludeFolder url="file://$MODULE_DIR$/ReminderWear/platforms" />
       <excludeFolder url="file://$MODULE_DIR$/ReminderWear/www" />
       <excludeFolder url="file://$MODULE_DIR$/temp" />
