@@ -5,7 +5,8 @@ import {
 } from '@angular/core';
 import {
   NavController,
-  ModalController
+  ModalController,
+  Platform
 } from 'ionic-angular';
 import {
   AddTaskPage
@@ -55,13 +56,33 @@ export class HomePage implements OnInit, OnDestroy {
   orderBy = false;
   myCoordinate: Coordinate = null;
 
+  debug = 'NOPE';
+
   constructor(public navCtrl: NavController,
     private taskService: TaskerServiceProvider,
     public modalCtrl: ModalController,
     private camera: Camera,
-    private localNotifications: LocalNotifications) {
+    private localNotifications: LocalNotifications,
+    private plt: Platform) {
     this.initializeItems();
     this.sort();
+
+    this.plt.ready().then(() => {
+      console.log('READY');
+      this.debug = 'READY';
+      this.localNotifications
+        .on('click')
+        .subscribe((data) => {
+
+          this.debug = data;
+          console.log(data);
+
+          // const json = JSON.parse(notification.data);
+          // console.log('recevNotif', json, notification);
+          // console.log('state', state);
+
+        });
+    });
   }
 
   ngOnInit(): void {
@@ -86,22 +107,23 @@ export class HomePage implements OnInit, OnDestroy {
     const c2 = new Category('category 2', 'ios-alarm', '#f5f5f5');
     t.addCategory(c);
     t.addCategory(c2);
-    t.addTask(new Task('tache 1', 'description', c, moment(), 30, 12, 30));
+    t.addTask(new Task('tache 1', 'description', c, moment(), 0, moment().hours(), moment().minutes() + 1));
     let i = 0;
     while (i < 10000000) {
       i++;
     }
-    t.addTask(new Task('tache 2', 'description', c, null, 30, 12, 30, [true, false, false, true, false, true, false]));
+    t.addTask(new Task('tache 2', 'description', c, null, 0, moment().hours(), moment().minutes() + 2,
+      [true, false, false, true, false, true, false]));
     i = 0;
     while (i < 10000000) {
       i++;
     }
-    t.addTask(new Task('tache 3', 'description', c2, moment(), 30, 12, 30));
+    t.addTask(new Task('tache 3', 'description', c2, moment(), 0, moment().hours(), moment().minutes() + 3));
     i = 0;
     while (i < 10000000) {
       i++;
     }
-    t.addTask(new Task('tache 4', 'description', c, moment(), 30, 12, 30));
+    t.addTask(new Task('tache 4', 'description', c, moment(), 0, moment().hours(), moment().minutes() + 4));
     // TODO END REMOVE
 
     this.items = Tasker.getListTasks();
@@ -169,8 +191,12 @@ export class HomePage implements OnInit, OnDestroy {
     }
   }
 
-  takePhoto(event: any, id: number) {
-    event.preventDefault();
+  eventStopPropagation($event: any) {
+    $event.stopPropagation();
+  }
+
+  takePhoto($event: any, id: number) {
+    this.eventStopPropagation($event);
 
     const options: CameraOptions = {
       quality: 70,
@@ -183,13 +209,13 @@ export class HomePage implements OnInit, OnDestroy {
       const t: Task = Tasker.getTaskByID(id);
       t.setPhoto('data:image/jpeg;base64,' + imageData);
     }, (err) => {
-      console.log(err);
+      console.error(err);
     });
 
   }
 
-  selectLocalisation(event: any, id: number) {
-    event.preventDefault();
+  selectLocalisation($event: any, id: number) {
+    this.eventStopPropagation($event);
 
     this.myCoordinate = null;
     const myModal = this.modalCtrl.create(ModalMapPage, {
@@ -207,28 +233,53 @@ export class HomePage implements OnInit, OnDestroy {
 
   lunchLocalNotification() {
 
-    this.localNotifications.schedule([{
-      id: 1, // id de la tache
-      text: 'titre de la tache',
-      trigger: {
-        at: new Date(new Date().getTime() + 60) // date de la tache
-      },
-      led: 'FF0000',
-      icon: 'http://example.com/icon.png', // icone de la tache
-      sound: null
-    },
-    {
-      id: 2, // id de la tache
-      text: 'titre de la tache 2',
-      trigger: {
-        at: new Date(new Date().getTime() + 300) // date de la tache
-      },
-      led: 'FF0000',
-      icon: 'http://example.com/icon.png', // icone de la tache
-      sound: 'file://sound.mp3',
-      data: {}
+    let temp: Task = null;
+    for (const t of Tasker.getListTasks()) {
+      if (t === null || t.getNextDate().valueOf() < temp.getNextDate().valueOf()) {
+        temp = t;
+      }
     }
-  ]);
+
+    this.localNotifications.schedule({
+      id: temp.getID(),
+      text: temp.getName(),
+      trigger: {
+        at: new Date(temp.getNextDate().valueOf()) //  t.getNextDate().valueOf()
+      },
+      led: 'FF0000',
+      icon: temp.getCategory().getIcon(),
+      data: {
+        data : temp,
+        id: temp.getID(),
+        type: temp.getCategory().getName()
+      }
+    });
+
+
+    console.log('notif lunched');
+
+    //   this.localNotifications.schedule([{
+    //     id: 1, // id de la tache
+    //     text: 'titre de la tache',
+    //     trigger: {
+    //       at: new Date(new Date().getTime() + 60) // date de la tache
+    //     },
+    //     led: 'FF0000',
+    //     icon: 'http://example.com/icon.png', // icone de la tache
+    //     data: {}
+    //   },
+    //   {
+    //     id: 2, // id de la tache
+    //     text: 'titre de la tache 2',
+    //     trigger: {
+    //       at: new Date(new Date().getTime() + 300) // date de la tache
+    //     },
+    //     led: 'FF0000',
+    //     icon: 'http://example.com/icon.png', // icone de la tache
+    //     sound: 'file://sound.mp3',
+    //     data: {}
+    //   }
+    // ]);
 
     // this.localNotifications.schedule({
     //   id: 2, // id de la tache

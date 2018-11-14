@@ -7,7 +7,8 @@ import {
   IonicPage,
   NavController,
   NavParams,
-  ViewController
+  ViewController,
+  AlertController
 } from 'ionic-angular';
 import {
   Coordinate
@@ -21,6 +22,10 @@ import {
 import {
   MapServiceProvider
 } from '../../providers/map-service/map-service';
+import {
+  Diagnostic
+} from '@ionic-native/diagnostic';
+
 
 /**
  * Generated class for the ModalMapPage page.
@@ -37,41 +42,97 @@ import {
 export class ModalMapPage implements OnInit, OnDestroy {
 
   private subscription: ISubscription;
-  private myCoordinate: Coordinate = null;
+  private myCoordinate: Coordinate = new Coordinate(43.8, 3.6, -1);
+  private isInstancied = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,
-    public viewCtrl: ViewController, private geolocation: Geolocation,
-    private mapService: MapServiceProvider) {}
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public viewCtrl: ViewController,
+    private geolocation: Geolocation,
+    private mapService: MapServiceProvider,
+    private diagnostic: Diagnostic,
+    private alertCtrl: AlertController
+  ) {}
 
-  ionViewDidLoad() { }
+  ionViewDidLoad() {}
 
   ngOnInit(): void {
-    this.initGeo();
     this.subscription = this.mapService
       .currentCoordinate
-      .subscribe(res => {
-        this.myCoordinate = res;
-      });
+      .subscribe();
+
+    this.presentConfirm();
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
+  getMyCoordinate(): Coordinate {
+    return this.myCoordinate;
+  }
+
+  presentConfirm() {
+
+    this.diagnostic.isLocationAvailable()
+      .then((state) => {
+        if (!state) {
+          const alert = this.alertCtrl.create({
+            title: 'Activation du GPS',
+            message: 'Voulez vous activer le GPS?',
+            buttons: [{
+                text: 'Non',
+                handler: () => {
+                  this.myCoordinate = new Coordinate(43.8, 3.6, 0);
+                  this.isInstancied = true;
+                }
+              },
+              {
+                text: 'Oui',
+                handler: () => {
+                  this.initGeo();
+                }
+              }
+            ]
+          });
+          alert.present();
+        } else {
+          this.initGeo();
+        }
+      }).catch(e => {
+        console.error(e);
+        this.initGeo();
+      });
+
+  }
+
   initGeo(): any {
+
+    this.diagnostic.isLocationAvailable()
+      .then((state) => {
+        if (!state) {
+          this.diagnostic.switchToLocationSettings();
+        }
+      }).catch(e => console.error(e));
+
     this.geolocation.getCurrentPosition().then((resp) => {
-      this.myCoordinate = new Coordinate(resp.coords.latitude, resp.coords.longitude, 0);
-      this.mapService.changeCoordinate(this.myCoordinate);
+      if (!this.isInstancied) {
+        this.myCoordinate = new Coordinate(resp.coords.latitude, resp.coords.longitude, 0);
+        this.isInstancied = true;
+      }
     }).catch((error) => {
-      console.log(error);
+      console.error('erreur getCurrentPosition', error);
     });
 
-    //  const watch = this.geolocation.watchPosition();
-    //  watch.subscribe((data) => {
-    //   // data can be a set of coordinates, or an error (if an error occurred).
-    //   // data.coords.latitude
-    //   // data.coords.longitude
-    //  });
+    const watch = this.geolocation.watchPosition();
+    watch.subscribe((data) => {
+      if (!this.isInstancied && data.coords) {
+        this.myCoordinate = new Coordinate(data.coords.latitude, data.coords.longitude, 0);
+        this.isInstancied = true;
+      }
+    });
+
   }
 
   onSelectPosition() {

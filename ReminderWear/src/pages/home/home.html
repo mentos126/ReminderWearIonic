@@ -19,12 +19,13 @@
   </ion-toolbar>
 
   <button ion-button (click)="lunchLocalNotification()">TEST LOCAL NOTIF</button>
+  <button ion-button >{{ debug }}</button>
 
   <ion-list no-line>
     <ion-item *ngFor="let item of items">
-      <ion-card style.background-color="{{item.getCategory().getColor()}}" center>
+      <ion-card (click)="onItemClicked(item.getID())" style.background-color="{{item.getCategory().getColor()}}" center>
 
-        <ion-item (click)="onItemClicked(item.getID())">
+        <ion-item >
           <ion-avatar item-start>
             <ion-icon name="{{item.getCategory().getIcon()}}"></ion-icon>
           </ion-avatar>
@@ -84,14 +85,14 @@
               <ion-col>
                 <button *ngIf="!item.getLocalisation()" (click)="selectLocalisation($event, item.getID())" ion-button>Selectionner
                   un lieux</button>
-                <google-map *ngIf="item.getLocalisation()" [localisation]="item.getLocalisation()" [isDrag]="false"></google-map>
+                <google-map (click)="eventStopPropagation($event)" *ngIf="item.getLocalisation()" [localisation]="item.getLocalisation()" [isDrag]="false"></google-map>
               </ion-col>
             </ion-row>
 
             <ion-row text-center>
               <ion-col>
                 <button *ngIf="!item.getPhoto()" ion-button (click)="takePhoto($event, item.getID())">Prendre une photo</button>
-                <p *ngIf="item.getPhoto()"><img [src]="item.getPhoto()" [alt]="item.getName()"></p>
+                <p *ngIf="item.getPhoto()" (click)="eventStopPropagation($event)"><img [src]="item.getPhoto()" [alt]="item.getName()"></p>
               </ion-col>
             </ion-row>
 

@@ -19,10 +19,11 @@ import { ModalMapPage } from '../pages/modal-map/modal-map';
 import { Camera } from '@ionic-native/camera';
 import { Geolocation } from '@ionic-native/geolocation';
 import { LocalNotifications  } from '@ionic-native/local-notifications';
+import { Diagnostic } from '@ionic-native/diagnostic';
 
 import { ChartsModule } from 'ng2-charts';
 import {ColorPickerModule} from 'primeng/colorpicker';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -79,7 +80,8 @@ import {} from '@types/googlemaps';
     Camera,
     Geolocation,
     MapServiceProvider,
-    LocalNotifications
+    LocalNotifications,
+    Diagnostic
   ]
 })
 export class AppModule {}

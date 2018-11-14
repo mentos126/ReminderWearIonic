@@ -13,8 +13,12 @@
     <ion-icon color="light" name="ios-close" (click)="dismiss()"></ion-icon>
   </ion-toolbar>
 
-  <google-map [isDrag]="true" ></google-map>
-  <div text-center>
+  <div *ngIf="!isInstancied" class="show-spinner" text-center>
+    <ion-spinner item-start name="circles"></ion-spinner>
+    <p>Recherche GPS</p>
+  </div>
+  <google-map *ngIf="isInstancied" [isDrag]="true" [localisation]="getMyCoordinate()" ></google-map>
+  <div text-center *ngIf="isInstancied">
     <button ion-button (click)="onSelectPosition()"> Selectionner </button>
   </div>
 
