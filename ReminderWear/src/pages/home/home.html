@@ -19,7 +19,7 @@
   </ion-toolbar>
 
   <button ion-button (click)="lunchLocalNotification()">TEST LOCAL NOTIF</button>
-  <button ion-button >{{ debug }}</button>
+  <pre>@{{ debug | json}}</pre>
 
   <ion-list no-line>
     <ion-item *ngFor="let item of items">

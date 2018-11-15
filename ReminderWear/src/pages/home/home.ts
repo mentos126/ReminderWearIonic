@@ -6,7 +6,8 @@ import {
 import {
   NavController,
   ModalController,
-  Platform
+  Platform,
+  AlertController
 } from 'ionic-angular';
 import {
   AddTaskPage
@@ -63,23 +64,40 @@ export class HomePage implements OnInit, OnDestroy {
     public modalCtrl: ModalController,
     private camera: Camera,
     private localNotifications: LocalNotifications,
-    private plt: Platform) {
+    private plt: Platform,
+    private alertCtrl: AlertController) {
     this.initializeItems();
     this.sort();
 
     this.plt.ready().then(() => {
       console.log('READY');
-      this.debug = 'READY';
       this.localNotifications
         .on('click')
-        .subscribe((data) => {
-
+        .subscribe((res) => {
+          let data = JSON.parse(res.data);
+          data = data.data;
           this.debug = data;
           console.log(data);
+          console.log(data.name);
+          console.log(data.description);
 
-          // const json = JSON.parse(notification.data);
-          // console.log('recevNotif', json, notification);
-          // console.log('state', state);
+          if ( data.category.name === Tasker.CATEGORY_SPORT_TAG ) {
+            const alert = this.alertCtrl.create({
+              title: data.name,
+              message: data.description,
+              buttons: ['Ok', 'Sport']
+            });
+
+            alert.present();
+          } else {
+            const alert = this.alertCtrl.create({
+              title: data.name,
+              message: data.description,
+              buttons: ['Ok']
+            });
+
+            alert.present();
+          }
 
         });
     });
@@ -104,26 +122,26 @@ export class HomePage implements OnInit, OnDestroy {
     // TODO REMOVE FROM
     Tasker.getListTasks();
     const c = new Category('Aucune', 'ios-add-circle', '#abcdef');
-    const c2 = new Category('category 2', 'ios-alarm', '#f5f5f5');
+    const c2 = new Category(Tasker.CATEGORY_SPORT_TAG, 'ios-alarm', '#f5f5f5');
     t.addCategory(c);
     t.addCategory(c2);
-    t.addTask(new Task('tache 1', 'description', c, moment(), 0, moment().hours(), moment().minutes() + 1));
+    t.addTask(new Task('tache 1', 'description', c2, moment(), 0, moment().hours(), (moment().minutes() + 1) % 60));
     let i = 0;
     while (i < 10000000) {
       i++;
     }
-    t.addTask(new Task('tache 2', 'description', c, null, 0, moment().hours(), moment().minutes() + 2,
+    t.addTask(new Task('tache 2', 'description', c, null, 0, moment().hours(), (moment().minutes() + 2) % 60,
       [true, false, false, true, false, true, false]));
     i = 0;
     while (i < 10000000) {
       i++;
     }
-    t.addTask(new Task('tache 3', 'description', c2, moment(), 0, moment().hours(), moment().minutes() + 3));
+    t.addTask(new Task('tache 3', 'description', c2, moment(), 0, moment().hours(), (moment().minutes() + 3) % 60));
     i = 0;
     while (i < 10000000) {
       i++;
     }
-    t.addTask(new Task('tache 4', 'description', c, moment(), 0, moment().hours(), moment().minutes() + 4));
+    t.addTask(new Task('tache 4', 'description', c, moment(), 0, moment().hours(), (moment().minutes() + 4) % 60));
     // TODO END REMOVE
 
     this.items = Tasker.getListTasks();
@@ -232,81 +250,42 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   lunchLocalNotification() {
-
     let temp: Task = null;
     for (const t of Tasker.getListTasks()) {
-      if (t === null || t.getNextDate().valueOf() < temp.getNextDate().valueOf()) {
-        temp = t;
+      if (t.getIsActivatedNotification()) {
+        if (temp === null || t.getNextDate().valueOf() < temp.getNextDate().valueOf()) {
+          temp = t;
+        }
       }
     }
 
-    this.localNotifications.schedule({
-      id: temp.getID(),
-      text: temp.getName(),
-      trigger: {
-        at: new Date(temp.getNextDate().valueOf()) //  t.getNextDate().valueOf()
-      },
-      led: 'FF0000',
-      icon: temp.getCategory().getIcon(),
-      data: {
-        data : temp,
+    if (temp !== null) {
+      this.localNotifications.schedule({
         id: temp.getID(),
-        type: temp.getCategory().getName()
-      }
+        title: temp.getName(),
+        text: temp.getDescription(),
+        at: temp.getNextDate().valueOf(),
+        led: 'FF0000',
+        icon: temp.getCategory().getIcon(),
+        data: {
+          data: temp
+        }
+      });
+    }
+
+
+  }
+
+  cancelAll() {
+
+    this.localNotifications.cancelAll();
+
+    const alert = this.alertCtrl.create({
+      title: 'Notifications cancelled',
+      buttons: ['Ok']
     });
 
-
-    console.log('notif lunched');
-
-    //   this.localNotifications.schedule([{
-    //     id: 1, // id de la tache
-    //     text: 'titre de la tache',
-    //     trigger: {
-    //       at: new Date(new Date().getTime() + 60) // date de la tache
-    //     },
-    //     led: 'FF0000',
-    //     icon: 'http://example.com/icon.png', // icone de la tache
-    //     data: {}
-    //   },
-    //   {
-    //     id: 2, // id de la tache
-    //     text: 'titre de la tache 2',
-    //     trigger: {
-    //       at: new Date(new Date().getTime() + 300) // date de la tache
-    //     },
-    //     led: 'FF0000',
-    //     icon: 'http://example.com/icon.png', // icone de la tache
-    //     sound: 'file://sound.mp3',
-    //     data: {}
-    //   }
-    // ]);
-
-    // this.localNotifications.schedule({
-    //   id: 2, // id de la tache
-    //   text: 'titre de la tache 2',
-    //   // trigger: {
-    //     at: new Date(new Date().getTime() + 300), // date de la tache
-    //   // },
-    //   led: 'FF0000',
-    //   icon: 'http://example.com/icon.png', // icone de la tache
-    //   sound: 'file://sound.mp3',
-    //   data: {}
-    // });
-
-    // // Schedule multiple notifications
-    // this.localNotifications.schedule([{
-    //   id: 1,
-    //   text: 'Multi ILocalNotification 1',
-    //   // sound: isAndroid ? 'file://sound.mp3' : 'file://beep.caf',
-    //   data: {
-    //     // secret: key
-    //   }
-    // }, {
-    //   id: 2,
-    //   title: 'Local ILocalNotification Example',
-    //   text: 'Multi ILocalNotification 2',
-    //   icon: 'http://example.com/icon.png'
-    // }]);
+    alert.present();
 
   }
 
