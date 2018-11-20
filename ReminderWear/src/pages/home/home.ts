@@ -44,6 +44,7 @@ import {
 import {
   LocalNotifications
 } from '@ionic-native/local-notifications';
+import { ShowTaskPage } from '../show-task/show-task';
 
 @Component({
   selector: 'page-home',
@@ -56,8 +57,6 @@ export class HomePage implements OnInit, OnDestroy {
   items: Task[];
   orderBy = false;
   myCoordinate: Coordinate = null;
-
-  debug = 'NOPE';
 
   constructor(public navCtrl: NavController,
     private taskService: TaskerServiceProvider,
@@ -74,30 +73,8 @@ export class HomePage implements OnInit, OnDestroy {
       this.localNotifications
         .on('click')
         .subscribe((res) => {
-          let data = JSON.parse(res.data);
-          data = data.data;
-          this.debug = data;
-          console.log(data);
-          console.log(data.name);
-          console.log(data.description);
-
-          if ( data.category.name === Tasker.CATEGORY_SPORT_TAG ) {
-            const alert = this.alertCtrl.create({
-              title: data.name,
-              message: data.description,
-              buttons: ['Ok', 'Sport']
-            });
-
-            alert.present();
-          } else {
-            const alert = this.alertCtrl.create({
-              title: data.name,
-              message: data.description,
-              buttons: ['Ok']
-            });
-
-            alert.present();
-          }
+          const data = res.data.data;
+          this.navCtrl.push(ShowTaskPage, data);
 
         });
     });
@@ -131,7 +108,7 @@ export class HomePage implements OnInit, OnDestroy {
       i++;
     }
     t.addTask(new Task('tache 2', 'description', c, null, 0, moment().hours(), (moment().minutes() + 2) % 60,
-      [true, false, false, true, false, true, false]));
+      [true, true, true, true, true, true, true]));
     i = 0;
     while (i < 10000000) {
       i++;
@@ -145,6 +122,9 @@ export class HomePage implements OnInit, OnDestroy {
     // TODO END REMOVE
 
     this.items = Tasker.getListTasks();
+
+    console.log('items', this.items);
+    console.log(Tasker.getListTasks());
 
   }
 
@@ -258,13 +238,17 @@ export class HomePage implements OnInit, OnDestroy {
         }
       }
     }
+    const temp2: any = temp.getDateDeb();
+    temp.setDateDeb(temp.getNextDate());
 
     if (temp !== null) {
       this.localNotifications.schedule({
         id: temp.getID(),
         title: temp.getName(),
         text: temp.getDescription(),
-        at: temp.getNextDate().valueOf(),
+        trigger: {
+          at: new Date(temp.getNextDate().valueOf())
+        },
         led: 'FF0000',
         icon: temp.getCategory().getIcon(),
         data: {
@@ -273,7 +257,7 @@ export class HomePage implements OnInit, OnDestroy {
       });
     }
 
-
+    temp.setDateDeb(temp2);
   }
 
   cancelAll() {

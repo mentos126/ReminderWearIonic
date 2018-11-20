@@ -48,15 +48,9 @@ export class Tasker {
   }
 
   public static removeTaskByID(id: number): void {
-    let temp = -1;
-    for (let i = 0; i < this.listTasks.length; i++) {
-      if (this.listTasks[i].getID() === id) {
-        temp = i;
-        break;
-      }
-    }
-    if (temp !== -1) {
-      this.listTasks.slice(temp, 1);
+    const index = this.listTasks.indexOf(this.getTaskByID(id), 0);
+    if (index > -1) {
+      this.listTasks.splice(index, 1);
     }
   }
 
@@ -174,21 +168,54 @@ export class Tasker {
   public setListCategories(listCategories: Category[]): void {
     Tasker.listCategories = listCategories;
   }
+
   public removeCategory(c: Category): void {
     const index = Tasker.listCategories.indexOf(c, 0);
     if (index > -1) {
       Tasker.listCategories.splice(index, 1);
     }
   }
+
   public addCategory(c: Category): boolean {
     Tasker.listCategories.push(c);
     return true;
   }
+
   public editCategoryById(id: number, c: Category): void {
     const cat = Tasker.getCategoryByID(id);
     cat.setColor(c.getColor());
     cat.setIcon(c.getIcon());
     cat.setName(c.getName());
+  }
+
+/**
+    private ID: number;
+    private name: string;
+    private description: string;
+    private dateDeb: Moment;
+    private warningBefore: number;
+    private isActivatedNotification: boolean;
+    private timeHour: number;
+    private timeMinutes: number;
+    private repete: boolean[];
+    private photo: string = null;
+    private localisation: Coordinate = null;
+    private category: Category;
+ */
+
+  public editTaskById(id: number, t: Task): void {
+    const task = Tasker.getTaskByID(id);
+    task.setName(t.getName());
+    task.setDescription(t.getDescription());
+    task.setDateDeb(t.getDateDeb());
+    task.setWarningBefore(t.getWarningBefore());
+    task.setIsActivatedNotification(t.getIsActivatedNotification());
+    task.setTimeHour(t.getTimeHour());
+    task.setTimeMinutes(t.getTimeMinutes());
+    task.setPhoto(t.getPhoto());
+    task.setLocalisation(t.getLocalisation());
+    task.setCategory(t.getCategory());
+    task.setRepete(t.getRepete());
   }
 
   public setListTasks(listTasks: Task[]): void {

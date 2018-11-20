@@ -105,7 +105,6 @@ export class EditTaskPage implements OnInit, OnDestroy {
   }
 
   delete() {
-    console.log(this.recevTask);
     Tasker.removeTaskByID(this.recevTask.getID());
     this.navCtrl.pop();
   }
@@ -115,7 +114,6 @@ export class EditTaskPage implements OnInit, OnDestroy {
   }
 
   editCategory(): void {
-    // this.taskService.changeCategory(this.recevTask.getCategory());
     this.taskService.changeCategory(Tasker.getCategoryByName(this.myCat));
     this.navCtrl.push(EditCategoryPage);
   }
@@ -192,9 +190,7 @@ export class EditTaskPage implements OnInit, OnDestroy {
     }
 
     if (success) {
-      // TODO modify task
-      // Tasker.getListTasks().push(newTask);
-      console.log(newTask);
+      Tasker.getInstance().editTaskById(this.recevTask.getID(), newTask);
       Tasker.serializeLists();
       Tasker.sort();
       this.navCtrl.pop();

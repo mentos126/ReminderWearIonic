@@ -1,0 +1,63 @@
+<!--
+  Generated template for the ShowTaskPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+</ion-header>
+
+<ion-content>
+
+  <ion-toolbar color="primary">
+    <ion-grid class="no-padding">
+      <ion-row>
+        <ion-col class="cancel-btn">
+          <div>
+            <ion-icon color="light" name="ios-close" (click)="cancel()"></ion-icon>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+
+  <hr/>
+  <pre>@{{ task | json}}</pre>
+  <hr/>
+
+  <ion-icon name="{{task.category.icon}}"></ion-icon>
+
+  <ion-list no-line>
+
+    <ion-item>
+      <ion-label>Titre:  {{ task.name }}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Description: {{ task.description }}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Date: {{ task.dateDeb }}</ion-label>
+    </ion-item>
+
+    <ion-item>
+        <ion-label>Heure: {{ task.timeHour }}h{{ task.timeMinutes }}</ion-label>
+    </ion-item>
+
+    <ion-item style.background-color="{{ task.category.color }}">
+      <ion-label>Catégorie: {{ task.category.name }}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Prévenir avant (minutes): {{ task.warningBefore }}</ion-label>
+    </ion-item>
+
+  </ion-list>
+
+  <div *ngIf="task.category.name == SPORT" class="submit-btn">
+    <button (click)="lunchSportActivity()" ion-button color="secondary" round>Faire du Sport</button>
+  </div>
+
+</ion-content>
+

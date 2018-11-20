@@ -34,33 +34,17 @@
     </ion-item>
 
     <ion-item>
-        <ion-label>Icône:</ion-label>
-        <ion-note (click)="openIcons()" item-end>
-          <ion-icon color="dark" name="{{myIcon}}"></ion-icon>
-        </ion-note>
-      </ion-item>
-
-    <ion-item>
-      <ion-grid>
-        <ion-row>
-          <ion-col>
-            Couleur:
-            <!--
-                TODO pb label fonctionne pas
-                <ion-label>Couleur:</ion-label>
-               -->
-          </ion-col>
-          <ion-col>
-            <p-colorPicker [(ngModel)]="myColor"></p-colorPicker>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <ion-label>Icône:</ion-label>
+      <ion-note (click)="openIcons()" item-end>
+        <ion-icon color="dark" name="{{myIcon}}"></ion-icon>
+      </ion-note>
     </ion-item>
+
   </ion-list>
 
   <div>
-    <!-- TODO Faire mieux -->
-    <p-colorPicker class="color-picker" [(ngModel)]="myColor" [inline]="true"></p-colorPicker>
+    Couleur:
+    <input [(colorPicker)]="myColor" [cpPosition]="'bottom'" [style.background]="myColor" />
   </div>
 
 

@@ -71,7 +71,7 @@ export class SportPage implements OnInit, OnDestroy {
     temp.caculateDistance();
     Tasker.getListSportTasks()
       .push(temp);
-    // END
+    // TODO END remove
 
     this.items = Tasker.getListSportTasks();
   }

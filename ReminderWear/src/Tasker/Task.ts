@@ -87,8 +87,8 @@ export class Task {
     public getRepete(): boolean[] {
         return this.repete;
     }
-    public setRepete(index: number): void {
-        this.repete[index] = !this.repete[index];
+    public setRepete(index: boolean[]): void {
+        this.repete = index;
     }
 
     public getRepeteToString(): string {
@@ -166,22 +166,22 @@ export class Task {
 
     public getNextDate(): Moment {
         if (this.dateDeb == null) {
-            let first = 0;
             let day = 0;
+            const today = moment().isoWeekday();
+
             for (let i = 0; i < this.getRepete().length; i++) {
-                if (this.getRepete()[i] && first === 0) {
-                    first = i;
-                }
-                if ((i + 1 >= moment().isoWeekday()) && this.getRepete()[i]) {
-                    day = i;
+              console.log(i, this.getRepete().length);
+                if ((i + 1 >= today) && this.getRepete()[i]) {
+                    day = i + 1;
                     break;
                 }
             }
-            const today = moment().isoWeekday();
+            console.log('STOP');
+
             if (today <= day) {
-                return moment().isoWeekday(day + 1);
+                return moment().isoWeekday(day);
             } else {
-                return moment().add(1, 'weeks').isoWeekday(day);
+                return moment().add(1, 'weeks').isoWeekday(day - 1);
             }
         } else {
             const c = this.getDateDeb();

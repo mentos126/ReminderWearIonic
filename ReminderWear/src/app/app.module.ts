@@ -15,6 +15,7 @@ import { SportDetailPage } from '../pages/sport-detail/sport-detail';
 import { ModalCategoryPage } from '../pages/modal-category/modal-category';
 import { ModalIconPage } from '../pages/modal-icon/modal-icon';
 import { ModalMapPage } from '../pages/modal-map/modal-map';
+import { ShowTaskPage } from '../pages/show-task/show-task';
 
 import { Camera } from '@ionic-native/camera';
 import { Geolocation } from '@ionic-native/geolocation';
@@ -22,8 +23,7 @@ import { LocalNotifications  } from '@ionic-native/local-notifications';
 import { Diagnostic } from '@ionic-native/diagnostic';
 
 import { ChartsModule } from 'ng2-charts';
-import {ColorPickerModule} from 'primeng/colorpicker';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -33,6 +33,7 @@ import { GoogleMapComponent } from '../components/google-map/google-map';
 import { MapServiceProvider } from '../providers/map-service/map-service';
 
 import {} from '@types/googlemaps';
+
 
 @NgModule({
   declarations: [
@@ -48,12 +49,12 @@ import {} from '@types/googlemaps';
     ModalCategoryPage,
     ModalIconPage,
     ModalMapPage,
+    ShowTaskPage,
     GoogleMapComponent
   ],
   imports: [
     BrowserModule,
     ColorPickerModule,
-    BrowserAnimationsModule,
     IonicModule.forRoot(MyApp),
     ChartsModule
   ],
@@ -70,7 +71,8 @@ import {} from '@types/googlemaps';
     SportDetailPage,
     ModalCategoryPage,
     ModalIconPage,
-    ModalMapPage
+    ModalMapPage,
+    ShowTaskPage
   ],
   providers: [
     StatusBar,

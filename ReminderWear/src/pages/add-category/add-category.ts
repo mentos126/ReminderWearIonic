@@ -13,6 +13,7 @@ import { Category } from '../../Tasker/Category';
 import { ModalIconPage } from '../modal-icon/modal-icon';
 
 
+
 /**
  * Generated class for the AddCategoryPage page.
  *
