@@ -16,6 +16,7 @@ import { ModalCategoryPage } from '../pages/modal-category/modal-category';
 import { ModalIconPage } from '../pages/modal-icon/modal-icon';
 import { ModalMapPage } from '../pages/modal-map/modal-map';
 import { ShowTaskPage } from '../pages/show-task/show-task';
+import { SportActivityPage } from '../pages/sport-activity/sport-activity';
 
 import { Camera } from '@ionic-native/camera';
 import { Geolocation } from '@ionic-native/geolocation';
@@ -50,7 +51,8 @@ import {} from '@types/googlemaps';
     ModalIconPage,
     ModalMapPage,
     ShowTaskPage,
-    GoogleMapComponent
+    GoogleMapComponent,
+    SportActivityPage
   ],
   imports: [
     BrowserModule,
@@ -72,7 +74,8 @@ import {} from '@types/googlemaps';
     ModalCategoryPage,
     ModalIconPage,
     ModalMapPage,
-    ShowTaskPage
+    ShowTaskPage,
+    SportActivityPage
   ],
   providers: [
     StatusBar,

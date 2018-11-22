@@ -45,6 +45,7 @@ import {
   LocalNotifications
 } from '@ionic-native/local-notifications';
 import { ShowTaskPage } from '../show-task/show-task';
+import { SportActivityPage } from '../sport-activity/sport-activity';
 
 @Component({
   selector: 'page-home',
@@ -75,10 +76,15 @@ export class HomePage implements OnInit, OnDestroy {
         .subscribe((res) => {
           const data = res.data.data;
           this.navCtrl.push(ShowTaskPage, data);
-
         });
     });
   }
+
+// TODO DESTROY
+goToRegister() {
+this.navCtrl.push(SportActivityPage);
+}
+// TODO END DESTROY
 
   ngOnInit(): void {
     this.subscriptionTask = this.taskService
@@ -108,7 +114,7 @@ export class HomePage implements OnInit, OnDestroy {
       i++;
     }
     t.addTask(new Task('tache 2', 'description', c, null, 0, moment().hours(), (moment().minutes() + 2) % 60,
-      [true, true, true, true, true, true, true]));
+      [false, true, false, false, false, false, false]));
     i = 0;
     while (i < 10000000) {
       i++;
@@ -149,6 +155,10 @@ export class HomePage implements OnInit, OnDestroy {
       });
     }
 
+  }
+
+  delete(item: Task) {
+    Tasker.removeTask(item);
   }
 
   onItemClicked(id: number) {

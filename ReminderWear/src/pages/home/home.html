@@ -19,87 +19,100 @@
   </ion-toolbar>
 
   <button ion-button (click)="lunchLocalNotification()">TEST LOCAL NOTIF</button>
+  <button ion-button (click)="goToRegister()">Enregistre moi le Sport</button>
 
   <ion-list no-line>
-    <ion-item *ngFor="let item of items">
-      <ion-card (click)="onItemClicked(item.getID())" style.background-color="{{item.getCategory().getColor()}}" center>
 
-        <ion-item >
-          <ion-avatar item-start>
-            <ion-icon name="{{item.getCategory().getIcon()}}"></ion-icon>
-          </ion-avatar>
-          <ion-toggle (ionChange)="onChangeActivated(item.getID())" checked="{{item.getIsActivatedNotification()}}"></ion-toggle>
-        </ion-item>
+    <ion-item-sliding *ngFor="let item of items" (ionSwipe)="delete(item)">
+      <ion-item>
+        <ion-card (click)="onItemClicked(item.getID())" style.background-color="{{item.getCategory().getColor()}}"
+          center>
 
-        <ion-card-content>
-          <ion-grid>
+          <ion-item>
+            <ion-avatar item-start>
+              <ion-icon name="{{item.getCategory().getIcon()}}"></ion-icon>
+            </ion-avatar>
+            <ion-toggle (ionChange)="onChangeActivated(item.getID())" checked="{{item.getIsActivatedNotification()}}"></ion-toggle>
+          </ion-item>
 
-            <ion-row>
-              <ion-col text-center>
-                <h2 center>{{item.name}}</h2>
-              </ion-col>
-            </ion-row>
+          <ion-card-content>
+            <ion-grid>
 
-            <ion-row>
-              <ion-col>
-                <p center text-center>
-                  {{item.description}}
-                </p>
-              </ion-col>
-            </ion-row>
+              <ion-row>
+                <ion-col text-center>
+                  <h2 center>{{item.name}}</h2>
+                </ion-col>
+              </ion-row>
 
-            <ion-row>
-              <ion-col>
-                <p text-left>
-                  {{item.getNextDate().format('DD MMM. YYYY')}}
-                </p>
-              </ion-col>
-              <ion-col>
-                <p text-right>
-                  {{item.getTimeHour()}}:{{ item.getTimeMinutes() | number:'2.0-5'}}
-                </p>
-              </ion-col>
-            </ion-row>
+              <ion-row>
+                <ion-col>
+                  <p center text-center>
+                    {{item.description}}
+                  </p>
+                </ion-col>
+              </ion-row>
 
-            <ion-row>
-              <ion-col>
-                <p>
-                  {{item.category.name}}
-                </p>
-              </ion-col>
-              <ion-col>
+              <ion-row>
+                <ion-col>
+                  <p text-left>
+                    {{item.getNextDate().format('DD MMM. YYYY')}}
+                  </p>
+                </ion-col>
+                <ion-col>
+                  <p text-right>
+                    {{item.getTimeHour()}}:{{ item.getTimeMinutes() | number:'2.0-5'}}
+                  </p>
+                </ion-col>
+              </ion-row>
 
-              </ion-col>
-            </ion-row>
+              <ion-row>
+                <ion-col>
+                  <p>
+                    {{item.category.name}}
+                  </p>
+                </ion-col>
+                <ion-col>
 
-            <ion-row>
-              <ion-col>
-                <p>
-                  {{item.getRepeteToString()}}
-                </p>
-              </ion-col>
-            </ion-row>
+                </ion-col>
+              </ion-row>
 
-            <ion-row text-center>
-              <ion-col>
-                <button *ngIf="!item.getLocalisation()" (click)="selectLocalisation($event, item.getID())" ion-button>Selectionner
-                  un lieux</button>
-                <google-map (click)="eventStopPropagation($event)" *ngIf="item.getLocalisation()" [localisation]="item.getLocalisation()" [isDrag]="false"></google-map>
-              </ion-col>
-            </ion-row>
+              <ion-row>
+                <ion-col>
+                  <p>
+                    {{item.getRepeteToString()}}
+                  </p>
+                </ion-col>
+              </ion-row>
 
-            <ion-row text-center>
-              <ion-col>
-                <button *ngIf="!item.getPhoto()" ion-button (click)="takePhoto($event, item.getID())">Prendre une photo</button>
-                <p *ngIf="item.getPhoto()" (click)="eventStopPropagation($event)"><img [src]="item.getPhoto()" [alt]="item.getName()"></p>
-              </ion-col>
-            </ion-row>
+              <ion-row text-center>
+                <ion-col>
+                  <button *ngIf="!item.getLocalisation()" (click)="selectLocalisation($event, item.getID())" ion-button>Selectionner
+                    un lieux</button>
+                  <google-map (click)="eventStopPropagation($event)" *ngIf="item.getLocalisation()" [localisation]="item.getLocalisation()"
+                    [isDrag]="false"></google-map>
+                </ion-col>
+              </ion-row>
 
-          </ion-grid>
-        </ion-card-content>
+              <ion-row text-center>
+                <ion-col>
+                  <button *ngIf="!item.getPhoto()" ion-button (click)="takePhoto($event, item.getID())">Prendre une
+                    photo</button>
+                  <p *ngIf="item.getPhoto()" (click)="eventStopPropagation($event)"><img [src]="item.getPhoto()" [alt]="item.getName()"></p>
+                </ion-col>
+              </ion-row>
 
-      </ion-card>
-    </ion-item>
+            </ion-grid>
+          </ion-card-content>
+
+        </ion-card>
+      </ion-item>
+      <ion-item-options side="left">
+        <button color="danger" ion-button expandable (click)="delete(item)">
+            <ion-icon name="trash"></ion-icon>
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+
   </ion-list>
 
   <ion-fab (click)="addTask()" center bottom>

@@ -167,22 +167,28 @@ export class Task {
     public getNextDate(): Moment {
         if (this.dateDeb == null) {
             let day = 0;
+            let first = -1;
             const today = moment().isoWeekday();
 
             for (let i = 0; i < this.getRepete().length; i++) {
-              console.log(i, this.getRepete().length);
                 if ((i + 1 >= today) && this.getRepete()[i]) {
                     day = i + 1;
                     break;
                 }
+                if (first === -1 && this.getRepete()[i]) {
+                  first = i + 1;
+                }
             }
-            console.log('STOP');
 
+            let temp = null;
             if (today <= day) {
-                return moment().isoWeekday(day);
+                temp = moment().isoWeekday(day);
             } else {
-                return moment().add(1, 'weeks').isoWeekday(day - 1);
+                temp = moment().add(1, 'weeks').isoWeekday(first);
             }
+            temp.minutes(this.getTimeMinutes());
+            temp.hours(this.getTimeHour());
+            return temp;
         } else {
             const c = this.getDateDeb();
             c.minutes(this.getTimeMinutes());

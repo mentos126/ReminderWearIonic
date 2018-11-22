@@ -60,7 +60,15 @@ export class ModalMapPage implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscription = this.mapService
       .currentCoordinate
-      .subscribe();
+      .subscribe(
+        res => {
+          if (this.isInstancied) {
+            if (res != null) {
+              this.myCoordinate = res;
+            }
+          }
+        }
+      );
 
     this.presentConfirm();
   }

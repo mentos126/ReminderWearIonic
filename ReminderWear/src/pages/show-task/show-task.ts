@@ -2,7 +2,9 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Tasker } from '../../Tasker/Tasker';
 import {Moment} from 'moment';
-// import * as moment from 'moment';
+import { Coordinate } from '../../Tasker/Coordinate';
+import * as moment from 'moment';
+import { SportActivityPage } from '../sport-activity/sport-activity';
 
 /**
  * Generated class for the ShowTaskPage page.
@@ -20,11 +22,16 @@ export class ShowTaskPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
     this.task = navParams.data;
+    if (this.task.localisation !== null) {
+      this.myLocalisation = new Coordinate(this.task.localisation.lat, this.task.localisation.lng, this.task.localisation.h);
+    }
+    this.myDate = moment(this.task.dateDeb, 'YYYY-MM-DD');
   }
 
   SPORT: string = Tasker.CATEGORY_SPORT_TAG;
   task: any = 'test';
-  date: Moment = null;
+  myDate: Moment = null;
+  myLocalisation: Coordinate = null;
 
   ionViewDidLoad() { }
 
@@ -33,7 +40,7 @@ export class ShowTaskPage {
   }
 
   lunchSportActivity() {
-      // TODO lunch SPORT ACTIVITY
+    this.navCtrl.push(SportActivityPage);
   }
 
 }

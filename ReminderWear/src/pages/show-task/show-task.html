@@ -21,13 +21,14 @@
     </ion-grid>
   </ion-toolbar>
 
-  <hr/>
-  <pre>@{{ task | json}}</pre>
-  <hr/>
+  <div *ngIf="task.category.name == SPORT" class="submit-btn">
+      <button (click)="lunchSportActivity()" ion-button color="secondary" round>Faire du Sport</button>
+    </div>
 
-  <ion-icon name="{{task.category.icon}}"></ion-icon>
 
-  <ion-list no-line>
+    <ion-list no-line>
+
+        <ion-icon name="{{task.category.icon}}"></ion-icon>
 
     <ion-item>
       <ion-label>Titre:  {{ task.name }}</ion-label>
@@ -38,7 +39,8 @@
     </ion-item>
 
     <ion-item>
-      <ion-label>Date: {{ task.dateDeb }}</ion-label>
+      <ion-label>Date: {{ myDate.format('DD MMM. YYYY') }}</ion-label>
+      <!-- <ion-label>Date: {{ myDate }}</ion-label> -->
     </ion-item>
 
     <ion-item>
@@ -55,9 +57,10 @@
 
   </ion-list>
 
-  <div *ngIf="task.category.name == SPORT" class="submit-btn">
-    <button (click)="lunchSportActivity()" ion-button color="secondary" round>Faire du Sport</button>
-  </div>
+    <google-map *ngIf="task.localisation" [localisation]="myLocalisation" [isDrag]="false"></google-map>
+    <p *ngIf="task.photo"><img [src]="task.photo" [alt]="task.name"></p>
+
+
 
 </ion-content>
 

@@ -83,6 +83,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy {
     });
 
     marker.setMap(this.map);
+
   }
 
   changeMyCoordinateMarker() {

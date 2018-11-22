@@ -15,10 +15,18 @@
     <preference name="android-minSdkVersion" value="19" />
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashMaintainAspectRatio" value="true" />
-    <preference name="FadeSplashScreenDuration" value="300" />
+    <preference name="FadeSplashScreenDuration" value="0" />
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <preference name="SplashScreen" value="screen" />
-    <preference name="SplashScreenDelay" value="3000" />
+    <preference name="SplashScreenDelay" value="0" />
+    <preference name="orientation" value="portrait" />
+    <preference name="iconMode" value="ios" />
+    <preference name="pageTransition" value="ios-transition" />
+    <preference name="WKPort" value="8080" />
+    <preference name="WKSuspendInBackground" value="false" />
+    <preference name="WKBind" value="localhost" />
+    <preference name="WKInternalConnectionsOnly" value="true" />
+    <preference name="KeyboardAppearanceDark" value="false" />
     <platform name="android">
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
