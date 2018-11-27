@@ -27,6 +27,7 @@
     <preference name="WKBind" value="localhost" />
     <preference name="WKInternalConnectionsOnly" value="true" />
     <preference name="KeyboardAppearanceDark" value="false" />
+    <preference name="Orientation" value="portrait" />
     <platform name="android">
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />

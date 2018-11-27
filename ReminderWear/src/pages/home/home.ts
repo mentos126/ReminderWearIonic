@@ -59,6 +59,8 @@ export class HomePage implements OnInit, OnDestroy {
   oldItems: Task[];
   orderBy = false;
   myCoordinate: Coordinate = null;
+  val = '';
+  sizeOldItem = 0;
 
   constructor(public navCtrl: NavController,
     private taskService: TaskerServiceProvider,
@@ -129,6 +131,10 @@ this.navCtrl.push(SportActivityPage);
     // TODO END REMOVE
 
     this.items = Tasker.getListTasks();
+    this.getItems({'target': {'value': this.val }});
+    setInterval(() => {
+        this.getItems({'target': {'value': this.val }});
+    }, 1000);
 
     console.log('items', this.items);
     console.log(Tasker.getListTasks());
@@ -138,31 +144,30 @@ this.navCtrl.push(SportActivityPage);
   getItems(ev: any) {
     this.items = Tasker.getListTasks();
     this.oldItems = [];
-    const val = ev.target.value;
-    if (val && val.trim() !== '') {
+    this.val = ev.target.value;
+    if (this.val && this.val.trim()) {
       this.items = this.items.filter((item) => {
         if (item.getNextDate().valueOf() < moment().valueOf()) {
           this.oldItems.push(item);
           return false;
         }
-        if (item.getName().toLowerCase().indexOf(val.toLowerCase()) > -1) {
+        if (item.getName().toLowerCase().indexOf(this.val.toLowerCase()) > -1) {
           return true;
         }
-        if (item.getDescription().toLowerCase().indexOf(val.toLowerCase()) > -1) {
+        if (item.getDescription().toLowerCase().indexOf(this.val.toLowerCase()) > -1) {
           return true;
         }
-        if (item.getCategory().getName().toLowerCase().indexOf(val.toLowerCase()) > -1) {
+        if (item.getCategory().getName().toLowerCase().indexOf(this.val.toLowerCase()) > -1) {
           return true;
         }
-        if (item.getNextDate().format('DD MMM. YYYY').toLowerCase().indexOf(val.toLowerCase()) > -1) {
+        if (item.getNextDate().format('DD MMM. YYYY').toLowerCase().indexOf(this.val.toLowerCase()) > -1) {
           return true;
         }
         return false;
       });
     }
 
-
-
+    this.sizeOldItem = this.oldItems.length;
   }
 
   delete(item: Task) {
