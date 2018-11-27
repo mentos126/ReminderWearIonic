@@ -56,6 +56,7 @@ export class HomePage implements OnInit, OnDestroy {
   private subscriptionTask: ISubscription;
   searchQuery = '';
   items: Task[];
+  oldItems: Task[];
   orderBy = false;
   myCoordinate: Coordinate = null;
 
@@ -136,9 +137,14 @@ this.navCtrl.push(SportActivityPage);
 
   getItems(ev: any) {
     this.items = Tasker.getListTasks();
+    this.oldItems = [];
     const val = ev.target.value;
     if (val && val.trim() !== '') {
       this.items = this.items.filter((item) => {
+        if (item.getNextDate().valueOf() < moment().valueOf()) {
+          this.oldItems.push(item);
+          return false;
+        }
         if (item.getName().toLowerCase().indexOf(val.toLowerCase()) > -1) {
           return true;
         }
@@ -154,6 +160,8 @@ this.navCtrl.push(SportActivityPage);
         return false;
       });
     }
+
+
 
   }
 

@@ -22,6 +22,8 @@ import { Camera } from '@ionic-native/camera';
 import { Geolocation } from '@ionic-native/geolocation';
 import { LocalNotifications  } from '@ionic-native/local-notifications';
 import { Diagnostic } from '@ionic-native/diagnostic';
+import { Health } from '@ionic-native/health';
+import { Pedometer } from '@ionic-native/pedometer';
 
 import { ChartsModule } from 'ng2-charts';
 import { ColorPickerModule } from 'ngx-color-picker';
@@ -86,7 +88,9 @@ import {} from '@types/googlemaps';
     Geolocation,
     MapServiceProvider,
     LocalNotifications,
-    Diagnostic
+    Diagnostic,
+    Health,
+    Pedometer
   ]
 })
 export class AppModule {}

@@ -40,15 +40,15 @@ export class SportDetailPage implements OnInit, OnDestroy {
   @ViewChild('map') mapElement;
   map: any;
 
-  private subscription: ISubscription;
-  private mySportTask: SportTask;
-  private myCoordinates: Coordinate[];
+  subscription: ISubscription;
+  mySportTask: SportTask;
+  myCoordinates: Coordinate[];
 
-  private steps: number;
-  private heart: number;
-  private distance: number;
-  private duration: number;
-  private durationMoment: string;
+  steps: number;
+  heart: number;
+  distance: number;
+  duration: number;
+  durationMoment: string;
 
   public lineChartData: Array < any > = [{
     data: [0],
@@ -97,9 +97,9 @@ export class SportDetailPage implements OnInit, OnDestroy {
         this.heart = this.mySportTask.getHeart();
         this.distance = this.mySportTask.getDistance();
         this.duration = this.mySportTask.getDuration();
-        const s = Math.floor(this.duration % 60);
-        const m = Math.floor((this.duration / 60) % 60);
-        const h = Math.floor((this.duration / (60 * 60)) % 24);
+        const s = Math.floor(this.duration / 1000  % 60);
+        const m = Math.floor((this.duration / 60000) % 60);
+        const h = Math.floor((this.duration / 3600000) % 24);
         this.durationMoment = +h + ' heures ' + m + ' minutes ' + s + ' secondes';
       });
 

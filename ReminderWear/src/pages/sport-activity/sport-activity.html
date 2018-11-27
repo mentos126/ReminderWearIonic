@@ -5,14 +5,91 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>SportActivity</ion-title>
-  </ion-navbar>
-
 </ion-header>
 
 
-<ion-content padding>
+
+<ion-content>
+
+  <ion-toolbar color="primary">
+    <ion-grid class="no-padding">
+      <ion-row>
+        <ion-col class="cancel-btn">
+          <div>
+            <ion-icon color="light" name="ios-close" (click)="cancel()"></ion-icon>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+
+  <pre>
+    {{ debug1 | json }}
+  </pre>
+  <hr>
+
+  <ion-card color="primary" *ngIf="isInResgiter">
+    <ion-card-content text-center>
+      Enregistrement en cours
+      <ion-spinner item-start name="circles"></ion-spinner>
+    </ion-card-content>
+  </ion-card>
+
+  <div text-center *ngIf="!isInResgiter">
+    <button ion-button (click)="startRegister()">
+      Commencer l'enregistrement
+    </button>
+  </div>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-icon item-start name="ios-swap" (click)="sort()"></ion-icon>
+      {{ steps }} pas
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-icon name="ios-pulse" (click)="sort()"></ion-icon>
+      {{ heart }} pulsations par minute
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-icon name="ios-pin" (click)="sort()"></ion-icon>
+      {{ distance  | number: '1.3-3' }} km parcouru
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-icon name="ios-swap" (click)="sort()"></ion-icon>
+      {{ duration }} durée
+    </ion-card-content>
+  </ion-card>
+
+  <div (drag)="onDrag($event)" #map id="map"> </div>
+
+  <ion-card>
+    <ion-card-content>
+      <div class="row">
+        <div class="col-md-6">
+          <div style="display: block;">
+            <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+              [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType" (chartHover)="chartHovered($event)"
+              (chartClick)="chartClicked($event)">
+            </canvas>
+          </div>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <div text-center *ngIf="isInResgiter">
+    <button ion-button (click)="endRegister()">
+      Fin de l'enregistrement
+    </button>
+  </div>
 
 </ion-content>

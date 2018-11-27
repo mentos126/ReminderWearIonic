@@ -31,7 +31,6 @@ export class GoogleMapComponent implements OnInit, OnDestroy {
   @ViewChild('map') mapElement;
   map: any;
   isCreated = false;
-  // myCoordinate: Coordinate = new Coordinate(44.6363264, 4.8412287999999997, 0);
   myCoordinate: Coordinate ;
   @Input()
   localisation: Coordinate;
@@ -44,17 +43,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy {
     if (this.isDrag) {
       this.subscription = this.mapService
         .currentCoordinate
-        .subscribe(
-          // res => {
-        //   if (!this.isCreated) {
-        //     if (res != null) {
-        //       this.myCoordinate = res;
-        //       this.initMapForModal();
-        //       this.isCreated = true;
-        //     }
-        //   }
-        // }
-        );
+        .subscribe();
       this.initMapForModal();
     } else {
       this.initMapForHome();
@@ -73,7 +62,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy {
     const mapOptions: google.maps.MapOptions = {
       center: coords,
       zoom: 14,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
     };
     this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
 

@@ -70,7 +70,7 @@ export class SportTask extends Task {
                 res += this.distanceBetweenTwoPoint(this.listCoord[i - 1], this.listCoord[i]);
             }
         }
-        this.setDistance(res);
+        this.setDistance( Math.floor(res) / 1000);
     }
 
     public  distanceBetweenTwoPoint(c1: Coordinate, c2: Coordinate): number {
@@ -85,7 +85,7 @@ export class SportTask extends Task {
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         let distance = R * c * 1000;
 
-        const height = c1.getHeight() - c2.getHeight();
+        const height = 0; // c1.getHeight() - c2.getHeight();
 
         distance = Math.pow(distance, 2) + Math.pow(height, 2);
 
