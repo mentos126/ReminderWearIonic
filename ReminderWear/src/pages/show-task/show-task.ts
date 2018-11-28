@@ -1,10 +1,24 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { Tasker } from '../../Tasker/Tasker';
-import {Moment} from 'moment';
-import { Coordinate } from '../../Tasker/Coordinate';
+import {
+  Component
+} from '@angular/core';
+import {
+  IonicPage,
+  NavController,
+  NavParams
+} from 'ionic-angular';
+import {
+  Tasker
+} from '../../Tasker/Tasker';
+import {
+  Moment
+} from 'moment';
+import {
+  Coordinate
+} from '../../Tasker/Coordinate';
 import * as moment from 'moment';
-import { SportActivityPage } from '../sport-activity/sport-activity';
+import {
+  SportActivityPage
+} from '../sport-activity/sport-activity';
 
 /**
  * Generated class for the ShowTaskPage page.
@@ -33,16 +47,20 @@ export class ShowTaskPage {
   myDate: Moment = null;
   myLocalisation: Coordinate = null;
 
-  ionViewDidLoad() {
-    // HomePage.lunchLocalNotification();
-  }
+  ionViewDidLoad() {}
 
   cancel() {
     this.navCtrl.pop();
   }
 
   lunchSportActivity() {
-    this.navCtrl.push(SportActivityPage);
+    this.navCtrl.push(SportActivityPage, {
+      'name': this.task.name,
+      'descrtiption': this.task.descrtiption,
+      'nameCategory': this.task.category.name,
+      'colorCategory': this.task.category.color,
+      'iconCategory': this.task.category.icon
+    });
   }
 
 }

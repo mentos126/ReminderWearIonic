@@ -11,19 +11,18 @@
         </ion-col>
         <ion-col col-2 class="sort-btn">
           <div>
-            <ion-icon name="ios-swap" (click)="sort()"></ion-icon>
+            <ion-icon name="ios-swap" (click)="sort(true)"></ion-icon>
           </div>
         </ion-col>
       </ion-row>
     </ion-grid>
   </ion-toolbar>
 
+
   <pre>
     {{ debug | json }}
   </pre>
-
   <button ion-button (click)="lunchLocalNotification()">TEST LOCAL NOTIF</button>
-  <button ion-button (click)="goToRegister()">TEST Enregistre moi le Sport</button>
 
   <ion-list no-line>
 
@@ -123,7 +122,7 @@
   <ion-list no-line *ngIf="sizeOldItem > 0">
 
     <ion-item >
-      <ion-card color="primary">
+      <ion-card color="danger">
         <ion-card-content text-center>
           Ancienne Tâche
         </ion-card-content>

@@ -47,9 +47,6 @@ import {
 import {
   ShowTaskPage
 } from '../show-task/show-task';
-import {
-  SportActivityPage
-} from '../sport-activity/sport-activity';
 
 @Component({
   selector: 'page-home',
@@ -76,7 +73,7 @@ export class HomePage implements OnInit, OnDestroy {
     private plt: Platform,
     private alertCtrl: AlertController) {
     this.initializeItems();
-    this.sort();
+    this.sort(true);
 
     this.plt.ready().then(() => {
       console.log('READY');
@@ -85,6 +82,7 @@ export class HomePage implements OnInit, OnDestroy {
           .on('click')
           .subscribe((res) => {
             const data = res.data.data;
+            this.lunchLocalNotification();
             this.navCtrl.push(ShowTaskPage, data);
           });
       } catch (e) {
@@ -92,59 +90,6 @@ export class HomePage implements OnInit, OnDestroy {
       }
     });
   }
-
-  lunchLocalNotification() {
-    let temp: Task[] = null;
-    const now: number = moment().valueOf();
-    for (const t of Tasker.getListTasks()) {
-      if (t.getIsActivatedNotification() && t.getNextDate().valueOf() >= now) {
-        if (temp === null || t.getNextDate().valueOf() < temp[0].getNextDate().valueOf()) {
-          temp = [];
-          temp.push(t);
-        } else if (t.getNextDate().valueOf() === temp[0].getNextDate().valueOf()) {
-          temp.push(t);
-        }
-      }
-    }
-
-    if (temp !== null) {
-      const temp2: any = temp[0].getDateDeb();
-      for (const t of temp) {
-        t.setDateDeb(t.getNextDate());
-      }
-
-      const toSchedule: any[] = [];
-      for (const t of temp) {
-        toSchedule.push({
-          id: t.getID(),
-          title: t.getName(),
-          text: t.getDescription(),
-          trigger: {
-            at: new Date(t.getNextDate().valueOf())
-          },
-          led: 'FF0000',
-          icon: t.getCategory().getIcon(),
-          data: {
-            data: t
-          }
-        });
-      }
-
-      this.debug = toSchedule;
-
-      this.localNotifications.schedule(toSchedule);
-
-      for (const t of temp) {
-        t.setDateDeb(temp2);
-      }
-    }
-  }
-
-  // TODO DESTROY
-  goToRegister() {
-    this.navCtrl.push(SportActivityPage);
-  }
-  // TODO END DESTROY
 
   ngOnInit(): void {
     this.subscriptionTask = this.taskService
@@ -201,7 +146,8 @@ export class HomePage implements OnInit, OnDestroy {
           'value': this.val
         }
       });
-      this.lunchLocalNotification();
+      this.sort(false);
+      // this.lunchLocalNotification();
     }, 1000);
 
   }
@@ -260,10 +206,30 @@ export class HomePage implements OnInit, OnDestroy {
     this.navCtrl.push(AddTaskPage);
   }
 
-  sort(): void {
+  sort(ex: boolean): void {
     if (this.items !== undefined && this.items.length > 0) {
-      this.orderBy = !this.orderBy;
+      if (ex) {
+        this.orderBy = !this.orderBy;
+      }
       this.items.sort((n1, n2) => {
+        if (this.orderBy) {
+          if (n1.getNextDate().isAfter(n2.getNextDate())) {
+            return 1;
+          }
+          if (n1.getNextDate().isBefore(n2.getNextDate())) {
+            return -1;
+          }
+        } else {
+          if (n1.getNextDate().isBefore(n2.getNextDate())) {
+            return 1;
+          }
+          if (n1.getNextDate().isAfter(n2.getNextDate())) {
+            return -1;
+          }
+        }
+        return 0;
+      });
+      this.oldItems.sort((n1, n2) => {
         if (this.orderBy) {
           if (n1.getNextDate().isAfter(n2.getNextDate())) {
             return 1;
@@ -372,52 +338,52 @@ export class HomePage implements OnInit, OnDestroy {
     myModal.present();
   }
 
-  // public static lunchLocalNotification() {
-  //   let temp: Task[] = null;
-  //   const now: number = moment().valueOf();
-  //   for (const t of Tasker.getListTasks()) {
-  //     if (t.getIsActivatedNotification() && t.getNextDate().valueOf() >= now) {
-  //       if (temp === null || t.getNextDate().valueOf() < temp[0].getNextDate().valueOf()) {
-  //         temp = [];
-  //         temp.push(t);
-  //       } else if (t.getNextDate().valueOf() === temp[0].getNextDate().valueOf()) {
-  //         temp.push(t);
-  //       }
-  //     }
-  //   }
+  lunchLocalNotification() {
+    let temp: Task[] = null;
+    const now: number = moment().valueOf();
+    for (const t of Tasker.getListTasks()) {
+      if (t.getIsActivatedNotification() && t.getNextDate().valueOf() >= now) {
+        if (temp === null || t.getNextDate().valueOf() < temp[0].getNextDate().valueOf()) {
+          temp = [];
+          temp.push(t);
+        } else if (t.getNextDate().valueOf() === temp[0].getNextDate().valueOf()) {
+          temp.push(t);
+        }
+      }
+    }
 
-  //   if (temp !== null) {
-  //     const temp2: any = temp[0].getDateDeb();
-  //     for (const t of temp) {
-  //       t.setDateDeb(t.getNextDate());
-  //     }
+    if (temp !== null) {
+      const temp2: any = temp[0].getDateDeb();
+      for (const t of temp) {
+        t.setDateDeb(t.getNextDate());
+      }
 
-  //     const toSchedule: any[] = [];
-  //     for (const t of temp) {
-  //       toSchedule.push({
-  //         id: t.getID(),
-  //         title: t.getName(),
-  //         text: t.getDescription(),
-  //         trigger: {
-  //           at: new Date(t.getNextDate().valueOf())
-  //         },
-  //         led: 'FF0000',
-  //         icon: t.getCategory().getIcon(),
-  //         data: {
-  //           data: t
-  //         }
-  //       });
-  //     }
+      const toSchedule: any[] = [];
+      for (const t of temp) {
+        toSchedule.push({
+          id: t.getID(),
+          title: t.getName(),
+          text: t.getDescription(),
+          trigger: {
+            at: new Date(t.getNextDate().valueOf())
+          },
+          led: 'FF0000',
+          icon: t.getCategory().getIcon(),
+          data: {
+            data: t
+          }
+        });
+      }
 
-  //     this.debug = toSchedule;
+      this.debug = toSchedule;
 
-  //     this.localNotifications.schedule(toSchedule);
+      this.localNotifications.schedule(toSchedule);
 
-  //     for (const t of temp) {
-  //       t.setDateDeb(temp2);
-  //     }
-  //   }
-  // }
+      for (const t of temp) {
+        t.setDateDeb(temp2);
+      }
+    }
+  }
 
   cancelAll() {
 

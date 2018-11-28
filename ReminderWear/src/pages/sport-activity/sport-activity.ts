@@ -27,8 +27,12 @@ import {
   Pedometer,
   IPedometerData
 } from '@ionic-native/pedometer';
-import { Category } from '../../Tasker/Category';
-import { Tasker } from '../../Tasker/Tasker';
+import {
+  Category
+} from '../../Tasker/Category';
+import {
+  Tasker
+} from '../../Tasker/Tasker';
 
 /**
  * Generated class for the SportActivityPage page.
@@ -50,6 +54,12 @@ export class SportActivityPage {
   mySportTask: SportTask;
   myCoordinates: Coordinate[] = [];
 
+
+  name = '';
+  description = '';
+  nameCategory = '';
+  colorCategory = '';
+  iconCategory = '';
   steps = 0;
   heart = 0;
   distance = 0;
@@ -87,7 +97,14 @@ export class SportActivityPage {
     private diagnostic: Diagnostic,
     private pedometer: Pedometer,
     private health: Health
-  ) {}
+  ) {
+    const task = navParams.data;
+    this.name = task.name;
+    this.description = task.descrtiption;
+    this.nameCategory = task.nameCategory;
+    this.colorCategory = task.colorCategory;
+    this.iconCategory = task.iconCategory;
+  }
 
   ionViewDidLoad() {
     this.initMap();
@@ -117,7 +134,7 @@ export class SportActivityPage {
         res += this.distanceBetweenTwoPoint(this.myCoordinates[i - 1], this.myCoordinates[i]);
       }
     }
-    this.distance =  Math.floor(res) / 1000;
+    this.distance = Math.floor(res) / 1000;
   }
 
   public distanceBetweenTwoPoint(c1: Coordinate, c2: Coordinate): number {
@@ -209,19 +226,19 @@ export class SportActivityPage {
     // TODO new sport task;
     // avoir les vrai attribut de la tache
     const st = new SportTask(
-      'je sais pas',
-      'je sais pas',
-      new Category(Tasker.CATEGORY_SPORT_TAG, 'ios-alarm', '#f5f5f5'),
+      this.name,
+      this.description,
+      new Category(Tasker.CATEGORY_SPORT_TAG, this.iconCategory, this.colorCategory),
       moment(this.durationMoment),
       0,
-      Math.floor((this.durationMoment / 3600000 + 1 ) % 24),
+      Math.floor((this.durationMoment / 3600000 + 1) % 24),
       Math.floor(this.durationMoment / 60000 % 60),
       [false, false, false, false, false, false, false],
       this.steps,
       this.heart,
       this.distance,
       this.timer
-      );
+    );
     for (const c of this.myCoordinates) {
       st.addCoord(c);
     }
