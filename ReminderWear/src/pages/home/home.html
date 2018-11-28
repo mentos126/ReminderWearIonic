@@ -18,8 +18,12 @@
     </ion-grid>
   </ion-toolbar>
 
+  <pre>
+    {{ debug | json }}
+  </pre>
+
   <button ion-button (click)="lunchLocalNotification()">TEST LOCAL NOTIF</button>
-  <button ion-button (click)="goToRegister()">Enregistre moi le Sport</button>
+  <button ion-button (click)="goToRegister()">TEST Enregistre moi le Sport</button>
 
   <ion-list no-line>
 
@@ -95,7 +99,7 @@
 
               <ion-row text-center>
                 <ion-col>
-                  <button *ngIf="!item.getPhoto()" ion-button (click)="takePhoto($event, item.getID())">Prendre une
+                  <button *ngIf="!item.getPhoto()" ion-button (click)="alertPhoto($event, item.getID())" >Prendre une
                     photo</button>
                   <p *ngIf="item.getPhoto()" (click)="eventStopPropagation($event)"><img [src]="item.getPhoto()" [alt]="item.getName()"></p>
                 </ion-col>

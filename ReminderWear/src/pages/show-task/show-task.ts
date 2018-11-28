@@ -33,7 +33,9 @@ export class ShowTaskPage {
   myDate: Moment = null;
   myLocalisation: Coordinate = null;
 
-  ionViewDidLoad() { }
+  ionViewDidLoad() {
+    // HomePage.lunchLocalNotification();
+  }
 
   cancel() {
     this.navCtrl.pop();

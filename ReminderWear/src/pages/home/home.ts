@@ -44,8 +44,12 @@ import {
 import {
   LocalNotifications
 } from '@ionic-native/local-notifications';
-import { ShowTaskPage } from '../show-task/show-task';
-import { SportActivityPage } from '../sport-activity/sport-activity';
+import {
+  ShowTaskPage
+} from '../show-task/show-task';
+import {
+  SportActivityPage
+} from '../sport-activity/sport-activity';
 
 @Component({
   selector: 'page-home',
@@ -62,6 +66,8 @@ export class HomePage implements OnInit, OnDestroy {
   val = '';
   sizeOldItem = 0;
 
+  debug: any = 'null';
+
   constructor(public navCtrl: NavController,
     private taskService: TaskerServiceProvider,
     public modalCtrl: ModalController,
@@ -74,20 +80,71 @@ export class HomePage implements OnInit, OnDestroy {
 
     this.plt.ready().then(() => {
       console.log('READY');
-      this.localNotifications
-        .on('click')
-        .subscribe((res) => {
-          const data = res.data.data;
-          this.navCtrl.push(ShowTaskPage, data);
-        });
+      try {
+        this.localNotifications
+          .on('click')
+          .subscribe((res) => {
+            const data = res.data.data;
+            this.navCtrl.push(ShowTaskPage, data);
+          });
+      } catch (e) {
+        console.log(e);
+      }
     });
   }
 
-// TODO DESTROY
-goToRegister() {
-this.navCtrl.push(SportActivityPage);
-}
-// TODO END DESTROY
+  lunchLocalNotification() {
+    let temp: Task[] = null;
+    const now: number = moment().valueOf();
+    for (const t of Tasker.getListTasks()) {
+      if (t.getIsActivatedNotification() && t.getNextDate().valueOf() >= now) {
+        if (temp === null || t.getNextDate().valueOf() < temp[0].getNextDate().valueOf()) {
+          temp = [];
+          temp.push(t);
+        } else if (t.getNextDate().valueOf() === temp[0].getNextDate().valueOf()) {
+          temp.push(t);
+        }
+      }
+    }
+
+    if (temp !== null) {
+      const temp2: any = temp[0].getDateDeb();
+      for (const t of temp) {
+        t.setDateDeb(t.getNextDate());
+      }
+
+      const toSchedule: any[] = [];
+      for (const t of temp) {
+        toSchedule.push({
+          id: t.getID(),
+          title: t.getName(),
+          text: t.getDescription(),
+          trigger: {
+            at: new Date(t.getNextDate().valueOf())
+          },
+          led: 'FF0000',
+          icon: t.getCategory().getIcon(),
+          data: {
+            data: t
+          }
+        });
+      }
+
+      this.debug = toSchedule;
+
+      this.localNotifications.schedule(toSchedule);
+
+      for (const t of temp) {
+        t.setDateDeb(temp2);
+      }
+    }
+  }
+
+  // TODO DESTROY
+  goToRegister() {
+    this.navCtrl.push(SportActivityPage);
+  }
+  // TODO END DESTROY
 
   ngOnInit(): void {
     this.subscriptionTask = this.taskService
@@ -111,7 +168,9 @@ this.navCtrl.push(SportActivityPage);
     const c2 = new Category(Tasker.CATEGORY_SPORT_TAG, 'ios-alarm', '#f5f5f5');
     t.addCategory(c);
     t.addCategory(c2);
-    t.addTask(new Task('tache 1', 'description', c2, moment(), 0, moment().hours(), (moment().minutes() + 1) % 60));
+    const time = moment();
+    t.addTask(new Task('tache 1', 'description', c2, time, 0, time.hours(), (time.minutes() + 1) % 60));
+    t.addTask(new Task('tache 1 bis', 'description', c2, time, 0, time.hours(), (time.minutes() + 1) % 60));
     let i = 0;
     while (i < 10000000) {
       i++;
@@ -131,42 +190,55 @@ this.navCtrl.push(SportActivityPage);
     // TODO END REMOVE
 
     this.items = Tasker.getListTasks();
-    this.getItems({'target': {'value': this.val }});
+    this.getItems({
+      'target': {
+        'value': this.val
+      }
+    });
     setInterval(() => {
-        this.getItems({'target': {'value': this.val }});
+      this.getItems({
+        'target': {
+          'value': this.val
+        }
+      });
+      this.lunchLocalNotification();
     }, 1000);
-
-    console.log('items', this.items);
-    console.log(Tasker.getListTasks());
 
   }
 
   getItems(ev: any) {
-    this.items = Tasker.getListTasks();
+    const allItems = Tasker.getListTasks();
+    this.items = [];
     this.oldItems = [];
     this.val = ev.target.value;
-    if (this.val && this.val.trim()) {
-      this.items = this.items.filter((item) => {
-        if (item.getNextDate().valueOf() < moment().valueOf()) {
+    const now = moment().valueOf();
+    for (const item of allItems) {
+      if (item.getName().toLowerCase().indexOf(this.val.toLowerCase()) > -1) {
+        if (item.getNextDate().valueOf() < now) {
           this.oldItems.push(item);
-          return false;
+        } else {
+          this.items.push(item);
         }
-        if (item.getName().toLowerCase().indexOf(this.val.toLowerCase()) > -1) {
-          return true;
+      } else if (item.getDescription().toLowerCase().indexOf(this.val.toLowerCase()) > -1) {
+        if (item.getNextDate().valueOf() < now) {
+          this.oldItems.push(item);
+        } else {
+          this.items.push(item);
         }
-        if (item.getDescription().toLowerCase().indexOf(this.val.toLowerCase()) > -1) {
-          return true;
+      } else if (item.getCategory().getName().toLowerCase().indexOf(this.val.toLowerCase()) > -1) {
+        if (item.getNextDate().valueOf() < now) {
+          this.oldItems.push(item);
+        } else {
+          this.items.push(item);
         }
-        if (item.getCategory().getName().toLowerCase().indexOf(this.val.toLowerCase()) > -1) {
-          return true;
+      } else if (item.getNextDate().format('DD MMM. YYYY').toLowerCase().indexOf(this.val.toLowerCase()) > -1) {
+        if (item.getNextDate().valueOf() < now) {
+          this.oldItems.push(item);
+        } else {
+          this.items.push(item);
         }
-        if (item.getNextDate().format('DD MMM. YYYY').toLowerCase().indexOf(this.val.toLowerCase()) > -1) {
-          return true;
-        }
-        return false;
-      });
+      }
     }
-
     this.sizeOldItem = this.oldItems.length;
   }
 
@@ -216,6 +288,30 @@ this.navCtrl.push(SportActivityPage);
     $event.stopPropagation();
   }
 
+  alertPhoto($event: any, id: number) {
+    this.eventStopPropagation($event);
+
+    const alert = this.alertCtrl.create({
+      title: 'Choisir',
+      message: 'Voulez vous prendre ou rechercher une photo',
+      buttons: [{
+          text: 'Appareil Photo',
+          role: 'cancel',
+          handler: () => {
+            this.takePhoto($event, id);
+          }
+        },
+        {
+          text: 'Bibliothèque',
+          handler: () => {
+            this.selectPhoto($event, id);
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
   takePhoto($event: any, id: number) {
     this.eventStopPropagation($event);
 
@@ -223,7 +319,11 @@ this.navCtrl.push(SportActivityPage);
       quality: 70,
       destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE
+      mediaType: this.camera.MediaType.PICTURE,
+      saveToPhotoAlbum: true,
+      allowEdit: true,
+      targetHeight: 300,
+      targetWidth: 300
     };
 
     this.camera.getPicture(options).then((imageData) => {
@@ -233,6 +333,26 @@ this.navCtrl.push(SportActivityPage);
       console.error(err);
     });
 
+  }
+
+  selectPhoto($event: any, id: number) {
+    this.eventStopPropagation($event);
+
+    const options: CameraOptions = {
+      quality: 70,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+      saveToPhotoAlbum: false,
+      allowEdit: true,
+      targetHeight: 300,
+      targetWidth: 300
+    };
+
+    this.camera.getPicture(options).then((imageData) => {
+      const t: Task = Tasker.getTaskByID(id);
+      t.setPhoto('data:image/jpeg;base64,' + imageData);
+    }, (err) => console.log(err));
   }
 
   selectLocalisation($event: any, id: number) {
@@ -252,36 +372,52 @@ this.navCtrl.push(SportActivityPage);
     myModal.present();
   }
 
-  lunchLocalNotification() {
-    let temp: Task = null;
-    for (const t of Tasker.getListTasks()) {
-      if (t.getIsActivatedNotification()) {
-        if (temp === null || t.getNextDate().valueOf() < temp.getNextDate().valueOf()) {
-          temp = t;
-        }
-      }
-    }
-    const temp2: any = temp.getDateDeb();
-    temp.setDateDeb(temp.getNextDate());
+  // public static lunchLocalNotification() {
+  //   let temp: Task[] = null;
+  //   const now: number = moment().valueOf();
+  //   for (const t of Tasker.getListTasks()) {
+  //     if (t.getIsActivatedNotification() && t.getNextDate().valueOf() >= now) {
+  //       if (temp === null || t.getNextDate().valueOf() < temp[0].getNextDate().valueOf()) {
+  //         temp = [];
+  //         temp.push(t);
+  //       } else if (t.getNextDate().valueOf() === temp[0].getNextDate().valueOf()) {
+  //         temp.push(t);
+  //       }
+  //     }
+  //   }
 
-    if (temp !== null) {
-      this.localNotifications.schedule({
-        id: temp.getID(),
-        title: temp.getName(),
-        text: temp.getDescription(),
-        trigger: {
-          at: new Date(temp.getNextDate().valueOf())
-        },
-        led: 'FF0000',
-        icon: temp.getCategory().getIcon(),
-        data: {
-          data: temp
-        }
-      });
-    }
+  //   if (temp !== null) {
+  //     const temp2: any = temp[0].getDateDeb();
+  //     for (const t of temp) {
+  //       t.setDateDeb(t.getNextDate());
+  //     }
 
-    temp.setDateDeb(temp2);
-  }
+  //     const toSchedule: any[] = [];
+  //     for (const t of temp) {
+  //       toSchedule.push({
+  //         id: t.getID(),
+  //         title: t.getName(),
+  //         text: t.getDescription(),
+  //         trigger: {
+  //           at: new Date(t.getNextDate().valueOf())
+  //         },
+  //         led: 'FF0000',
+  //         icon: t.getCategory().getIcon(),
+  //         data: {
+  //           data: t
+  //         }
+  //       });
+  //     }
+
+  //     this.debug = toSchedule;
+
+  //     this.localNotifications.schedule(toSchedule);
+
+  //     for (const t of temp) {
+  //       t.setDateDeb(temp2);
+  //     }
+  //   }
+  // }
 
   cancelAll() {
 
