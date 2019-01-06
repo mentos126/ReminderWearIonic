@@ -16,6 +16,11 @@ export class Category {
         return this.ID;
     }
 
+    setID(insertId: number) {
+      this.ID = insertId;
+    }
+
+
     public getName(): string {
         return this.name;
     }

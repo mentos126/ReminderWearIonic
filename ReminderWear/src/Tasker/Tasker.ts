@@ -10,6 +10,7 @@ import {
 } from './SportTask';
 
 import * as moment from 'moment';
+import {SQLitePersistor} from './SQLitePersistor';
 
 export class Tasker {
 
@@ -33,16 +34,20 @@ export class Tasker {
   }
 
   public static unserializeLists(): void {
-    console.log('deserialization');
+    // console.log('deserialization');
+    SQLitePersistor.loadFromDB();
   }
 
   public static serializeLists(): void {
-    console.log('serialization');
+    // console.log('serialization');
+
+    SQLitePersistor.saveToDB();
   }
 
   public static removeTask(t: Task): void {
     const index = this.listTasks.indexOf(t, 0);
     if (index > -1) {
+      // console.log('remove task');
       this.listTasks.splice(index, 1);
     }
   }
@@ -163,6 +168,17 @@ export class Tasker {
       this.addCategory(new Category(Tasker.CATEGORY_SPORT_TAG, 'add', '#f5f5f5'));
       Tasker.serializeLists();
     }
+  }
+
+  public static setListCategories(listCategories: Category[]): void {
+    Tasker.listCategories = listCategories;
+  }
+  public static setListTasks(listTasks: Task[]): void {
+    Tasker.listTasks = listTasks;
+  }
+
+  public static setListSportTasks(listSportTasks: SportTask[]): void {
+    Tasker.listSportTasks = listSportTasks;
   }
 
   public setListCategories(listCategories: Category[]): void {

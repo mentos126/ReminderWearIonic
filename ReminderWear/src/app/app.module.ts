@@ -35,6 +35,8 @@ import { TaskerServiceProvider } from '../providers/tasker-service/tasker-servic
 import { GoogleMapComponent } from '../components/google-map/google-map';
 import { MapServiceProvider } from '../providers/map-service/map-service';
 
+import { SQLite} from '@ionic-native/sqlite';
+
 import {} from '@types/googlemaps';
 
 
@@ -90,7 +92,8 @@ import {} from '@types/googlemaps';
     LocalNotifications,
     Diagnostic,
     Health,
-    Pedometer
+    Pedometer,
+    SQLite
   ]
 })
 export class AppModule {}
