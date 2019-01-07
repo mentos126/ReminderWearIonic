@@ -8,6 +8,7 @@ import {Diagnostic} from '@ionic-native/diagnostic';
 import {Health} from '@ionic-native/health';
 import {IPedometerData, Pedometer} from '@ionic-native/pedometer';
 import {Tasker} from '../../Tasker/Tasker';
+import {SQLitePersistor} from '../../Tasker/SQLitePersistor';
 
 /**
  * Generated class for the SportActivityPage page.
@@ -151,7 +152,7 @@ export class SportActivityPage {
       .then((available: boolean) => {
 
         console.log('health is available ?  : ' + available);
-        if (available){
+        if (available) {
           this.health.requestAuthorization([{
             read: ['steps']
           }])
@@ -201,6 +202,7 @@ export class SportActivityPage {
   endRegister() {
     this.isInResgiter = false;
 
+    console.log('creating a new SportTask : ');
     // TODO new sport task;
     // avoir les vrai attribut de la tache
     const st = new SportTask(
@@ -220,7 +222,10 @@ export class SportActivityPage {
     for (const c of this.myCoordinates) {
       st.addCoord(c);
     }
+    console.log('sportActivity :: endRegieter');
     Tasker.getInstance().addSportTask(st);
+    console.log('added new SportTask to Tasker', st);
+    SQLitePersistor.saveToDB();
     this.navCtrl.popAll();
 
   }

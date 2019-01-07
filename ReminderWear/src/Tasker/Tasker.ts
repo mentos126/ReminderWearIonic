@@ -1,15 +1,7 @@
-import {
-  Category
-} from './Category';
+import {Category} from './Category';
 
-import {
-  Task
-} from './Task';
-import {
-  SportTask
-} from './SportTask';
-
-import * as moment from 'moment';
+import {Task} from './Task';
+import {SportTask} from './SportTask';
 import {SQLitePersistor} from './SQLitePersistor';
 
 export class Tasker {
@@ -20,8 +12,11 @@ export class Tasker {
   private static listSportTasks: SportTask[] = [];
 
   public static getInstance(): Tasker {
+    // console.log('getInstance()');
     if (Tasker.INSTANCE == null) {
       Tasker.INSTANCE = new Tasker();
+      // console.log('created new instance');
+      // console.log('new instance has ' + this.getListCategories().length + ' categories');
     }
     return Tasker.INSTANCE;
   }
@@ -34,12 +29,12 @@ export class Tasker {
   }
 
   public static unserializeLists(): void {
-    // console.log('deserialization');
+    console.log('deserialization');
     SQLitePersistor.loadFromDB();
   }
 
   public static serializeLists(): void {
-    // console.log('serialization');
+    console.log('serialization');
 
     SQLitePersistor.saveToDB();
   }
@@ -106,20 +101,20 @@ export class Tasker {
   }
 
 
-  public static garbageCollectOld(): void {
-    this.unserializeLists();
-    const deletes: number[] = [];
-    const now = moment();
-    for (let i = 0; i < this.listTasks.length; i++) {
-      if (this.listTasks[i].getDateDeb() != null && this.listTasks[i].getNextDate().isBefore(now)) {
-        deletes.push(this.listTasks[i].getID());
-      }
-    }
-    for (const i of deletes) {
-      this.removeTaskByID(i);
-    }
-    this.serializeLists();
-  }
+  // public static garbageCollectOld(): void {
+  //   this.unserializeLists();
+  //   const deletes: number[] = [];
+  //   const now = moment();
+  //   for (let i = 0; i < this.listTasks.length; i++) {
+  //     if (this.listTasks[i].getDateDeb() != null && this.listTasks[i].getNextDate().isBefore(now)) {
+  //       deletes.push(this.listTasks[i].getID());
+  //     }
+  //   }
+  //   for (const i of deletes) {
+  //     this.removeTaskByID(i);
+  //   }
+  //   this.serializeLists();
+  // }
 
   public static getTaskByID(id: number): Task {
     for (const t of this.listTasks) {
@@ -141,12 +136,22 @@ export class Tasker {
   }
 
   public static getCategoryByName(catName: string): Category {
+    // console.log('getCat By Name : ' + catName);
+    // if (Tasker.INSTANCE === null){
+    //   this.getInstance();
+    // }
+
+    let cat = null;
     for (const c of this.listCategories) {
       if (c.getName() === catName) {
-        return c;
+        cat =  c;
+        break;
       }
     }
-    return null;
+
+    console.log('recherche de la categorie ' + catName + ' a renvoyé ' + (cat === null ? null : '1 résultat'));
+
+    return cat;
   }
 
   public static sort(): void {
@@ -161,18 +166,9 @@ export class Tasker {
     });
   }
 
-  public Tasker() {
-    if (Tasker.INSTANCE == null) {
-      Tasker.unserializeLists();
-      this.addCategory(new Category(Tasker.CATEGORY_NONE_TAG, 'close', '#f53d3d'));
-      this.addCategory(new Category(Tasker.CATEGORY_SPORT_TAG, 'add', '#f5f5f5'));
-      Tasker.serializeLists();
-    }
-  }
-
-  public static setListCategories(listCategories: Category[]): void {
-    Tasker.listCategories = listCategories;
-  }
+  // public static setListCategories(listCategories: Category[]): void {
+  //   Tasker.listCategories = listCategories;
+  // }
   public static setListTasks(listTasks: Task[]): void {
     Tasker.listTasks = listTasks;
   }
@@ -180,6 +176,26 @@ export class Tasker {
   public static setListSportTasks(listSportTasks: SportTask[]): void {
     Tasker.listSportTasks = listSportTasks;
   }
+
+  // public constructor() {
+  //   // console.log('new Tasker constructor');
+  //   // Tasker.unserializeLists();
+  //   // this.addCategory(new Category(Tasker.CATEGORY_NONE_TAG, 'alarm', '#f3f5e1'));
+  //   // this.addCategory(new Category(Tasker.CATEGORY_SPORT_TAG, 'bicycle', '#f5f5f5'));
+  //   // Tasker.serializeLists();
+  //
+  // }
+
+  // public Tasker() {
+  //   if (Tasker.INSTANCE == null) {
+  //     Tasker.unserializeLists();
+  //     this.addCategory(new Category(Tasker.CATEGORY_NONE_TAG, 'close', '#f3f5e1'));
+  //     this.addCategory(new Category(Tasker.CATEGORY_SPORT_TAG, 'add', '#f5f5f5'));
+  //     Tasker.serializeLists();
+  //   }
+  // }
+
+
 
   public setListCategories(listCategories: Category[]): void {
     Tasker.listCategories = listCategories;
@@ -193,8 +209,11 @@ export class Tasker {
   }
 
   public addCategory(c: Category): boolean {
-    Tasker.listCategories.push(c);
-    return true;
+    if (Tasker.getCategoryByName(c.getName())=== null){
+      Tasker.listCategories.push(c);
+      return true;
+    }
+    return false;
   }
 
   public editCategoryById(id: number, c: Category): void {
@@ -203,21 +222,6 @@ export class Tasker {
     cat.setIcon(c.getIcon());
     cat.setName(c.getName());
   }
-
-/**
-    private ID: number;
-    private name: string;
-    private description: string;
-    private dateDeb: Moment;
-    private warningBefore: number;
-    private isActivatedNotification: boolean;
-    private timeHour: number;
-    private timeMinutes: number;
-    private repete: boolean[];
-    private photo: string = null;
-    private localisation: Coordinate = null;
-    private category: Category;
- */
 
   public editTaskById(id: number, t: Task): void {
     const task = Tasker.getTaskByID(id);
@@ -239,8 +243,13 @@ export class Tasker {
   }
 
   public addTask(t: Task): boolean {
-    Tasker.listTasks.push(t);
-    return true;
+    console.log('Add Task :: ' + t.getName());
+    if (Tasker.getTaskByID(t.getID()) === null){
+      Tasker.listTasks.push(t);
+      console.log('task pushed');
+      return true;
+    }
+    return false;
   }
 
   public setListSportTasks(listSportTasks: SportTask[]): void {
@@ -248,8 +257,12 @@ export class Tasker {
   }
 
   public addSportTask(t: SportTask): boolean {
-    Tasker.listSportTasks.push(t);
-    return true;
+    if (Tasker.getSportTaskByID(t.getID()) === null){
+
+      Tasker.listSportTasks.push(t);
+      return true;
+    }
+    return false;
   }
 
 }

@@ -17,20 +17,11 @@ export class MyApp {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      // console.log('SQL', sqlite.selfTest() );
+      // console.log('SQL self Test', sqlite.selfTest() );
 
-      // SQLitePersistor.initInstance(sqlite);
-      // SQLitePersistor.getInstance().getDatabaseState().subscribe((ready) => {
-      //   if (ready) {
-      //     console.log('SQL Init complete');
       SQLitePersistor.initInstance(sqlite);
-          statusBar.styleDefault();
-          splashScreen.hide();
-      //   }
-      // });
-
-
-
+      statusBar.styleDefault();
+      splashScreen.hide();
 
     });
   }

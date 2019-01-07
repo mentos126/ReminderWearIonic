@@ -18,9 +18,6 @@ import {
 import {
   Task
 } from '../../Tasker/Task';
-// import {
-//   Category
-// } from '../../Tasker/Category';
 import * as moment from 'moment';
 import {
   EditTaskPage
@@ -80,7 +77,7 @@ export class HomePage implements OnInit, OnDestroy {
   ) {
 
 
-    SQLitePersistor.databaseReady2.subscribe((ready) => {
+    SQLitePersistor.databaseReady.subscribe((ready) => {
       if (ready) {
         this.initializeItems();
         this.sort();
@@ -168,10 +165,23 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   ionViewDidLoad() {
+    // console.log('home loaded');
   }
+
+  // ionViewDidEnter() {
+  //   // console.log('home entered');
+  //   // SQLitePersistor.loadFromDB().then(() => {
+  //   //   Tasker.getInstance();
+  //   //   this.items = Tasker.getListTasks();
+  //   //   console.log('items : ');
+  //   //   console.log(this.items);
+  //   // });
+  //
+  // }
 
   initializeItems() {
 
+    console.log('home.ts initialize items');
     Tasker.unserializeLists();
 
     // // TODO REMOVE FROM
@@ -209,6 +219,7 @@ export class HomePage implements OnInit, OnDestroy {
     // // TODO END REMOVE
 
     this.items = Tasker.getListTasks();
+    console.log('Home : got ' + this.items.length + ' tasks to display');
     this.getItems({
       'target': {
         'value': this.val
