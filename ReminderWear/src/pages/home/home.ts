@@ -359,6 +359,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.camera.getPicture(options).then((imageData) => {
       const t: Task = Tasker.getTaskByID(id);
       t.setPhoto('data:image/jpeg;base64,' + imageData);
+      SQLitePersistor.saveToDB();
     }, (err) => {
       console.error(err);
     });
@@ -382,6 +383,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.camera.getPicture(options).then((imageData) => {
       const t: Task = Tasker.getTaskByID(id);
       t.setPhoto('data:image/jpeg;base64,' + imageData);
+      SQLitePersistor.saveToDB();
     }, (err) => console.log(err));
   }
 
@@ -397,6 +399,7 @@ export class HomePage implements OnInit, OnDestroy {
         this.myCoordinate = data;
         const t: Task = Tasker.getTaskByID(id);
         t.setLocalisation(this.myCoordinate);
+        SQLitePersistor.saveToDB();
       }
     });
     myModal.present();

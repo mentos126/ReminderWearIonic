@@ -90,19 +90,19 @@ export class SQLitePersistor {
 
 
       Tasker.getListCategories().forEach(value => categories.push(value));
-      for (let cat of categories){
+      for (const cat of categories) {
         Tasker.getInstance().addCategory(cat);
         // Tasker.getInstance().addCategory()setListCategories(categories);
       }
 
       SQLitePersistor.getInstance().loadTasksFromDB().then(tasks => {
-        for (let task of tasks){
+        for (const task of tasks) {
           Tasker.getInstance().addTask(task);
         }
 
         SQLitePersistor.getInstance().loadSportTasksFromDB().then(sportTasks => {
 
-          for (let sportTask of sportTasks){
+          for (const sportTask of sportTasks) {
             Tasker.getInstance().addSportTask(sportTask);
 
             // Tasker.setListSportTasks(sportTasks);
@@ -133,7 +133,7 @@ export class SQLitePersistor {
     // const sqlp: SQLitePersistor = this;
     // const db = this.db;
 
-    for (let i = 0; i < tasks.length; i++){
+    for (let i = 0; i < tasks.length; i++) {
       const task = tasks[i];
       this.saveTaskToDB(task);
     }
@@ -295,7 +295,7 @@ export class SQLitePersistor {
     return categories;
   }
 
-  private async loadTasksFromDB(){
+  private async loadTasksFromDB() {
     const tasks: Task[] = [];
 
     await this.db.executeSql('SELECT * FROM `Tasks` T WHERE isSport = \'false\' ', [])

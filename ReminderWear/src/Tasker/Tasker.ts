@@ -209,7 +209,7 @@ export class Tasker {
   }
 
   public addCategory(c: Category): boolean {
-    if (Tasker.getCategoryByName(c.getName())=== null){
+    if (Tasker.getCategoryByName(c.getName()) === null) {
       Tasker.listCategories.push(c);
       return true;
     }
@@ -244,7 +244,7 @@ export class Tasker {
 
   public addTask(t: Task): boolean {
     console.log('Add Task :: ' + t.getName());
-    if (Tasker.getTaskByID(t.getID()) === null){
+    if (Tasker.getTaskByID(t.getID()) === null) {
       Tasker.listTasks.push(t);
       console.log('task pushed');
       return true;
@@ -257,7 +257,7 @@ export class Tasker {
   }
 
   public addSportTask(t: SportTask): boolean {
-    if (Tasker.getSportTaskByID(t.getID()) === null){
+    if (Tasker.getSportTaskByID(t.getID()) === null) {
 
       Tasker.listSportTasks.push(t);
       return true;

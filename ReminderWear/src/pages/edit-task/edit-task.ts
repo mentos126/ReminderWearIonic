@@ -22,6 +22,7 @@ import { EditCategoryPage } from '../edit-category/edit-category';
 import { ISubscription } from 'rxjs/Subscription';
 import { ModalCategoryPage } from '../modal-category/modal-category';
 import { Category } from '../../Tasker/Category';
+import {SQLitePersistor} from '../../Tasker/SQLitePersistor';
 
 /**
  * Generated class for the EditTaskPage page.
@@ -106,6 +107,7 @@ export class EditTaskPage implements OnInit, OnDestroy {
 
   delete() {
     Tasker.removeTaskByID(this.recevTask.getID());
+    SQLitePersistor.saveToDB();
     this.navCtrl.pop();
   }
 
