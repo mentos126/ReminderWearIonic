@@ -18,9 +18,6 @@ import {
 import {
   Task
 } from '../../Tasker/Task';
-import {
-  Category
-} from '../../Tasker/Category';
 import * as moment from 'moment';
 import {
   EditTaskPage
@@ -47,6 +44,11 @@ import {
 import {
   ShowTaskPage
 } from '../show-task/show-task';
+import {SQLitePersistor} from '../../Tasker/SQLitePersistor';
+
+/*import {
+  SportActivityPage
+} from '../sport-activity/sport-activity';*/
 
 @Component({
   selector: 'page-home',
@@ -66,17 +68,26 @@ export class HomePage implements OnInit, OnDestroy {
   debug: any = 'null';
 
   constructor(public navCtrl: NavController,
-    private taskService: TaskerServiceProvider,
-    public modalCtrl: ModalController,
-    private camera: Camera,
-    private localNotifications: LocalNotifications,
-    private plt: Platform,
-    private alertCtrl: AlertController) {
-    this.initializeItems();
-    this.sort(true);
+              private taskService: TaskerServiceProvider,
+              public modalCtrl: ModalController,
+              private camera: Camera,
+              private localNotifications: LocalNotifications,
+              private plt: Platform,
+              private alertCtrl: AlertController,
+  ) {
+
+
+    SQLitePersistor.databaseReady.subscribe((ready) => {
+      if (ready) {
+        this.initializeItems();
+        this.sort(true);
+      }});
+
+
+
 
     this.plt.ready().then(() => {
-      console.log('READY');
+      // console.log('READY');
       try {
         this.localNotifications
           .on('click')
@@ -101,40 +112,62 @@ export class HomePage implements OnInit, OnDestroy {
     this.subscriptionTask.unsubscribe();
   }
 
-  ionViewDidLoad() {}
+  ionViewDidLoad() {
+    // console.log('home loaded');
+  }
+
+  // ionViewDidEnter() {
+  //   // console.log('home entered');
+  //   // SQLitePersistor.loadFromDB().then(() => {
+  //   //   Tasker.getInstance();
+  //   //   this.items = Tasker.getListTasks();
+  //   //   console.log('items : ');
+  //   //   console.log(this.items);
+  //   // });
+  //
+  // }
 
   initializeItems() {
-    const t = new Tasker();
+
+    console.log('home.ts initialize items');
     Tasker.unserializeLists();
 
-    // TODO REMOVE FROM
-    Tasker.getListTasks();
-    const c = new Category('Aucune', 'ios-add-circle', '#abcdef');
-    const c2 = new Category(Tasker.CATEGORY_SPORT_TAG, 'ios-alarm', '#f5f5f5');
-    t.addCategory(c);
-    t.addCategory(c2);
-    const time = moment();
-    t.addTask(new Task('tache 1', 'description', c2, time, 0, time.hours(), (time.minutes() + 1) % 60));
-    t.addTask(new Task('tache 1 bis', 'description', c2, time, 0, time.hours(), (time.minutes() + 1) % 60));
-    let i = 0;
-    while (i < 10000000) {
-      i++;
-    }
-    t.addTask(new Task('tache 2', 'description', c, null, 0, moment().hours(), (moment().minutes() + 2) % 60,
-      [false, true, false, false, false, false, false]));
-    i = 0;
-    while (i < 10000000) {
-      i++;
-    }
-    t.addTask(new Task('tache 3', 'description', c2, moment(), 0, moment().hours(), (moment().minutes() + 3) % 60));
-    i = 0;
-    while (i < 10000000) {
-      i++;
-    }
-    t.addTask(new Task('tache 4', 'description', c, moment(), 0, moment().hours(), (moment().minutes() + 4) % 60));
-    // TODO END REMOVE
+    // // TODO REMOVE FROM
+    // if (Tasker.getListTasks().length === 0 ){
+    //   console.log('DEBUG : Ajout manuel de tâches');
+    //   const t = new Tasker();
+    //   Tasker.getListTasks();
+    //   const c = Tasker.getCategoryByName(Tasker.CATEGORY_NONE_TAG);
+    //   const c2 = Tasker.getCategoryByName(Tasker.CATEGORY_SPORT_TAG);
+    //   // t.addCategory(c);
+    //   // t.addCategory(c2);
+    //   const time = moment();
+    //   t.addTask(new Task('tache 1', 'description', c2, time, 0, time.hours(), (time.minutes() + 1) % 60));
+    //   t.addTask(new Task('tache 1 bis', 'description', c2, time, 0, time.hours(), (time.minutes() + 1) % 60));
+    //   let i = 0;
+    //   while (i < 10000000) {
+    //     i++;
+    //   }
+    //   t.addTask(new Task('tache 2', 'description', c, null, 0, moment().hours(), (moment().minutes() + 2) % 60,
+    //     [false, true, false, false, false, false, false]));
+    //   i = 0;
+    //   while (i < 10000000) {
+    //     i++;
+    //   }
+    //   t.addTask(new Task('tache 3', 'description', c2, moment(), 0, moment().hours(), (moment().minutes() + 3) % 60));
+    //   i = 0;
+    //   while (i < 10000000) {
+    //     i++;
+    //   }
+    //   t.addTask(new Task('tache 4', 'description', c, moment(), 0, moment().hours(), (moment().minutes() + 4) % 60));
+    //   Tasker.serializeLists();
+    // } else {
+    //   console.log(Tasker.getListTasks().length + ' tâches trouvees')
+    // }
+    // // TODO END REMOVE
 
     this.items = Tasker.getListTasks();
+    console.log('Home : got ' + this.items.length + ' tasks to display');
     this.getItems({
       'target': {
         'value': this.val
@@ -295,6 +328,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.camera.getPicture(options).then((imageData) => {
       const t: Task = Tasker.getTaskByID(id);
       t.setPhoto('data:image/jpeg;base64,' + imageData);
+      SQLitePersistor.saveToDB();
     }, (err) => {
       console.error(err);
     });
@@ -318,6 +352,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.camera.getPicture(options).then((imageData) => {
       const t: Task = Tasker.getTaskByID(id);
       t.setPhoto('data:image/jpeg;base64,' + imageData);
+      SQLitePersistor.saveToDB();
     }, (err) => console.log(err));
   }
 
@@ -333,6 +368,7 @@ export class HomePage implements OnInit, OnDestroy {
         this.myCoordinate = data;
         const t: Task = Tasker.getTaskByID(id);
         t.setLocalisation(this.myCoordinate);
+        SQLitePersistor.saveToDB();
       }
     });
     myModal.present();

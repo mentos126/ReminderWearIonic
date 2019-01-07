@@ -1,38 +1,14 @@
-import {
-  Component,
-  ViewChild
-} from '@angular/core';
-import {
-  IonicPage,
-  NavController,
-  NavParams
-} from 'ionic-angular';
-import {
-  SportTask
-} from '../../Tasker/SportTask';
-import {
-  Coordinate
-} from '../../Tasker/Coordinate';
+import {Component, ViewChild} from '@angular/core';
+import {IonicPage, NavController, NavParams} from 'ionic-angular';
+import {SportTask} from '../../Tasker/SportTask';
+import {Coordinate} from '../../Tasker/Coordinate';
 import * as moment from 'moment';
-import {
-  Geolocation
-} from '@ionic-native/geolocation';
-import {
-  Diagnostic
-} from '@ionic-native/diagnostic';
-import {
-  Health
-} from '@ionic-native/health';
-import {
-  Pedometer,
-  IPedometerData
-} from '@ionic-native/pedometer';
-import {
-  Category
-} from '../../Tasker/Category';
-import {
-  Tasker
-} from '../../Tasker/Tasker';
+import {Geolocation} from '@ionic-native/geolocation';
+import {Diagnostic} from '@ionic-native/diagnostic';
+import {Health} from '@ionic-native/health';
+import {IPedometerData, Pedometer} from '@ionic-native/pedometer';
+import {Tasker} from '../../Tasker/Tasker';
+import {SQLitePersistor} from '../../Tasker/SQLitePersistor';
 
 /**
  * Generated class for the SportActivityPage page.
@@ -171,11 +147,13 @@ export class SportActivityPage {
       }
     }, 1000);
 
-    console.log('runLocation');
+    // console.log('START runLocation');
     this.runLocation();
+    // console.log('END   runLocation');
 
     this.diagnostic.isLocationAvailable()
       .then((state) => {
+        console.log('is location available ? ' + state);
         if (!state) {
           this.diagnostic.switchToLocationSettings();
         }
@@ -185,30 +163,44 @@ export class SportActivityPage {
     // user cancelled the dialog
     this.health.isAvailable()
       .then((available: boolean) => {
-        console.log(available);
-        this.health.requestAuthorization([{
-            read: ['steps', ]
-          }])
-          .then(res => this.debug1 = res)
-          .catch(e => this.debug1 = '{debug : error},' + e);
-      })
-      .catch(e => console.log(e));
 
-    this.pedometer.startPedometerUpdates()
-      .subscribe((data: IPedometerData) => {
-        if (this.isInResgiter) {
-          this.steps = data.numberOfSteps;
+        console.log('health is available ?  : ' + available);
+        if (available) {
+          this.health.requestAuthorization([{
+            read: ['steps']
+          }])
+            .then(res => this.debug1 = res)
+            .catch(e => this.debug1 = '{debug : error},' + e);
+
         }
-      });
+
+      })
+      .catch(e => console.log('health is available ? ', e));
+
+    this.pedometer.isStepCountingAvailable().then(stepsAvailable => {
+      console.log('is step count available ? ' + stepsAvailable);
+      if (stepsAvailable) {
+        this.pedometer.startPedometerUpdates()
+          .subscribe((data: IPedometerData) => {
+            // console.log('pedometer data', JSON.stringify(data));
+            if (this.isInResgiter) {
+              // console.log('pedometer is in register');
+              this.steps = data.numberOfSteps;
+            }
+          });
+      }
+
+    });
+
 
   }
 
   runLocation() {
     const watch = this.geolocation.watchPosition();
     watch.subscribe((data) => {
-      console.log('data', data);
+      // console.log('runLocation data', data);
       if (this.isInResgiter && data.coords) {
-        console.log('data', data, data.coords.latitude, data.coords.longitude);
+        // console.log('runLocation inRegister data', data, data.coords.latitude, data.coords.longitude);
         this.myCoordinates.push(new Coordinate(
           data.coords.latitude,
           data.coords.longitude,
@@ -223,12 +215,13 @@ export class SportActivityPage {
   endRegister() {
     this.isInResgiter = false;
 
+    console.log('creating a new SportTask : ');
     // TODO new sport task;
     // avoir les vrai attribut de la tache
     const st = new SportTask(
-      this.name,
-      this.description,
-      new Category(Tasker.CATEGORY_SPORT_TAG, this.iconCategory, this.colorCategory),
+      'Sans nom',
+      '',
+      Tasker.getCategoryByName(Tasker.CATEGORY_NONE_TAG),
       moment(this.durationMoment),
       0,
       Math.floor((this.durationMoment / 3600000 + 1) % 24),
@@ -242,7 +235,10 @@ export class SportActivityPage {
     for (const c of this.myCoordinates) {
       st.addCoord(c);
     }
+    console.log('sportActivity :: endRegieter');
     Tasker.getInstance().addSportTask(st);
+    console.log('added new SportTask to Tasker', st);
+    SQLitePersistor.saveToDB();
     this.navCtrl.popAll();
 
   }
@@ -251,7 +247,7 @@ export class SportActivityPage {
     const labels: string[] = [];
     const data: number[] = [];
 
-    console.log(this.myCoordinates);
+    // console.log('initGraph()', this.myCoordinates);
     for (const x of this.myCoordinates) {
       labels.push('');
       data.push(x.getHeight());

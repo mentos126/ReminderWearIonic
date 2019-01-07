@@ -22,6 +22,7 @@ import { EditCategoryPage } from '../edit-category/edit-category';
 import { ISubscription } from 'rxjs/Subscription';
 import { ModalCategoryPage } from '../modal-category/modal-category';
 import { Category } from '../../Tasker/Category';
+import {SQLitePersistor} from '../../Tasker/SQLitePersistor';
 
 /**
  * Generated class for the EditTaskPage page.
@@ -106,6 +107,7 @@ export class EditTaskPage implements OnInit, OnDestroy {
 
   delete() {
     Tasker.removeTaskByID(this.recevTask.getID());
+    SQLitePersistor.saveToDB();
     this.navCtrl.pop();
   }
 
@@ -167,7 +169,7 @@ export class EditTaskPage implements OnInit, OnDestroy {
               );
               success = true;
             } else {
-              this.lunchToast('Selectionné une répétition.');
+              this.lunchToast('Selectionnez une répétition.');
             }
           } else {
             if (myDateMoment.isAfter(moment())) {
@@ -176,20 +178,21 @@ export class EditTaskPage implements OnInit, OnDestroy {
               );
               success = true;
             } else {
-              this.lunchToast('Selectionné une date ultérieur à aujourd\'hui.');
+              this.lunchToast('Selectionnez une date ultérieure à aujourd\'hui');
             }
           }
         } else {
-          this.lunchToast('Selectionné une catégory.');
+          this.lunchToast('Selectionnez une catégorie');
         }
       } else {
-        this.lunchToast('Saisir une description.');
+        this.lunchToast('Saisissez une description');
       }
     } else {
-      this.lunchToast('Saisir un titre.');
+      this.lunchToast('Saisissez un titre');
     }
 
     if (success) {
+      console.log('editTask :: save' );
       Tasker.getInstance().editTaskById(this.recevTask.getID(), newTask);
       Tasker.serializeLists();
       Tasker.sort();

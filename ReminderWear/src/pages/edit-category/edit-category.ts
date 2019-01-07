@@ -79,6 +79,7 @@ export class EditCategoryPage implements OnInit, OnDestroy {
       if (this.myIcon !== '') {
         if (this.myColor !== '') {
           const newCategory = new Category(this.myTitle, this.myIcon, this.myColor);
+          console.log('edit category :: save');
           Tasker.getInstance().editCategoryById(this.recevCat.getID(), newCategory);
           Tasker.serializeLists();
           this.navCtrl.pop();

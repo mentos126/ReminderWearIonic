@@ -176,7 +176,9 @@ export class AddTaskPage implements OnInit, OnDestroy {
     }
 
     if (success) {
-      Tasker.getListTasks().push(newTask);
+      // Tasker.getListTasks().push(newTask);
+      Tasker.getInstance().addTask(newTask);
+      console.log('saving new taks named ' + newTask.getName());
       Tasker.serializeLists();
       Tasker.sort();
       this.navCtrl.pop();

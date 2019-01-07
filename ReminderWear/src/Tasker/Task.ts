@@ -41,6 +41,10 @@ export class Task {
         return this.ID;
     }
 
+  setID(insertId: number) {
+    this.ID = insertId;
+  }
+
     public getName(): string {
         return this.name;
     }
