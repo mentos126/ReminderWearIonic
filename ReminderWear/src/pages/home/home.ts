@@ -44,7 +44,9 @@ import {
 import {
   ShowTaskPage
 } from '../show-task/show-task';
-import {SQLitePersistor} from '../../Tasker/SQLitePersistor';
+import {
+  SQLitePersistor
+} from '../../Tasker/SQLitePersistor';
 
 /*import {
   SportActivityPage
@@ -64,30 +66,25 @@ export class HomePage implements OnInit, OnDestroy {
   myCoordinate: Coordinate = null;
   val = '';
   sizeOldItem = 0;
-
-  debug: any = 'null';
+  idInterval: number;
 
   constructor(public navCtrl: NavController,
-              private taskService: TaskerServiceProvider,
-              public modalCtrl: ModalController,
-              private camera: Camera,
-              private localNotifications: LocalNotifications,
-              private plt: Platform,
-              private alertCtrl: AlertController,
+    private taskService: TaskerServiceProvider,
+    public modalCtrl: ModalController,
+    private camera: Camera,
+    private localNotifications: LocalNotifications,
+    private plt: Platform,
+    private alertCtrl: AlertController,
   ) {
-
 
     SQLitePersistor.databaseReady.subscribe((ready) => {
       if (ready) {
         this.initializeItems();
-        this.sort(true);
-      }});
-
-
-
+        this.sort(false);
+      }
+    });
 
     this.plt.ready().then(() => {
-      // console.log('READY');
       try {
         this.localNotifications
           .on('click')
@@ -110,11 +107,10 @@ export class HomePage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptionTask.unsubscribe();
+    clearInterval(this.idInterval);
   }
 
-  ionViewDidLoad() {
-    // console.log('home loaded');
-  }
+  ionViewDidLoad() {}
 
   // ionViewDidEnter() {
   //   // console.log('home entered');
@@ -132,40 +128,6 @@ export class HomePage implements OnInit, OnDestroy {
     console.log('home.ts initialize items');
     Tasker.unserializeLists();
 
-    // // TODO REMOVE FROM
-    // if (Tasker.getListTasks().length === 0 ){
-    //   console.log('DEBUG : Ajout manuel de tâches');
-    //   const t = new Tasker();
-    //   Tasker.getListTasks();
-    //   const c = Tasker.getCategoryByName(Tasker.CATEGORY_NONE_TAG);
-    //   const c2 = Tasker.getCategoryByName(Tasker.CATEGORY_SPORT_TAG);
-    //   // t.addCategory(c);
-    //   // t.addCategory(c2);
-    //   const time = moment();
-    //   t.addTask(new Task('tache 1', 'description', c2, time, 0, time.hours(), (time.minutes() + 1) % 60));
-    //   t.addTask(new Task('tache 1 bis', 'description', c2, time, 0, time.hours(), (time.minutes() + 1) % 60));
-    //   let i = 0;
-    //   while (i < 10000000) {
-    //     i++;
-    //   }
-    //   t.addTask(new Task('tache 2', 'description', c, null, 0, moment().hours(), (moment().minutes() + 2) % 60,
-    //     [false, true, false, false, false, false, false]));
-    //   i = 0;
-    //   while (i < 10000000) {
-    //     i++;
-    //   }
-    //   t.addTask(new Task('tache 3', 'description', c2, moment(), 0, moment().hours(), (moment().minutes() + 3) % 60));
-    //   i = 0;
-    //   while (i < 10000000) {
-    //     i++;
-    //   }
-    //   t.addTask(new Task('tache 4', 'description', c, moment(), 0, moment().hours(), (moment().minutes() + 4) % 60));
-    //   Tasker.serializeLists();
-    // } else {
-    //   console.log(Tasker.getListTasks().length + ' tâches trouvees')
-    // }
-    // // TODO END REMOVE
-
     this.items = Tasker.getListTasks();
     console.log('Home : got ' + this.items.length + ' tasks to display');
     this.getItems({
@@ -173,14 +135,14 @@ export class HomePage implements OnInit, OnDestroy {
         'value': this.val
       }
     });
-    setInterval(() => {
+    this.idInterval = setInterval(() => {
       this.getItems({
         'target': {
           'value': this.val
         }
       });
       this.sort(false);
-      // this.lunchLocalNotification();
+      this.lunchLocalNotification();
     }, 1000);
 
   }
@@ -375,6 +337,9 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   lunchLocalNotification() {
+
+    this.localNotifications.cancelAll();
+
     let temp: Task[] = null;
     const now: number = moment().valueOf();
     for (const t of Tasker.getListTasks()) {
@@ -389,6 +354,7 @@ export class HomePage implements OnInit, OnDestroy {
     }
 
     if (temp !== null) {
+
       const temp2: any = temp[0].getDateDeb();
       for (const t of temp) {
         t.setDateDeb(t.getNextDate());
@@ -411,9 +377,11 @@ export class HomePage implements OnInit, OnDestroy {
         });
       }
 
-      this.debug = toSchedule;
-
-      this.localNotifications.schedule(toSchedule);
+      if (toSchedule.length === 1) {
+        this.localNotifications.schedule(toSchedule[0]);
+      } else if (toSchedule.length > 1) {
+        this.localNotifications.schedule(toSchedule);
+      }
 
       for (const t of temp) {
         t.setDateDeb(temp2);

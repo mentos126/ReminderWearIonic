@@ -120,7 +120,7 @@ export class EditTaskPage implements OnInit, OnDestroy {
     this.navCtrl.push(EditCategoryPage);
   }
 
-  lunchToast(message: string): void {
+  launchToast(message: string): void {
     const toast = this.toastCtrl.create({
       message: message,
       duration: 3000
@@ -169,7 +169,7 @@ export class EditTaskPage implements OnInit, OnDestroy {
               );
               success = true;
             } else {
-              this.lunchToast('Selectionnez une répétition.');
+              this.launchToast('Selectionnez une répétition.');
             }
           } else {
             if (myDateMoment.isAfter(moment())) {
@@ -178,17 +178,17 @@ export class EditTaskPage implements OnInit, OnDestroy {
               );
               success = true;
             } else {
-              this.lunchToast('Selectionnez une date ultérieure à aujourd\'hui');
+              this.launchToast('Selectionnez une date ultérieure à aujourd\'hui');
             }
           }
         } else {
-          this.lunchToast('Selectionnez une catégorie');
+          this.launchToast('Selectionnez une catégorie');
         }
       } else {
-        this.lunchToast('Saisissez une description');
+        this.launchToast('Saisissez une description');
       }
     } else {
-      this.lunchToast('Saisissez un titre');
+      this.launchToast('Saisissez un titre');
     }
 
     if (success) {

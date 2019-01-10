@@ -18,12 +18,6 @@
     </ion-grid>
   </ion-toolbar>
 
-
-  <pre>
-    {{ debug | json }}
-  </pre>
-  <button ion-button (click)="lunchLocalNotification()">TEST LOCAL NOTIF</button>
-
   <ion-list no-line>
 
     <ion-item-sliding *ngFor="let item of items" (ionSwipe)="delete(item)">

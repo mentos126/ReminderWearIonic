@@ -47,13 +47,13 @@ export class ShowTaskPage {
   myDate: Moment = null;
   myLocalisation: Coordinate = null;
 
-  ionViewDidLoad() {}
+  ionViewDidLoad() {  }
 
   cancel() {
     this.navCtrl.pop();
   }
 
-  lunchSportActivity() {
+  launchSportActivity() {
     this.navCtrl.push(SportActivityPage, {
       'name': this.task.name,
       'descrtiption': this.task.descrtiption,

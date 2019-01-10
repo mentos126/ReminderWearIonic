@@ -105,7 +105,7 @@ export class AddTaskPage implements OnInit, OnDestroy {
     this.navCtrl.push(EditCategoryPage);
   }
 
-  lunchToast(message: string): void {
+  launchToast(message: string): void {
     const toast = this.toastCtrl.create({
       message: message,
       duration: 3000
@@ -153,7 +153,7 @@ export class AddTaskPage implements OnInit, OnDestroy {
               );
               success = true;
             } else {
-              this.lunchToast('Selectionné une répétition.');
+              this.launchToast('Selectionné une répétition.');
             }
           } else {
             if (myDateMoment.isAfter(moment())) {
@@ -162,17 +162,17 @@ export class AddTaskPage implements OnInit, OnDestroy {
               );
               success = true;
             } else {
-              this.lunchToast('Selectionné une date ultérieur à aujourd\'hui.');
+              this.launchToast('Selectionné une date ultérieur à aujourd\'hui.');
             }
           }
         } else {
-          this.lunchToast('Selectionné une catégory.');
+          this.launchToast('Selectionné une catégory.');
         }
       } else {
-        this.lunchToast('Saisir une description.');
+        this.launchToast('Saisir une description.');
       }
     } else {
-      this.lunchToast('Saisir un titre.');
+      this.launchToast('Saisir un titre.');
     }
 
     if (success) {

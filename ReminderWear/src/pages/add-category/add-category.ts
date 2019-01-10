@@ -35,7 +35,7 @@ export class AddCategoryPage {
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private toastCtrl: ToastController, public modalCtrl: ModalController) {}
 
-  lunchToast(message: string): void {
+  launchToast(message: string): void {
     const toast = this.toastCtrl.create({
       message: message,
       duration: 3000
@@ -56,13 +56,13 @@ export class AddCategoryPage {
           Tasker.serializeLists();
           this.navCtrl.pop();
         } else {
-          this.lunchToast('Sélectionné une couleur');
+          this.launchToast('Sélectionné une couleur');
         }
       } else {
-        this.lunchToast('Selectionné une icone');
+        this.launchToast('Selectionné une icone');
       }
     } else {
-      this.lunchToast('Ajouter un titre');
+      this.launchToast('Ajouter un titre');
     }
 
   }

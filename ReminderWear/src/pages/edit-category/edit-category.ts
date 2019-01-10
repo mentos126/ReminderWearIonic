@@ -63,7 +63,7 @@ export class EditCategoryPage implements OnInit, OnDestroy {
 
   ionViewDidLoad() { }
 
-  lunchToast(message: string): void {
+  launchToast(message: string): void {
     const toast = this.toastCtrl.create({
       message: message,
       duration: 3000
@@ -84,13 +84,13 @@ export class EditCategoryPage implements OnInit, OnDestroy {
           Tasker.serializeLists();
           this.navCtrl.pop();
         } else {
-          this.lunchToast('Sélectionné une couleur');
+          this.launchToast('Sélectionné une couleur');
         }
       } else {
-        this.lunchToast('Selectionné une icone');
+        this.launchToast('Selectionné une icone');
       }
     } else {
-      this.lunchToast('Ajouter un titre');
+      this.launchToast('Ajouter un titre');
     }
 
   }

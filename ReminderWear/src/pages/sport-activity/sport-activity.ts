@@ -5,10 +5,11 @@ import {Coordinate} from '../../Tasker/Coordinate';
 import * as moment from 'moment';
 import {Geolocation} from '@ionic-native/geolocation';
 import {Diagnostic} from '@ionic-native/diagnostic';
-import {Health} from '@ionic-native/health';
+// import {Health} from '@ionic-native/health';
 import {IPedometerData, Pedometer} from '@ionic-native/pedometer';
 import {Tasker} from '../../Tasker/Tasker';
 import {SQLitePersistor} from '../../Tasker/SQLitePersistor';
+import { Category } from '../../Tasker/Category';
 
 /**
  * Generated class for the SportActivityPage page.
@@ -30,7 +31,6 @@ export class SportActivityPage {
   mySportTask: SportTask;
   myCoordinates: Coordinate[] = [];
 
-
   name = '';
   description = '';
   nameCategory = '';
@@ -42,10 +42,8 @@ export class SportActivityPage {
   duration = moment().hours(0).minutes(0).seconds(0).format('HH : mm : ss');
   durationMoment = 0;
   timer = 0;
-
-  debug1: any = 'null';
-
   isInResgiter = false;
+  // debug1: any = 'null';
 
   public lineChartData: Array < any > = [{
     data: [0],
@@ -72,7 +70,7 @@ export class SportActivityPage {
     private geolocation: Geolocation,
     private diagnostic: Diagnostic,
     private pedometer: Pedometer,
-    private health: Health
+    // private health: Health
   ) {
     const task = navParams.data;
     this.name = task.name;
@@ -161,7 +159,7 @@ export class SportActivityPage {
 
     // TODO health not available
     // user cancelled the dialog
-    this.health.isAvailable()
+    /* this.health.isAvailable()
       .then((available: boolean) => {
 
         console.log('health is available ?  : ' + available);
@@ -175,7 +173,7 @@ export class SportActivityPage {
         }
 
       })
-      .catch(e => console.log('health is available ? ', e));
+      .catch(e => console.log('health is available ? ', e));*/
 
     this.pedometer.isStepCountingAvailable().then(stepsAvailable => {
       console.log('is step count available ? ' + stepsAvailable);
@@ -219,9 +217,9 @@ export class SportActivityPage {
     // TODO new sport task;
     // avoir les vrai attribut de la tache
     const st = new SportTask(
-      'Sans nom',
-      '',
-      Tasker.getCategoryByName(Tasker.CATEGORY_NONE_TAG),
+      this.name,
+      this.description,
+      new Category(this.nameCategory, this.iconCategory, this.colorCategory),
       moment(this.durationMoment),
       0,
       Math.floor((this.durationMoment / 3600000 + 1) % 24),
