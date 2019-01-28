@@ -67,6 +67,7 @@ export class HomePage implements OnInit, OnDestroy {
   val = '';
   sizeOldItem = 0;
   idInterval: number;
+  oldNotification = '';
 
   constructor(public navCtrl: NavController,
     private taskService: TaskerServiceProvider,
@@ -185,6 +186,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   delete(item: Task) {
     Tasker.removeTask(item);
+    SQLitePersistor.saveToDB();
   }
 
   onItemClicked(id: number) {
@@ -338,8 +340,6 @@ export class HomePage implements OnInit, OnDestroy {
 
   lunchLocalNotification() {
 
-    this.localNotifications.cancelAll();
-
     let temp: Task[] = null;
     const now: number = moment().valueOf();
     for (const t of Tasker.getListTasks()) {
@@ -377,14 +377,21 @@ export class HomePage implements OnInit, OnDestroy {
         });
       }
 
-      if (toSchedule.length === 1) {
-        this.localNotifications.schedule(toSchedule[0]);
-      } else if (toSchedule.length > 1) {
-        this.localNotifications.schedule(toSchedule);
-      }
+      if (JSON.stringify(toSchedule) !== this.oldNotification) {
 
-      for (const t of temp) {
-        t.setDateDeb(temp2);
+        this.oldNotification = JSON.stringify(toSchedule);
+        this.localNotifications.cancelAll().then(() => {
+
+          if (toSchedule.length === 1) {
+            this.localNotifications.schedule(toSchedule[0]);
+          } else if (toSchedule.length > 1) {
+            this.localNotifications.schedule(toSchedule);
+          }
+
+          for (const t of temp) {
+            t.setDateDeb(temp2);
+          }
+        });
       }
     }
   }
