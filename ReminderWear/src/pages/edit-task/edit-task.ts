@@ -169,7 +169,7 @@ export class EditTaskPage implements OnInit, OnDestroy {
               );
               success = true;
             } else {
-              this.launchToast('Selectionnez une répétition.');
+              this.launchToast('Selectionnez une répétition');
             }
           } else {
             if (myDateMoment.isAfter(moment())) {

@@ -56,13 +56,13 @@ export class AddCategoryPage {
           Tasker.serializeLists();
           this.navCtrl.pop();
         } else {
-          this.launchToast('Sélectionné une couleur');
+          this.launchToast('Sélectionnez une couleur');
         }
       } else {
-        this.launchToast('Selectionné une icone');
+        this.launchToast('Selectionnez une icone');
       }
     } else {
-      this.launchToast('Ajouter un titre');
+      this.launchToast('Ajoutez un titre');
     }
 
   }

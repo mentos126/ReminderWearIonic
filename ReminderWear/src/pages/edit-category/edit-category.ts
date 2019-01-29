@@ -79,18 +79,17 @@ export class EditCategoryPage implements OnInit, OnDestroy {
       if (this.myIcon !== '') {
         if (this.myColor !== '') {
           const newCategory = new Category(this.myTitle, this.myIcon, this.myColor);
-          console.log('edit category :: save');
           Tasker.getInstance().editCategoryById(this.recevCat.getID(), newCategory);
           Tasker.serializeLists();
           this.navCtrl.pop();
         } else {
-          this.launchToast('Sélectionné une couleur');
+          this.launchToast('Choisissez une couleur');
         }
       } else {
-        this.launchToast('Selectionné une icone');
+        this.launchToast('Choisissez une icone');
       }
     } else {
-      this.launchToast('Ajouter un titre');
+      this.launchToast('Ajoutez un titre');
     }
 
   }

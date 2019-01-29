@@ -59,6 +59,18 @@ export class SportTask extends Task {
     public getDuration(): number {
         return this.duration;
     }
+
+    public getFormatedDuration(): string {
+      const s = Math.floor(this.duration / 1000  % 60);
+      const m = Math.floor((this.duration / 60000) % 60);
+      const h = Math.floor((this.duration / 3600000) % 24);
+
+      let durationMoment: string = h + (h > 1 ? 'heures' : 'heure');
+      durationMoment += ' ' +  m + (m > 1 ? 'minutes' : 'minute');
+      durationMoment += ' ' +  s + (s > 1 ? 'secondes' : 'seconde');
+      return durationMoment;
+    }
+
     public setDurationSecondes(duration: number): void {
         this.duration = duration;
     }

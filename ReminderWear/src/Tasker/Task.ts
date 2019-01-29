@@ -16,8 +16,8 @@ export class Task {
     private dateDeb: Moment;
     private warningBefore: number;
     private isActivatedNotification: boolean;
-    private timeHour: number;
-    private timeMinutes: number;
+    private timeHour: number = 0;
+    private timeMinutes: number = 0;
     private repete: boolean[];
     private photo: string = null;
     private localisation: Coordinate = null;
@@ -135,14 +135,14 @@ export class Task {
     }
 
     public getTimeHour(): number {
-        return this.timeHour;
+        return this.timeHour | 0;
     }
     public setTimeHour(time: number): void {
         this.timeHour = time;
     }
 
     public getTimeMinutes(): number {
-        return this.timeMinutes;
+        return this.timeMinutes | 0;
     }
     public setTimeMinutes(timeMinutes: number): void {
         this.timeMinutes = timeMinutes;
@@ -216,28 +216,6 @@ export class Task {
     public setLocalisation(localisation: Coordinate): void {
       this.localisation = localisation;
     }
-
-
-
-
-    /*
-
-        private long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
-            long diffInMillies = date2.getTime() - date1.getTime();
-            return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
-        }
-
-    	public long getDuration(TimeUnit timeUnit){
-    		Calendar cal = getNextDate();
-    		cal.set(Calendar.HOUR, getTimeMinutes());
-    		cal.set(Calendar.MINUTE, getTimeMinutes());
-    		cal.add(Calendar.MINUTE, -1 * getWarningBefore());
-    		//cal.roll(Calendar.MINUTE, getWarningBefore());
-    	    Date mDate  = getNextDate().getTime();
-            return getDateDiff(mDate,new Date(),timeUnit);
-        }
-
-    */
 
 
 }

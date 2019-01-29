@@ -12,11 +12,8 @@ export class Tasker {
   private static listSportTasks: SportTask[] = [];
 
   public static getInstance(): Tasker {
-    // console.log('getInstance()');
     if (Tasker.INSTANCE == null) {
       Tasker.INSTANCE = new Tasker();
-      // console.log('created new instance');
-      // console.log('new instance has ' + this.getListCategories().length + ' categories');
     }
     return Tasker.INSTANCE;
   }
@@ -29,20 +26,16 @@ export class Tasker {
   }
 
   public static unserializeLists(): void {
-    console.log('deserialization');
     SQLitePersistor.loadFromDB();
   }
 
   public static serializeLists(): void {
-    console.log('serialization');
-
     SQLitePersistor.saveToDB();
   }
 
   public static removeTask(t: Task): void {
     const index = this.listTasks.indexOf(t, 0);
     if (index > -1) {
-      // console.log('remove task');
       this.listTasks.splice(index, 1);
     }
   }
@@ -51,6 +44,7 @@ export class Tasker {
     const index = this.listTasks.indexOf(this.getTaskByID(id), 0);
     if (index > -1) {
       this.listTasks.splice(index, 1);
+      console.log('removeTaskByID :: Task found, removing...');
     }
   }
 
@@ -62,15 +56,18 @@ export class Tasker {
   }
 
   public static removeSportTaskByID(id: number): void {
-    let temp = -1;
+    let index = -1;
     for (let i = 0; i < this.listSportTasks.length; i++) {
       if (this.listSportTasks[i].getID() === id) {
-        temp = i;
+        index = i;
         break;
       }
     }
-    if (temp !== -1) {
-      this.listSportTasks.slice(temp, 1);
+    if (index !== -1) {
+      // console.log('removeSportTaskByID :: SportTask found, removing SportTask with ID='+id + ' at index=' + index);
+      // console.log('avant : ', this.listSportTasks);
+      this.listSportTasks.splice(index, 1);
+      // console.log('après : ', this.listSportTasks)
     }
   }
 
@@ -95,27 +92,6 @@ export class Tasker {
     return null;
   }
 
-  public static changeWithSaveIsActivatedNotification(t: Task): void {
-    t.setIsActivatedNotification(!t.getIsActivatedNotification());
-    this.serializeLists();
-  }
-
-
-  // public static garbageCollectOld(): void {
-  //   this.unserializeLists();
-  //   const deletes: number[] = [];
-  //   const now = moment();
-  //   for (let i = 0; i < this.listTasks.length; i++) {
-  //     if (this.listTasks[i].getDateDeb() != null && this.listTasks[i].getNextDate().isBefore(now)) {
-  //       deletes.push(this.listTasks[i].getID());
-  //     }
-  //   }
-  //   for (const i of deletes) {
-  //     this.removeTaskByID(i);
-  //   }
-  //   this.serializeLists();
-  // }
-
   public static getTaskByID(id: number): Task {
     for (const t of this.listTasks) {
       if (t.getID() === id) {
@@ -136,10 +112,6 @@ export class Tasker {
   }
 
   public static getCategoryByName(catName: string): Category {
-    // console.log('getCat By Name : ' + catName);
-    // if (Tasker.INSTANCE === null){
-    //   this.getInstance();
-    // }
 
     let cat = null;
     for (const c of this.listCategories) {
@@ -148,8 +120,6 @@ export class Tasker {
         break;
       }
     }
-
-    console.log('recherche de la categorie ' + catName + ' a renvoyé ' + (cat === null ? null : '1 résultat'));
 
     return cat;
   }
@@ -164,48 +134,6 @@ export class Tasker {
       }
       return 0;
     });
-  }
-
-  // public static setListCategories(listCategories: Category[]): void {
-  //   Tasker.listCategories = listCategories;
-  // }
-  public static setListTasks(listTasks: Task[]): void {
-    Tasker.listTasks = listTasks;
-  }
-
-  public static setListSportTasks(listSportTasks: SportTask[]): void {
-    Tasker.listSportTasks = listSportTasks;
-  }
-
-  // public constructor() {
-  //   // console.log('new Tasker constructor');
-  //   // Tasker.unserializeLists();
-  //   // this.addCategory(new Category(Tasker.CATEGORY_NONE_TAG, 'alarm', '#f3f5e1'));
-  //   // this.addCategory(new Category(Tasker.CATEGORY_SPORT_TAG, 'bicycle', '#f5f5f5'));
-  //   // Tasker.serializeLists();
-  //
-  // }
-
-  // public Tasker() {
-  //   if (Tasker.INSTANCE == null) {
-  //     Tasker.unserializeLists();
-  //     this.addCategory(new Category(Tasker.CATEGORY_NONE_TAG, 'close', '#f3f5e1'));
-  //     this.addCategory(new Category(Tasker.CATEGORY_SPORT_TAG, 'add', '#f5f5f5'));
-  //     Tasker.serializeLists();
-  //   }
-  // }
-
-
-
-  public setListCategories(listCategories: Category[]): void {
-    Tasker.listCategories = listCategories;
-  }
-
-  public removeCategory(c: Category): void {
-    const index = Tasker.listCategories.indexOf(c, 0);
-    if (index > -1) {
-      Tasker.listCategories.splice(index, 1);
-    }
   }
 
   public addCategory(c: Category): boolean {
@@ -238,27 +166,16 @@ export class Tasker {
     task.setRepete(t.getRepete());
   }
 
-  public setListTasks(listTasks: Task[]): void {
-    Tasker.listTasks = listTasks;
-  }
-
   public addTask(t: Task): boolean {
-    console.log('Add Task :: ' + t.getName());
     if (Tasker.getTaskByID(t.getID()) === null) {
       Tasker.listTasks.push(t);
-      console.log('task pushed');
       return true;
     }
     return false;
   }
 
-  public setListSportTasks(listSportTasks: SportTask[]): void {
-    Tasker.listSportTasks = listSportTasks;
-  }
-
   public addSportTask(t: SportTask): boolean {
     if (Tasker.getSportTaskByID(t.getID()) === null) {
-
       Tasker.listSportTasks.push(t);
       return true;
     }

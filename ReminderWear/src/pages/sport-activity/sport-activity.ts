@@ -157,24 +157,6 @@ export class SportActivityPage {
         }
       }).catch(e => console.error(e));
 
-    // TODO health not available
-    // user cancelled the dialog
-    /* this.health.isAvailable()
-      .then((available: boolean) => {
-
-        console.log('health is available ?  : ' + available);
-        if (available) {
-          this.health.requestAuthorization([{
-            read: ['steps']
-          }])
-            .then(res => this.debug1 = res)
-            .catch(e => this.debug1 = '{debug : error},' + e);
-
-        }
-
-      })
-      .catch(e => console.log('health is available ? ', e));*/
-
     this.pedometer.isStepCountingAvailable().then(stepsAvailable => {
       console.log('is step count available ? ' + stepsAvailable);
       if (stepsAvailable) {
@@ -196,7 +178,6 @@ export class SportActivityPage {
   runLocation() {
     const watch = this.geolocation.watchPosition();
     watch.subscribe((data) => {
-      // console.log('runLocation data', data);
       if (this.isInResgiter && data.coords) {
         // console.log('runLocation inRegister data', data, data.coords.latitude, data.coords.longitude);
         this.myCoordinates.push(new Coordinate(
@@ -213,9 +194,7 @@ export class SportActivityPage {
   endRegister() {
     this.isInResgiter = false;
 
-    console.log('creating a new SportTask : ');
-    // TODO new sport task;
-    // avoir les vrai attribut de la tache
+    // console.log('creating a new SportTask : ');
     const st = new SportTask(
       this.name,
       this.description,
@@ -233,9 +212,9 @@ export class SportActivityPage {
     for (const c of this.myCoordinates) {
       st.addCoord(c);
     }
-    console.log('sportActivity :: endRegieter');
+    // console.log('sportActivity :: endRegieter');
     Tasker.getInstance().addSportTask(st);
-    console.log('added new SportTask to Tasker', st);
+    // console.log('added new SportTask to Tasker', st);
     SQLitePersistor.saveToDB();
     this.navCtrl.popAll();
 

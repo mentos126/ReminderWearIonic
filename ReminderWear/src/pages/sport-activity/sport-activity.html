@@ -23,14 +23,9 @@
     </ion-grid>
   </ion-toolbar>
 
-  <!-- pre>
-    {{ debug1 | json }}
-  </pre>
-  <hr -->
-
   <ion-card color="primary" *ngIf="isInResgiter">
     <ion-card-content text-center>
-      Enregistrement en cours
+      Enregistrement en cours...
       <ion-spinner item-start name="circles"></ion-spinner>
     </ion-card-content>
   </ion-card>
@@ -48,24 +43,17 @@
     </ion-card-content>
   </ion-card>
 
-  <!--<ion-card>-->
-    <!--<ion-card-content>-->
-      <!--<ion-icon name="ios-pulse" (click)="sort()"></ion-icon>-->
-      <!--{{ heart }} pulsations par minute-->
-    <!--</ion-card-content>-->
-  <!--</ion-card>-->
-
   <ion-card>
     <ion-card-content>
       <ion-icon name="ios-pin" (click)="sort()"></ion-icon>
-      {{ distance  | number: '1.3-3' }} km parcouru
+      {{ distance  | number: '1.3-3' }} km parcourus
     </ion-card-content>
   </ion-card>
 
   <ion-card>
     <ion-card-content>
       <ion-icon name="ios-swap" (click)="sort()"></ion-icon>
-      {{ duration }} durée
+      {{ duration }} <!--durée-->
     </ion-card-content>
   </ion-card>
 

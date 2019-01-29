@@ -83,8 +83,8 @@
 
               <ion-row text-center>
                 <ion-col>
-                  <button *ngIf="!item.getLocalisation()" (click)="selectLocalisation($event, item.getID())" ion-button>Selectionner
-                    un lieux</button>
+                  <button *ngIf="!item.getLocalisation()" (click)="selectLocalisation($event, item.getID())" ion-button>Définir
+                    un lieu</button>
                   <google-map (click)="eventStopPropagation($event)" *ngIf="item.getLocalisation()" [localisation]="item.getLocalisation()"
                     [isDrag]="false"></google-map>
                 </ion-col>
@@ -118,7 +118,7 @@
     <ion-item >
       <ion-card color="danger">
         <ion-card-content text-center>
-          Ancienne Tâche
+          Anciennes tâches
         </ion-card-content>
       </ion-card>
     </ion-item>
@@ -186,8 +186,8 @@
 
               <ion-row text-center>
                 <ion-col>
-                  <button *ngIf="!item.getLocalisation()" (click)="selectLocalisation($event, item.getID())" ion-button>Selectionner
-                    un lieux</button>
+                  <button *ngIf="!item.getLocalisation()" (click)="selectLocalisation($event, item.getID())" ion-button>Définir
+                    un lieu</button>
                   <google-map (click)="eventStopPropagation($event)" *ngIf="item.getLocalisation()" [localisation]="item.getLocalisation()"
                     [isDrag]="false"></google-map>
                 </ion-col>

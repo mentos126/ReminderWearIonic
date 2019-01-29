@@ -66,7 +66,7 @@ export class AddTaskPage implements OnInit, OnDestroy {
   private myTitle = '';
   private myDescription = '';
   private myHours = moment().add(5, 'minutes').format('HH:mm');
-  private myPreventBefore = '10:30';
+  private myPreventBefore = '10:00';
   private myDate = moment().add(5, 'minutes').format('YYYY-MM-DD');
   private myCat = Tasker.CATEGORY_NONE_TAG;
   private myCategory: Category = Tasker.getCategoryByName(Tasker.CATEGORY_NONE_TAG);
@@ -153,7 +153,7 @@ export class AddTaskPage implements OnInit, OnDestroy {
               );
               success = true;
             } else {
-              this.launchToast('Selectionné une répétition.');
+              this.launchToast('Selectionnez une récurrence');
             }
           } else {
             if (myDateMoment.isAfter(moment())) {
@@ -162,23 +162,22 @@ export class AddTaskPage implements OnInit, OnDestroy {
               );
               success = true;
             } else {
-              this.launchToast('Selectionné une date ultérieur à aujourd\'hui.');
+              this.launchToast('Selectionnez une date future');
             }
           }
         } else {
-          this.launchToast('Selectionné une catégory.');
+          this.launchToast('Selectionnez une catégorie');
         }
       } else {
-        this.launchToast('Saisir une description.');
+        this.launchToast('Saisissez une description');
       }
     } else {
-      this.launchToast('Saisir un titre.');
+      this.launchToast('Saisissez un titre');
     }
 
     if (success) {
       // Tasker.getListTasks().push(newTask);
       Tasker.getInstance().addTask(newTask);
-      console.log('saving new taks named ' + newTask.getName());
       Tasker.serializeLists();
       Tasker.sort();
       this.navCtrl.pop();

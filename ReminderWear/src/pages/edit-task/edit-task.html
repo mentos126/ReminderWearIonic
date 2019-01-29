@@ -40,7 +40,7 @@
 
     <ion-item>
       <ion-label>Heure:</ion-label>
-      <ion-datetime cancelText="Annuler" doneText="D'accord" displayFormat="HH:mm" [(ngModel)]="myHours"></ion-datetime>
+      <ion-datetime cancelText="Annuler" doneText="OK" displayFormat="HH:mm" [(ngModel)]="myHours"></ion-datetime>
     </ion-item>
 
     <ion-item>
@@ -62,7 +62,7 @@
 
     <ion-item>
       <ion-label>Prévenir avant (minutes):</ion-label>
-      <ion-datetime cancelText="Annuler" doneText="D'accord" displayFormat="mm" minuteValues="0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55" [(ngModel)]="myPreventBefore"></ion-datetime>
+      <ion-datetime cancelText="Annuler" doneText="OK" displayFormat="mm" minuteValues="0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55" [(ngModel)]="myPreventBefore"></ion-datetime>
     </ion-item>
 
     <ion-item>
@@ -72,7 +72,7 @@
 
     <ion-item *ngIf="!isChecked">
       <ion-label>Date:</ion-label>
-      <ion-datetime cancelText="Annuler" doneText="D'accord" displayFormat="DD MMM YYYY" min="2018" max="2100" monthShortNames="jan., fev., mar., avr., mai., juin., juil., aout., sept., oct., nov., dec;"
+      <ion-datetime cancelText="Annuler" doneText="OK" displayFormat="DD MMM YYYY" min="2018" max="2100" monthShortNames="jan., fev., mar., avr., mai., juin., juil., aout., sept., oct., nov., dec;"
         pickerFormat="DD MMM YYYY" [(ngModel)]="myDate"></ion-datetime>
     </ion-item>
 

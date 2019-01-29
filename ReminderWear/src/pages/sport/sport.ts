@@ -6,6 +6,7 @@ import {SportDetailPage} from '../sport-detail/sport-detail';
 import {TaskerServiceProvider} from '../../providers/tasker-service/tasker-service';
 import {SportTask} from '../../Tasker/SportTask';
 import {ISubscription} from 'rxjs/Subscription';
+import {SQLitePersistor} from "../../Tasker/SQLitePersistor";
 
 @Component({
   selector: 'page-sport',
@@ -18,8 +19,6 @@ export class SportPage implements OnInit, OnDestroy {
   items: SportTask[];
 
   constructor(public navCtrl: NavController, private taskService: TaskerServiceProvider) {
-    this.initializeItems();
-    this.sort();
   }
 
   ngOnInit(): void {
@@ -34,49 +33,52 @@ export class SportPage implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  ionViewDidLoad() {  }
+  ionViewDidLoad() {
+    // console.log('sports.ts :: onViewDidLoad')
+  }
+
+  ionViewDidEnter() {
+    console.log('ionViewDidEnter !')
+    this.initializeItems();
+    this.sort();
+  }
+
 
   initializeItems() {
     console.log('sports.ts initialize items');
-    Tasker.unserializeLists();
-
-    // // TODO remove
-    // const temp = new SportTask('name', 'description', Tasker.getListCategories()[0], moment(), 30, 12, 30, [], 3210, 124, 12, 3620);
-    // temp.addCoord(new Coordinate(1, 2, 3));
-    // temp.addCoord(new Coordinate(2, 3, 4));
-    // temp.addCoord(new Coordinate(3, 4, 5));
-    // temp.addCoord(new Coordinate(4, 5, 6));
-    // temp.addCoord(new Coordinate(5, 6, 7));
-    // temp.addCoord(new Coordinate(-12, 16, 7));
-    // temp.caculateDistance();
-    // Tasker.getListSportTasks()
-    //   .push(temp);
-    // // TODO END remove
-
-    this.items = Tasker.getListSportTasks();
-    // console.log('SportPage : ' + this.items.length + ' tâches trouvées');
+    console.log('before : ', this.items);
+    // Tasker.unserializeLists();
+    SQLitePersistor.loadFromDB().then(() => {
+      this.items = Tasker.getListSportTasks();
+      console.log('after : ', this.items);
+    });
   }
 
-  getItems(ev: any) {
-    this.items = Tasker.getListSportTasks();
-    const val = ev.target.value;
-    if (val && val.trim() !== '') {
-      this.items = this.items.filter((item) => {
-        if (item.getName().toLowerCase().indexOf(val.toLowerCase()) > -1) {
-          return true;
-        }
-        if (item.getDescription().toLowerCase().indexOf(val.toLowerCase()) > -1) {
-          return true;
-        }
-        if (item.getCategory().getName().toLowerCase().indexOf(val.toLowerCase()) > -1) {
-          return true;
-        }
-        if (item.getNextDate().format('DD MMM. YYYY').toLowerCase().indexOf(val.toLowerCase()) > -1) {
-          return true;
-        }
-        return false;
-      });
-    }
+  getItems(ev) {
+    console.log('getItems');
+    SQLitePersistor.loadFromDB().then(() => {
+      this.items = Tasker.getListSportTasks();
+      // console.log('getItems a rendu : ', this.items);
+      const val = ev.target.value;
+      if (val && val.trim() !== '') {
+        this.items = this.items.filter((item) => {
+          if (item.getName().toLowerCase().indexOf(val.toLowerCase()) > -1) {
+            return true;
+          }
+          if (item.getDescription().toLowerCase().indexOf(val.toLowerCase()) > -1) {
+            return true;
+          }
+          if (item.getCategory().getName().toLowerCase().indexOf(val.toLowerCase()) > -1) {
+            return true;
+          }
+          if (item.getNextDate().format('DD MMM. YYYY').toLowerCase().indexOf(val.toLowerCase()) > -1) {
+            return true;
+          }
+          return false;
+        });
+      }
+    });
+
 
   }
 
@@ -86,8 +88,8 @@ export class SportPage implements OnInit, OnDestroy {
   }
 
   onChangeActivated(id: number) {
-    const temp = Tasker.getTaskByID(id);
-    temp.setIsActivatedNotification(!temp.getIsActivatedNotification());
+    const taskId = Tasker.getTaskByID(id);
+    taskId.setIsActivatedNotification(!taskId.getIsActivatedNotification());
   }
 
   sort(): void {

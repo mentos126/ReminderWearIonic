@@ -1,27 +1,12 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ViewChild
-} from '@angular/core';
-import {
-  IonicPage,
-  NavController,
-  NavParams
-} from 'ionic-angular';
-import {
-  ISubscription
-} from 'rxjs/Subscription';
-import {
-  TaskerServiceProvider
-} from '../../providers/tasker-service/tasker-service';
-import {
-  SportTask
-} from '../../Tasker/SportTask';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {IonicPage, NavController, NavParams} from 'ionic-angular';
+import {ISubscription} from 'rxjs/Subscription';
+import {TaskerServiceProvider} from '../../providers/tasker-service/tasker-service';
+import {SportTask} from '../../Tasker/SportTask';
 
-import {
-  Coordinate
-} from '../../Tasker/Coordinate';
+import {Coordinate} from '../../Tasker/Coordinate';
+import {Tasker} from "../../Tasker/Tasker";
+import {SQLitePersistor} from "../../Tasker/SQLitePersistor";
 
 /**
  * Generated class for the SportDetailPage page.
@@ -50,8 +35,8 @@ export class SportDetailPage implements OnInit, OnDestroy {
   duration: number;
   durationMoment: string;
 
-  public lineChartData: Array < any > = [{
-    data: [0],
+  public lineChartData: Array <any> = [{
+    data: [],
     label: 'Elevation'
   }];
   public lineChartLabels: Array<any> = [''];
@@ -96,11 +81,7 @@ export class SportDetailPage implements OnInit, OnDestroy {
         this.steps = this.mySportTask.getSteps();
         this.heart = this.mySportTask.getHeart();
         this.distance = this.mySportTask.getDistance();
-        this.duration = this.mySportTask.getDuration();
-        const s = Math.floor(this.duration / 1000  % 60);
-        const m = Math.floor((this.duration / 60000) % 60);
-        const h = Math.floor((this.duration / 3600000) % 24);
-        this.durationMoment = +h + ' heures ' + m + ' minutes ' + s + ' secondes';
+        this.durationMoment = this.mySportTask.getFormatedDuration();
       });
 
     this.initMap();
@@ -110,9 +91,12 @@ export class SportDetailPage implements OnInit, OnDestroy {
   initGraph(): any {
     const labels: string[] = [];
     const data: number[] = [];
-    for (const x of this.myCoordinates) {
+    for (const coord of this.myCoordinates) {
       labels.push('');
-      data.push(x.getHeight());
+      const height = coord.getHeight();
+      if ( height > 0 ) {
+        data.push(coord.getHeight());
+      }
     }
 
     this.lineChartData = [{
@@ -127,7 +111,7 @@ export class SportDetailPage implements OnInit, OnDestroy {
   }
 
   ionViewDidLoad() {
-    console.log(this.steps, this.heart, this.distance, this.durationMoment);
+    console.log('steps=', this.steps, 'distance=', this.distance, 'duration=',this.durationMoment);
   }
   initMap(): void {
 
@@ -166,4 +150,17 @@ export class SportDetailPage implements OnInit, OnDestroy {
   }
 
 
+  /**
+   * Supprime la SportTask (et sa tâche associée)
+   */
+  delete() {
+    console.log('deleting sportTask ' , this.mySportTask);
+    Tasker.removeSportTaskByID(this.mySportTask.getID());
+    // Tasker.removeTaskByID(this.mySportTask.getID());
+    // Tasker.serializeLists();
+    SQLitePersistor.saveToDB().then(() => {
+    //   console.log('popping back to list of sportTasks, ' + Tasker.getListSportTasks().length + ' sportTasks remaining');
+      this.navCtrl.pop();
+    });
+  }
 }
