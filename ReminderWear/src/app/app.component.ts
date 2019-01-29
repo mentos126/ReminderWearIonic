@@ -20,7 +20,8 @@ export class MyApp {
       // console.log('SQL self Test', sqlite.selfTest() );
 
       SQLitePersistor.initInstance(sqlite);
-      statusBar.styleDefault();
+      statusBar.styleLightContent();
+      statusBar.backgroundColorByHexString('#40ccdf');
       splashScreen.hide();
 
     });
