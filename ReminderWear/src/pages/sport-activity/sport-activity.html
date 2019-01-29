@@ -7,8 +7,6 @@
 <ion-header>
 </ion-header>
 
-
-
 <ion-content>
 
   <ion-toolbar color="primary">
@@ -36,7 +34,7 @@
     </button>
   </div>
 
-  <ion-card>
+  <ion-card *ngIf="stepCounterAvailable">
     <ion-card-content>
       <ion-icon item-start name="ios-swap" (click)="sort()"></ion-icon>
       {{ steps }} pas

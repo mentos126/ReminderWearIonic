@@ -9,7 +9,7 @@ import {Diagnostic} from '@ionic-native/diagnostic';
 import {IPedometerData, Pedometer} from '@ionic-native/pedometer';
 import {Tasker} from '../../Tasker/Tasker';
 import {SQLitePersistor} from '../../Tasker/SQLitePersistor';
-import { Category } from '../../Tasker/Category';
+import {Category} from '../../Tasker/Category';
 
 /**
  * Generated class for the SportActivityPage page.
@@ -63,6 +63,7 @@ export class SportActivityPage {
   }];
   public lineChartLegend = true;
   public lineChartType = 'line';
+  private stepCounterAvailable = true;
 
   constructor(
     public navCtrl: NavController,
@@ -158,8 +159,9 @@ export class SportActivityPage {
       }).catch(e => console.error(e));
 
     this.pedometer.isStepCountingAvailable().then(stepsAvailable => {
-      console.log('is step count available ? ' + stepsAvailable);
-      if (stepsAvailable) {
+      console.log('is step count available ? ' + this.stepCounterAvailable);
+      this.stepCounterAvailable = stepsAvailable;
+      if (this.stepCounterAvailable) {
         this.pedometer.startPedometerUpdates()
           .subscribe((data: IPedometerData) => {
             // console.log('pedometer data', JSON.stringify(data));
@@ -168,6 +170,8 @@ export class SportActivityPage {
               this.steps = data.numberOfSteps;
             }
           });
+      } else {
+        // TODO : hide steps counter
       }
 
     });
