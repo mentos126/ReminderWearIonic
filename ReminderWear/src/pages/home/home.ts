@@ -320,7 +320,7 @@ export class HomePage implements OnInit, OnDestroy {
       // console.log('cuurently scheduled IDs are ', scheduledIds);
       // console.log('tasks IDs to schedule are ', tasksToTriggerIds);
 
-      for ( const task of tasksToTrigger ){
+      for ( const task of tasksToTrigger ) {
 
         const notification: ILocalNotification = {
           id: task.getID(),
@@ -336,9 +336,9 @@ export class HomePage implements OnInit, OnDestroy {
           }
         };
 
-        if ( scheduledIds.indexOf( task.getID() ) >= 0 ){ // si la tâche est déjà planifiée
-         this.localNotifications.update(notification); // mettre à jour sa notif. au cas où
-         // console.log('update notificaation ', notification);
+        if ( scheduledIds.indexOf( task.getID() ) >= 0 ) { // si la tâche est déjà planifiée
+          this.localNotifications.update(notification);  //  mettre à jour sa notif. au cas où
+          //  console.log('update notificaation ', notification);
         } else { // la tâche n'est pas encore planifiée, créer sa notification
           this.localNotifications.schedule(notification);
             // console.log('add notificaation ', notification);
@@ -347,7 +347,7 @@ export class HomePage implements OnInit, OnDestroy {
 
       // ID planifié mais pas de tâche existante associée (tâche supprimée ?) => annuler la notif
       for (const scheduledId of scheduledIds) {
-        if (tasksToTriggerIds.indexOf(scheduledId) === -1 ){
+        if (tasksToTriggerIds.indexOf(scheduledId) === -1 ) {
           this.localNotifications.cancel( scheduledId);
           // console.log('cancelling notification for a deleted task whith ID=' + scheduledId)
         }
