@@ -5,7 +5,6 @@ import {Coordinate} from '../../Tasker/Coordinate';
 import * as moment from 'moment';
 import {Geolocation} from '@ionic-native/geolocation';
 import {Diagnostic} from '@ionic-native/diagnostic';
-// import {Health} from '@ionic-native/health';
 import {IPedometerData, Pedometer} from '@ionic-native/pedometer';
 import {Tasker} from '../../Tasker/Tasker';
 import {SQLitePersistor} from '../../Tasker/SQLitePersistor';
@@ -43,7 +42,6 @@ export class SportActivityPage {
   durationMoment = 0;
   timer = 0;
   isInResgiter = false;
-  // debug1: any = 'null';
 
   public lineChartData: Array < any > = [{
     data: [0],
@@ -71,7 +69,6 @@ export class SportActivityPage {
     private geolocation: Geolocation,
     private diagnostic: Diagnostic,
     private pedometer: Pedometer,
-    // private health: Health
   ) {
     const task = navParams.data;
     this.name = task.name;
@@ -124,8 +121,7 @@ export class SportActivityPage {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     let distance = R * c * 1000;
 
-    const height = 0; // c1.getHeight() - c2.getHeight();
-
+    const height = 0;
     distance = Math.pow(distance, 2) + Math.pow(height, 2);
 
     return Math.sqrt(distance);
@@ -146,32 +142,24 @@ export class SportActivityPage {
       }
     }, 1000);
 
-    // console.log('START runLocation');
     this.runLocation();
-    // console.log('END   runLocation');
 
     this.diagnostic.isLocationAvailable()
       .then((state) => {
-        console.log('is location available ? ' + state);
         if (!state) {
           this.diagnostic.switchToLocationSettings();
         }
       }).catch(e => console.error(e));
 
     this.pedometer.isStepCountingAvailable().then(stepsAvailable => {
-      console.log('is step count available ? ' + this.stepCounterAvailable);
       this.stepCounterAvailable = stepsAvailable;
       if (this.stepCounterAvailable) {
         this.pedometer.startPedometerUpdates()
           .subscribe((data: IPedometerData) => {
-            // console.log('pedometer data', JSON.stringify(data));
             if (this.isInResgiter) {
-              // console.log('pedometer is in register');
               this.steps = data.numberOfSteps;
             }
           });
-      } else {
-        // TODO : hide steps counter
       }
 
     });
@@ -183,7 +171,6 @@ export class SportActivityPage {
     const watch = this.geolocation.watchPosition();
     watch.subscribe((data) => {
       if (this.isInResgiter && data.coords) {
-        // console.log('runLocation inRegister data', data, data.coords.latitude, data.coords.longitude);
         this.myCoordinates.push(new Coordinate(
           data.coords.latitude,
           data.coords.longitude,
@@ -198,7 +185,6 @@ export class SportActivityPage {
   endRegister() {
     this.isInResgiter = false;
 
-    // console.log('creating a new SportTask : ');
     const st = new SportTask(
       this.name,
       this.description,
@@ -216,9 +202,7 @@ export class SportActivityPage {
     for (const c of this.myCoordinates) {
       st.addCoord(c);
     }
-    // console.log('sportActivity :: endRegieter');
     Tasker.getInstance().addSportTask(st);
-    // console.log('added new SportTask to Tasker', st);
     SQLitePersistor.saveToDB();
     this.navCtrl.popAll();
 
@@ -228,7 +212,6 @@ export class SportActivityPage {
     const labels: string[] = [];
     const data: number[] = [];
 
-    // console.log('initGraph()', this.myCoordinates);
     for (const x of this.myCoordinates) {
       labels.push('');
       data.push(x.getHeight());

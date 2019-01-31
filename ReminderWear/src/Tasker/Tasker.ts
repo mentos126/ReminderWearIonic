@@ -1,8 +1,16 @@
-import {Category} from './Category';
+import {
+  Category
+} from './Category';
 
-import {Task} from './Task';
-import {SportTask} from './SportTask';
-import {SQLitePersistor} from './SQLitePersistor';
+import {
+  Task
+} from './Task';
+import {
+  SportTask
+} from './SportTask';
+import {
+  SQLitePersistor
+} from './SQLitePersistor';
 
 export class Tasker {
 
@@ -44,7 +52,6 @@ export class Tasker {
     const index = this.listTasks.indexOf(this.getTaskByID(id), 0);
     if (index > -1) {
       this.listTasks.splice(index, 1);
-      console.log('removeTaskByID :: Task found, removing...');
     }
   }
 
@@ -64,10 +71,7 @@ export class Tasker {
       }
     }
     if (index !== -1) {
-      // console.log('removeSportTaskByID :: SportTask found, removing SportTask with ID='+id + ' at index=' + index);
-      // console.log('avant : ', this.listSportTasks);
       this.listSportTasks.splice(index, 1);
-      // console.log('après : ', this.listSportTasks)
     }
   }
 
@@ -116,7 +120,7 @@ export class Tasker {
     let cat = null;
     for (const c of this.listCategories) {
       if (c.getName() === catName) {
-        cat =  c;
+        cat = c;
         break;
       }
     }

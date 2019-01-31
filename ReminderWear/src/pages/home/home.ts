@@ -1,22 +1,53 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {AlertController, ModalController, NavController, Platform} from 'ionic-angular';
-import {AddTaskPage} from '../add-task/add-task';
-import {Tasker} from '../../Tasker/Tasker';
-import {Task} from '../../Tasker/Task';
+import {
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
+import {
+  AlertController,
+  ModalController,
+  NavController,
+  Platform
+} from 'ionic-angular';
+import {
+  AddTaskPage
+} from '../add-task/add-task';
+import {
+  Tasker
+} from '../../Tasker/Tasker';
+import {
+  Task
+} from '../../Tasker/Task';
 import * as moment from 'moment';
-import {EditTaskPage} from '../edit-task/edit-task';
-import {TaskerServiceProvider} from '../../providers/tasker-service/tasker-service';
-import {ISubscription} from 'rxjs/Subscription';
-import {Camera, CameraOptions} from '@ionic-native/camera';
-import {Coordinate} from '../../Tasker/Coordinate';
-import {ModalMapPage} from '../modal-map/modal-map';
-import {ILocalNotification, LocalNotifications} from '@ionic-native/local-notifications';
-import {ShowTaskPage} from '../show-task/show-task';
-import {SQLitePersistor} from '../../Tasker/SQLitePersistor';
+import {
+  EditTaskPage
+} from '../edit-task/edit-task';
+import {
+  TaskerServiceProvider
+} from '../../providers/tasker-service/tasker-service';
+import {
+  ISubscription
+} from 'rxjs/Subscription';
+import {
+  Camera,
+  CameraOptions
+} from '@ionic-native/camera';
+import {
+  Coordinate
+} from '../../Tasker/Coordinate';
+import {
+  ModalMapPage
+} from '../modal-map/modal-map';
+import {
+  LocalNotifications
+} from '@ionic-native/local-notifications';
+import {
+  ShowTaskPage
+} from '../show-task/show-task';
+import {
+  SQLitePersistor
+} from '../../Tasker/SQLitePersistor';
 
-/*import {
-  SportActivityPage
-} from '../sport-activity/sport-activity';*/
 
 @Component({
   selector: 'page-home',
@@ -31,6 +62,7 @@ export class HomePage implements OnInit, OnDestroy {
   orderBy = false;
   myCoordinate: Coordinate = null;
   val = '';
+  oldNotification = '';
   sizeOldItem = 0;
   idInterval: number;
 
@@ -78,16 +110,6 @@ export class HomePage implements OnInit, OnDestroy {
 
   ionViewDidLoad() {}
 
-  // ionViewDidEnter() {
-  //   // console.log('home entered');
-  //   // SQLitePersistor.loadFromDB().then(() => {
-  //   //   Tasker.getInstance();
-  //   //   this.items = Tasker.getListTasks();
-  //   //   console.log('items : ');
-  //   //   console.log(this.items);
-  //   // });
-  //
-  // }
 
   initializeItems() {
     Tasker.unserializeLists();
@@ -148,8 +170,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   delete(item: Task) {
     Tasker.removeTask(item);
-    Tasker.serializeLists();
-    console.log('side-delete :: ', item);
+    SQLitePersistor.saveToDB();
   }
 
   onItemClicked(id: number) {
@@ -303,57 +324,60 @@ export class HomePage implements OnInit, OnDestroy {
 
   lunchLocalNotification() {
 
+    let temp: Task[] = null;
     const now: number = moment().valueOf();
-
-    const tasksToTrigger: Task[] = [];
-    const tasksToTriggerIds: number[] = [];
-
-    for (const task of Tasker.getListTasks()) {
-      if (task.getIsActivatedNotification() && task.getNextDate().valueOf() >= now) {
-        tasksToTrigger.push(task);
-        tasksToTriggerIds.push(task.getID());
+    for (const t of Tasker.getListTasks()) {
+      if (t.getIsActivatedNotification() && t.getNextDate().valueOf() >= now) {
+        if (temp === null || t.getNextDate().valueOf() < temp[0].getNextDate().valueOf()) {
+          temp = [];
+          temp.push(t);
+        } else if (t.getNextDate().valueOf() === temp[0].getNextDate().valueOf()) {
+          temp.push(t);
+        }
       }
     }
 
-    this.localNotifications.getScheduledIds().then(scheduledIds => {
+    if (temp !== null) {
 
-      // console.log('cuurently scheduled IDs are ', scheduledIds);
-      // console.log('tasks IDs to schedule are ', tasksToTriggerIds);
+      const temp2: any = temp[0].getDateDeb();
+      for (const t of temp) {
+        t.setDateDeb(t.getNextDate());
+      }
 
-      for ( const task of tasksToTrigger ) {
-
-        const notification: ILocalNotification = {
-          id: task.getID(),
-          title: task.getName(),
-          text: task.getDescription(),
+      const toSchedule: any[] = [];
+      for (const t of temp) {
+        toSchedule.push({
+          id: t.getID(),
+          title: t.getName(),
+          text: t.getDescription(),
           trigger: {
-            at: new Date(task.getNextDate().valueOf())
+            at: new Date(t.getNextDate().valueOf())
           },
           led: 'FF0000',
-          icon: task.getCategory().getIcon(),
+          icon: t.getCategory().getIcon(),
           data: {
-            data: task
+            data: t
           }
-        };
-
-        if ( scheduledIds.indexOf( task.getID() ) >= 0 ) { // si la tâche est déjà planifiée
-          this.localNotifications.update(notification);  //  mettre à jour sa notif. au cas où
-          //  console.log('update notificaation ', notification);
-        } else { // la tâche n'est pas encore planifiée, créer sa notification
-          this.localNotifications.schedule(notification);
-            // console.log('add notificaation ', notification);
-        }
+        });
       }
 
-      // ID planifié mais pas de tâche existante associée (tâche supprimée ?) => annuler la notif
-      for (const scheduledId of scheduledIds) {
-        if (tasksToTriggerIds.indexOf(scheduledId) === -1 ) {
-          this.localNotifications.cancel( scheduledId);
-          // console.log('cancelling notification for a deleted task whith ID=' + scheduledId)
-        }
-      }
+      if (JSON.stringify(toSchedule) !== this.oldNotification) {
 
-    });
+        this.oldNotification = JSON.stringify(toSchedule);
+        this.localNotifications.cancelAll().then(() => {
+
+          if (toSchedule.length === 1) {
+            this.localNotifications.schedule(toSchedule[0]);
+          } else if (toSchedule.length > 1) {
+            this.localNotifications.schedule(toSchedule);
+          }
+
+          for (const t of temp) {
+            t.setDateDeb(temp2);
+          }
+        });
+      }
+    }
   }
 
   cancelAll() {

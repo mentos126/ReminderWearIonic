@@ -1,14 +1,29 @@
-import {SQLite, SQLiteObject} from '@ionic-native/sqlite';
+import {
+  SQLite,
+  SQLiteObject
+} from '@ionic-native/sqlite';
 
-import {Category} from './Category';
+import {
+  Category
+} from './Category';
 
-import {Task} from './Task';
-import {SportTask} from './SportTask';
+import {
+  Task
+} from './Task';
+import {
+  SportTask
+} from './SportTask';
 
-import {Tasker} from './Tasker';
-import {BehaviorSubject} from 'rxjs';
+import {
+  Tasker
+} from './Tasker';
+import {
+  BehaviorSubject
+} from 'rxjs';
 import * as moment from 'moment';
-import {Coordinate} from './Coordinate';
+import {
+  Coordinate
+} from './Coordinate';
 
 
 export class SQLitePersistor {
@@ -17,7 +32,7 @@ export class SQLitePersistor {
     name: 'remindwear.db',
     location: 'default'
   };
-  public static databaseReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public static databaseReady: BehaviorSubject < boolean > = new BehaviorSubject(false);
   private sqlite: SQLite;
   private db: SQLiteObject;
 
@@ -26,19 +41,18 @@ export class SQLitePersistor {
   private constructor(sqlite: SQLite) {
 
     this.sqlite = sqlite;
-    // this.databaseReady = new BehaviorSubject(false);
     this.sqlite.create(SQLitePersistor.DB_CONFIG)
       .then((db: SQLiteObject) => {
         this.db = db;
         this.createDBs(true);
       })
-      .catch(e => console.error('Erreur dans l\'ouverture de la BDD:' , e));
+      .catch(e => console.error(e));
 
   }
 
 
 
-  public  static initInstance(sql: SQLite) {
+  public static initInstance(sql: SQLite) {
     if (SQLitePersistor.INSTANCE == null) {
       SQLitePersistor.INSTANCE = new SQLitePersistor(sql);
     }
@@ -56,8 +70,6 @@ export class SQLitePersistor {
     const tasks = Tasker.getListTasks();
     const sportTasks = Tasker.getListSportTasks();
     const categories = Tasker.getListCategories();
-
-    console.log('saveToDB :: saving sportTasks ', sportTasks);
 
     await this.getInstance().truncateDBs().then(() => {
       SQLitePersistor.getInstance().saveCategoriesToDB(categories);
@@ -127,9 +139,8 @@ export class SQLitePersistor {
 
     this.db.executeSql('INSERT INTO `Coordinates` (' +
       'sportTaskId, lng, lat, h) ' +
-      'VALUES (?, ?, ?, ?)', [taskId, lng, lat, h]).then(() => {
-    }).catch(e => {
-      console.error('erreur d\'insertion des coordonnées pour le sport ' + taskId + ' : ', JSON.stringify(e));
+      'VALUES (?, ?, ?, ?)', [taskId, lng, lat, h]).then(() => {}).catch(e => {
+      console.error(JSON.stringify(e));
     });
 
   }
@@ -137,14 +148,14 @@ export class SQLitePersistor {
   private async getSportTaskCoords(taskId: number) {
     const coords: Coordinate[] = [];
 
-     await this.db.executeSql('SELECT * FROM `Coordinates` WHERE sportTaskId = ?', [taskId])
+    await this.db.executeSql('SELECT * FROM `Coordinates` WHERE sportTaskId = ?', [taskId])
       .then(res => {
         for (let i = 0; i < res.rows.length; i++) {
           const c = res.rows.item(i);
           coords.push(new Coordinate(c.lat, c.lng, c.h));
         }
       })
-      .catch(e => console.error('erreur de lecture', JSON.stringify(e)));
+      .catch(e => console.error(JSON.stringify(e)));
 
     return coords;
   }
@@ -152,7 +163,7 @@ export class SQLitePersistor {
   private saveCategoriesToDB(categories: Category[]): void {
 
     const db = this.db;
-    categories.forEach(function(cat: Category)  {
+    categories.forEach(function (cat: Category) {
       if (cat.getName() !== Tasker.CATEGORY_NONE_TAG && cat.getName() !== Tasker.CATEGORY_SPORT_TAG) {
         db.executeSql('INSERT INTO `Categories` (name, icon, color) VALUES (?, ?, ?)', [
           cat.getName(),
@@ -161,7 +172,7 @@ export class SQLitePersistor {
         ]).then(res => {
           cat.setID(res.insertId);
         }).catch(e => {
-          console.error('erreur d\'insertion de la categorie ' + cat.getName() + ' : ', JSON.stringify(e));
+          console.error(JSON.stringify(e));
         });
       }
     });
@@ -171,8 +182,7 @@ export class SQLitePersistor {
   public async saveTaskToDB(task: Task) {
 
     const localisation = task.getLocalisation() === null ?
-      null :
-      [ task.getLocalisation().getLat(), task.getLocalisation().getLng(), task.getLocalisation().getHeight() ];
+      null : [task.getLocalisation().getLat(), task.getLocalisation().getLng(), task.getLocalisation().getHeight()];
     const insertParams = [
       task.getName(),
       task.getDescription(),
@@ -195,13 +205,13 @@ export class SQLitePersistor {
 
       task.setID(res.insertId);
     }).catch(e => {
-      console.error('erreur d\'insertion de la tâche ' + task.getName() + ' : ', JSON.stringify(e), insertParams);
+      console.error(JSON.stringify(e));
     });
 
   }
 
   private saveSportTasksToDB(sportTasks: SportTask[]) {
-    sportTasks.forEach( async st => {
+    sportTasks.forEach(async st => {
 
       await this.saveTaskToDB(st);
       const taskId = st.getID();
@@ -221,15 +231,16 @@ export class SQLitePersistor {
 
       this.db.executeSql('INSERT INTO `SportTasks` (' +
         'TaskID, steps, heart, distance, duration) ' +
-        'VALUES (?, ?, ?, ?, ?)', insertParams).then(() => {
-      }).catch(e => {
-        console.error('erreur d\'insertion de la tâche de sport ' + st.getName() + ' : ', JSON.stringify(e), JSON.stringify(insertParams));
+        'VALUES (?, ?, ?, ?, ?)', insertParams).then(() => {}).catch(e => {
+        console.error(JSON.stringify(e));
       });
 
 
-    } );
+    });
 
-    if (sportTasks.length) { sportTasks = []; }
+    if (sportTasks.length) {
+      sportTasks = [];
+    }
   }
 
   private async loadCategoriesFromDB() {
@@ -239,10 +250,10 @@ export class SQLitePersistor {
       .then(res => {
         for (let i = 0; i < res.rows.length; i++) {
           const sqlCat = res.rows.item(i);
-          categories.push( new Category(sqlCat.name, sqlCat.icon, sqlCat.color));
+          categories.push(new Category(sqlCat.name, sqlCat.icon, sqlCat.color));
         }
       })
-      .catch(e => console.error('erreur de lecture', JSON.stringify(e)));
+      .catch(e => console.error(JSON.stringify(e)));
     return categories;
   }
 
@@ -257,15 +268,14 @@ export class SQLitePersistor {
           const repete: boolean[] = [];
           const sqlRepete: string = sqlTask.repete;
           sqlRepete.split(',').forEach(bool => {
-              repete.push( bool === 'true' );
-            }
-          );
+            repete.push(bool === 'true');
+          });
 
           const t = new Task(
             sqlTask.name,
             sqlTask.description,
-            Tasker.getCategoryByName( sqlTask.categoryName ),
-            moment( sqlTask.dateDebString ),
+            Tasker.getCategoryByName(sqlTask.categoryName),
+            moment(sqlTask.dateDebString),
             sqlTask.warningBefore,
             sqlTask.timeHour,
             sqlTask.timeMinutes,
@@ -281,17 +291,17 @@ export class SQLitePersistor {
           }
 
           if (sqlTask.localisation !== null) {
-            const strCoords  = sqlTask.localisation.split(',');
+            const strCoords = sqlTask.localisation.split(',');
             const coords: Coordinate = new Coordinate(
               strCoords[0], strCoords[1], strCoords[2]
             );
             t.setLocalisation(coords);
           }
 
-           tasks.push(t);
+          tasks.push(t);
         }
       })
-      .catch(e => console.error('erreur de lecture des taches', JSON.stringify(e)));
+      .catch(e => console.error(JSON.stringify(e)));
     return tasks;
   }
 
@@ -334,7 +344,7 @@ export class SQLitePersistor {
 
         }
       })
-      .catch(e => console.error('erreur de lecture', JSON.stringify(e)));
+      .catch(e => console.error(JSON.stringify(e)));
 
     return sportTasks;
   }
@@ -352,7 +362,7 @@ export class SQLitePersistor {
   }
 
   private createDBs(notify: boolean) {
-    this.db.transaction(function(tx) {
+    this.db.transaction(function (tx) {
         tx.executeSql('CREATE TABLE IF NOT EXISTS Categories (' +
           'ID INTEGER PRIMARY KEY, ' +
           'name TEXT NOT NULL, ' +
@@ -392,15 +402,13 @@ export class SQLitePersistor {
           'heart INT, ' +
           'distance REAL, ' +
           'duration REAL)');
-      }
-    )
+      })
       .catch(error => console.error(error))
-      .then( () => {
+      .then(() => {
         if (notify) {
-          // this.databaseReady.next(true);
           SQLitePersistor.databaseReady.next(true);
         }
-      } );
+      });
   }
 
 

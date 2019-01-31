@@ -6,7 +6,7 @@ import {SportDetailPage} from '../sport-detail/sport-detail';
 import {TaskerServiceProvider} from '../../providers/tasker-service/tasker-service';
 import {SportTask} from '../../Tasker/SportTask';
 import {ISubscription} from 'rxjs/Subscription';
-import {SQLitePersistor} from "../../Tasker/SQLitePersistor";
+import {SQLitePersistor} from '../../Tasker/SQLitePersistor';
 
 @Component({
   selector: 'page-sport',
@@ -33,32 +33,23 @@ export class SportPage implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  ionViewDidLoad() {
-    // console.log('sports.ts :: onViewDidLoad')
-  }
+  ionViewDidLoad() {}
 
   ionViewDidEnter() {
-    console.log('ionViewDidEnter !')
     this.initializeItems();
     this.sort();
   }
 
 
   initializeItems() {
-    console.log('sports.ts initialize items');
-    console.log('before : ', this.items);
-    // Tasker.unserializeLists();
     SQLitePersistor.loadFromDB().then(() => {
       this.items = Tasker.getListSportTasks();
-      console.log('after : ', this.items);
     });
   }
 
   getItems(ev) {
-    console.log('getItems');
     SQLitePersistor.loadFromDB().then(() => {
       this.items = Tasker.getListSportTasks();
-      // console.log('getItems a rendu : ', this.items);
       const val = ev.target.value;
       if (val && val.trim() !== '') {
         this.items = this.items.filter((item) => {

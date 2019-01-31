@@ -176,7 +176,6 @@ export class AddTaskPage implements OnInit, OnDestroy {
     }
 
     if (success) {
-      // Tasker.getListTasks().push(newTask);
       Tasker.getInstance().addTask(newTask);
       Tasker.serializeLists();
       Tasker.sort();

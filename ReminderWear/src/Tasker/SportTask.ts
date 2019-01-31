@@ -97,7 +97,7 @@ export class SportTask extends Task {
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         let distance = R * c * 1000;
 
-        const height = 0; // c1.getHeight() - c2.getHeight();
+        const height = 0;
 
         distance = Math.pow(distance, 2) + Math.pow(height, 2);
 

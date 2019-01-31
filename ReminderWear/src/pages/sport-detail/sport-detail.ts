@@ -5,8 +5,8 @@ import {TaskerServiceProvider} from '../../providers/tasker-service/tasker-servi
 import {SportTask} from '../../Tasker/SportTask';
 
 import {Coordinate} from '../../Tasker/Coordinate';
-import {Tasker} from "../../Tasker/Tasker";
-import {SQLitePersistor} from "../../Tasker/SQLitePersistor";
+import {Tasker} from '../../Tasker/Tasker';
+import {SQLitePersistor} from '../../Tasker/SQLitePersistor';
 
 /**
  * Generated class for the SportDetailPage page.
@@ -111,7 +111,7 @@ export class SportDetailPage implements OnInit, OnDestroy {
   }
 
   ionViewDidLoad() {
-    console.log('steps=', this.steps, 'distance=', this.distance, 'duration=',this.durationMoment);
+    console.log(this.steps, this.distance, this.durationMoment);
   }
   initMap(): void {
 
@@ -149,17 +149,9 @@ export class SportDetailPage implements OnInit, OnDestroy {
 
   }
 
-
-  /**
-   * Supprime la SportTask (et sa tâche associée)
-   */
   delete() {
-    console.log('deleting sportTask ' , this.mySportTask);
     Tasker.removeSportTaskByID(this.mySportTask.getID());
-    // Tasker.removeTaskByID(this.mySportTask.getID());
-    // Tasker.serializeLists();
     SQLitePersistor.saveToDB().then(() => {
-    //   console.log('popping back to list of sportTasks, ' + Tasker.getListSportTasks().length + ' sportTasks remaining');
       this.navCtrl.pop();
     });
   }

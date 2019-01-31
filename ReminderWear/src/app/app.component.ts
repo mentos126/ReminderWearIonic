@@ -15,10 +15,6 @@ export class MyApp {
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, sqlite: SQLite) {
     platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
-      // console.log('SQL self Test', sqlite.selfTest() );
-
       SQLitePersistor.initInstance(sqlite);
       statusBar.styleLightContent();
       statusBar.backgroundColorByHexString('#40ccdf');

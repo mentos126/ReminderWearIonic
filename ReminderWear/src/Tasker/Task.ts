@@ -16,8 +16,8 @@ export class Task {
     private dateDeb: Moment;
     private warningBefore: number;
     private isActivatedNotification: boolean;
-    private timeHour: number = 0;
-    private timeMinutes: number = 0;
+    private timeHour = 0;
+    private timeMinutes = 0;
     private repete: boolean[];
     private photo: string = null;
     private localisation: Coordinate = null;

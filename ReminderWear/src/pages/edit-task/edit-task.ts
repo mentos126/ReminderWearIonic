@@ -192,7 +192,6 @@ export class EditTaskPage implements OnInit, OnDestroy {
     }
 
     if (success) {
-      console.log('editTask :: save' );
       Tasker.getInstance().editTaskById(this.recevTask.getID(), newTask);
       Tasker.serializeLists();
       Tasker.sort();

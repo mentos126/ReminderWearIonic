@@ -130,7 +130,7 @@ export class ModalMapPage implements OnInit, OnDestroy {
         this.isInstancied = true;
       }
     }).catch((error) => {
-      console.error('erreur getCurrentPosition', error);
+      console.error(error);
     });
 
     const watch = this.geolocation.watchPosition();
